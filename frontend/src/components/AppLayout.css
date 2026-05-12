@@ -62,7 +62,7 @@
 
 /* ---------- Glass cards ---------- */
 .content-area .ant-card {
-  background: rgba(255, 255, 255, 0.72) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.55) !important;

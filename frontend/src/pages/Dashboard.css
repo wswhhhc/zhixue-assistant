@@ -20,6 +20,20 @@
 .dashboard-card:nth-child(7) { animation-delay: 0.36s; }
 .dashboard-card:nth-child(8) { animation-delay: 0.42s; }
 
+/* ---------- hover float ---------- */
+.dashboard-card-wrap {
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.dashboard-card-wrap:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+}
+.stat-card-wrap:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+}
+
 /* ---------- stat cards ---------- */
 .stat-card {
   border-radius: 12px !important;

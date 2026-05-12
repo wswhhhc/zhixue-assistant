@@ -118,7 +118,21 @@
       "Bash(uvicorn main:app --reload --host 0.0.0.0 --port 8000)",
       "Bash(taskkill /F /FI \"WINDOWTITLE eq Frontend\")",
       "Bash(taskkill /F /FI \"WINDOWTITLE eq Backend\")",
-      "Bash(git init *)"
+      "Bash(git init *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git config *)",
+      "Bash(npx serve *)",
+      "Bash(copy /Y backend\\\\zhixue.db data\\\\zhixue.db)",
+      "Bash(git add *)",
+      "Bash(taskkill /FI \"WINDOWTITLE eq Frontend\" /F)",
+      "Bash(start \"Frontend\" cmd /c \"npm run dev\")",
+      "Bash(grep -c \"ant-card\" node_modules/antd/es/card/style/index.js)",
+      "Bash(grep -c \"\\\\.ant-card\" node_modules/antd/es/card/style/index.ts)",
+      "Bash(ls node_modules/antd/es/card/style/)",
+      "Bash(echo \"---exit: $?---\")",
+      "Bash(pkill -f \"uvicorn main:app\")",
+      "Bash(git restore *)",
+      "Bash(git commit *)"
     ]
   }
 }

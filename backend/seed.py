@@ -308,7 +308,7 @@ def seed_database():
     if not existing_user:
         test_user = User(
             username="wsw",
-            email="1548136548@qq.com",
+            email="wswhhhc@outlook.com",
             password_hash=bcrypt.hashpw("123456".encode(), bcrypt.gensalt()).decode(),
         )
         db.add(test_user)

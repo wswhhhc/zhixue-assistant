@@ -1,0 +1,43 @@
+/* ---------- Page container ---------- */
+.favorites-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ---------- Entrance animation ---------- */
+.favorites-card {
+  animation: favFadeIn 0.45s ease-out both;
+}
+
+@keyframes favFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Loading ---------- */
+.favorites-loading {
+  padding: 24px 0;
+}
+
+/* ---------- List items ---------- */
+.favorites-list-item {
+  cursor: pointer;
+}
+
+.favorites-meta-title {
+  color: #888;
+  font-size: 13px;
+}
+
+.favorites-meta-desc {
+  margin: 0;
+  font-size: 14px;
+}
+
+.favorites-date {
+  font-size: 12px;
+  color: #999;
+  white-space: nowrap;
+  margin-left: 12px;
+}

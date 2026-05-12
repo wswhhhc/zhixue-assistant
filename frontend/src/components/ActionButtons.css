@@ -1,0 +1,79 @@
+/* ========= Table row actions fly-out ========= */
+.action-buttons {
+  display: flex;
+  gap: 4px;
+  opacity: 0.3;
+  transform: translateX(12px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ant-table-row:hover .action-buttons,
+.ant-list-item:hover .action-buttons {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.action-btn {
+  border-radius: 8px !important;
+  height: 32px !important;
+  width: 32px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(102, 126, 234, 0.12) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.action-btn:hover {
+  transform: scale(1.15) !important;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15) !important;
+}
+
+.action-btn-edit:hover {
+  background: rgba(102, 126, 234, 0.12) !important;
+  border-color: rgba(102, 126, 234, 0.3) !important;
+  color: #667eea !important;
+}
+
+.action-btn-delete:hover {
+  background: rgba(255, 77, 79, 0.10) !important;
+  border-color: rgba(255, 77, 79, 0.25) !important;
+  color: #ff4d4f !important;
+}
+
+/* Stagger for multiple buttons */
+.action-buttons .action-btn:nth-child(1) { transition-delay: 0s; }
+.action-buttons .action-btn:nth-child(2) { transition-delay: 0.05s; }
+
+/* ========= List item single action fly-out ========= */
+.list-action-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 77, 79, 0.15) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  opacity: 0;
+  transform: translateX(12px) scale(0.9);
+}
+
+.ant-list-item:hover .list-action-btn {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.list-action-btn:hover {
+  background: rgba(255, 77, 79, 0.10) !important;
+  border-color: rgba(255, 77, 79, 0.3) !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 16px rgba(255, 77, 79, 0.15) !important;
+}

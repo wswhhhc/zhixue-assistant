@@ -1,0 +1,107 @@
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-page {
+  padding: 24px;
+}
+
+/* ---------- entrance animation ---------- */
+.dashboard-card {
+  animation: cardFadeIn 0.45s ease-out both;
+}
+
+/* ---------- stat cards ---------- */
+.stat-card {
+  border-radius: 12px !important;
+  border: 1px solid rgba(102, 126, 234, 0.10) !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden;
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15) !important;
+}
+.stat-card-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.stat-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.stat-card-icon-brand1 { background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; }
+.stat-card-icon-brand2 { background: linear-gradient(135deg, #52c41a15, #73d13d15); color: #52c41a; }
+.stat-card-icon-brand3 { background: linear-gradient(135deg, #1890ff15, #40a9ff15); color: #1890ff; }
+.stat-card-icon-brand4 { background: linear-gradient(135deg, #722ed115, #9254de15); color: #722ed1; }
+.stat-card .ant-statistic-title { font-size: 13px !important; color: #888 !important; }
+.stat-card .ant-statistic-content { font-size: 26px !important; font-weight: 700 !important; }
+
+/* ---------- AI card ---------- */
+.ai-card {
+  border: 1px solid rgba(102, 126, 234, 0.12) !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #fff 0%, #f8f7ff 100%) !important;
+}
+.ai-card > .ant-card-head {
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1) !important;
+}
+.ai-card .ant-card-head-title {
+  color: #667eea !important;
+}
+.ai-answer-box {
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #f6f8fa, #f3f0ff);
+  border-radius: 12px;
+  border-left: 3px solid #667eea;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* ---------- checkin ---------- */
+.checkin-card { border-radius: 12px !important; }
+.checkin-streak { font-size: 13px; color: #888; }
+.checkin-streak-num { color: #667eea; font-weight: 700; font-size: 22px; }
+
+/* ---------- timeline ---------- */
+.timeline-container { max-height: 260px; overflow-y: auto; padding-right: 8px; }
+.timeline-item {
+  display: flex; gap: 12px; padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0; transition: all 0.2s;
+}
+.timeline-item:last-child { border-bottom: none; }
+.timeline-item:hover {
+  background: rgba(102, 126, 234, 0.04);
+  margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px;
+}
+.timeline-dot {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+}
+.timeline-dot-checkin { background: #e6f7ff; color: #1890ff; }
+.timeline-dot-correct { background: #f6ffed; color: #52c41a; }
+.timeline-dot-wrong  { background: #fff2f0; color: #ff4d4f; }
+.timeline-detail { font-size: 14px; }
+.timeline-time  { font-size: 11px; color: #bbb; }
+
+/* ---------- empty state ---------- */
+.empty-state-cta {
+  display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 0;
+}
+
+@media (max-width: 576px) {
+  .dashboard-page { padding: 12px; }
+  .stat-card .ant-statistic-content { font-size: 20px !important; }
+  .stat-card-icon { width: 36px; height: 36px; font-size: 16px; }
+}

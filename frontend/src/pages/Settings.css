@@ -1,0 +1,26 @@
+/* ---------- Page container ---------- */
+.settings-page {
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ---------- Entrance animation ---------- */
+.settings-card {
+  animation: setFadeIn 0.45s ease-out both;
+}
+
+@keyframes setFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Title ---------- */
+.settings-title {
+  margin-bottom: 24px !important;
+}
+
+/* ---------- Card spacing ---------- */
+.settings-card-gap {
+  margin-bottom: 24px;
+}

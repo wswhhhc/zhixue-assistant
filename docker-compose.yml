@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        # 留空使用相对路径（同源请求），生产环境不需要改
+        VITE_API_BASE: ""
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:///./data/zhixue.db
+    volumes:
+      # 持久化 SQLite 数据库
+      - zhixue_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  zhixue_data:

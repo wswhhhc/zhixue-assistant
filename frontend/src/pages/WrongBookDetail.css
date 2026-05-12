@@ -1,0 +1,84 @@
+/* ---------- Page container ---------- */
+.wbd-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ---------- Entrance animation ---------- */
+.wbd-card {
+  animation: wbdFadeIn 0.45s ease-out both;
+}
+
+@keyframes wbdFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Loading / error ---------- */
+.wbd-loading {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.wbd-error {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  text-align: center;
+}
+
+.wbd-error-btn {
+  margin-top: 16px;
+}
+
+/* ---------- Detail card ---------- */
+.wbd-detail-card {
+  margin-bottom: 16px;
+}
+
+.wbd-detail-card:nth-child(2) { animation-delay: 0.06s; }
+.wbd-detail-card:nth-child(3) { animation-delay: 0.12s; }
+.wbd-detail-card:nth-child(4) { animation-delay: 0.18s; }
+.wbd-detail-card:nth-child(5) { animation-delay: 0.24s; }
+
+.wbd-paragraph {
+  font-size: 15px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.wbd-content {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.wbd-options {
+  font-size: 14px;
+}
+
+.wbd-option-item {
+  margin-bottom: 4px;
+}
+
+.wbd-option-tag {
+  margin-left: 8px;
+}
+
+/* ---------- Analysis header ---------- */
+.wbd-analysis-header {
+  margin-bottom: 12px;
+}
+
+.wbd-timestamp {
+  color: #888;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+/* ---------- Action buttons ---------- */
+.wbd-actions {
+  display: flex;
+  gap: 12px;
+}

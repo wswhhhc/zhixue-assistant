@@ -1,0 +1,89 @@
+/* ---------- Animated background ---------- */
+.content-area {
+  min-height: calc(100vh - 64px);
+  position: relative;
+  background: linear-gradient(135deg, #e8e0ff 0%, #dce5ff 20%, #f0dcff 40%, #d8f0ff 60%, #e5e0ff 80%, #e8e0ff 100%);
+  background-size: 600% 600%;
+  animation: contentGradient 18s ease-in-out infinite alternate;
+}
+
+/* Floating light blobs - layer 1 */
+.content-area::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 12% 45%, rgba(102, 126, 234, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 88% 25%, rgba(118, 75, 218, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 45% 85%, rgba(72, 150, 200, 0.10) 0%, transparent 50%);
+  animation: blobDrift 20s ease-in-out infinite alternate;
+}
+
+/* Floating light blobs - layer 2 */
+.content-area::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 75% 60%, rgba(102, 126, 234, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 25% 75%, rgba(118, 75, 218, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 55% 20%, rgba(200, 72, 150, 0.06) 0%, transparent 45%);
+  animation: blobDrift2 25s ease-in-out infinite alternate-reverse;
+}
+
+/* Content above background */
+.content-area > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Page transition ---------- */
+.page-transition {
+  animation: pageEnter 0.4s ease-out;
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Glass cards ---------- */
+.content-area .ant-card {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03) !important;
+}
+
+.content-area .ant-card:hover {
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.08) !important;
+}
+
+.content-area .ant-card-head {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ---------- Animations ---------- */
+@keyframes contentGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes blobDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-3%, 2%) scale(1.2); }
+  100% { transform: translate(2%, -3%) scale(1.1); }
+}
+
+@keyframes blobDrift2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(3%, -2%) scale(1.15); }
+  100% { transform: translate(-2%, 3%) scale(1.05); }
+}

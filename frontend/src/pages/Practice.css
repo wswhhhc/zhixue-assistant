@@ -1,0 +1,183 @@
+/* ---------- Page container ---------- */
+.practice-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ---------- Entrance animation ---------- */
+.practice-card {
+  animation: practiceFadeIn 0.45s ease-out both;
+}
+
+@keyframes practiceFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Loading / submitting ---------- */
+.practice-loading {
+  display: flex;
+  justify-content: center;
+  padding: 80px;
+}
+
+.practice-submitting-text {
+  margin: 16px 0;
+  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.practice-stream-spin {
+  display: block;
+  margin: 16px auto;
+}
+
+/* ---------- Mode selector ---------- */
+.practice-mode-selector {
+  margin-bottom: 16px;
+}
+
+.practice-mode-selector .ant-segmented {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.practice-mode-selector .ant-segmented-item-selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+/* ---------- Info banners ---------- */
+.practice-info-banner {
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.practice-info-banner-redo {
+  color: #1677ff;
+  font-size: 13px;
+}
+
+.practice-info-banner-kp {
+  color: #1677ff;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.practice-info-recommend {
+  margin-bottom: 12px;
+  color: #667eea;
+  font-size: 12px;
+  opacity: 0.65;
+  text-align: center;
+}
+
+.practice-kp-select {
+  width: 280px;
+}
+
+/* ---------- Question header ---------- */
+.practice-question-header {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.practice-question-meta {
+  color: #888;
+  font-size: 13px;
+}
+
+.practice-question-seq {
+  margin-left: 8px;
+}
+
+.practice-favorite-btn {
+  cursor: pointer;
+  font-size: 20px;
+  color: #d9d9d9;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.practice-favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+.practice-favorite-btn.favorited {
+  color: #faad14;
+}
+
+/* ---------- Question content ---------- */
+.practice-question-content {
+  line-height: 1.8;
+}
+
+/* ---------- Fade transition ---------- */
+.practice-content-fade {
+  transition: opacity 0.2s ease;
+}
+.practice-content-fade.fade-out {
+  opacity: 0;
+}
+
+/* ---------- Options ---------- */
+.practice-options {
+  margin-top: 24px;
+}
+
+.practice-option-item {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
+  font-size: 15px;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.practice-option-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+}
+
+.practice-option-item.selected {
+  background: #eef0ff;
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+/* ---------- Submit button ---------- */
+.practice-submit-btn {
+  margin-top: 24px;
+  height: 44px;
+  font-size: 16px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: opacity 0.25s, transform 0.2s;
+}
+
+.practice-submit-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.practice-submit-btn:disabled {
+  background: #d9d9d9;
+}
+
+/* ---------- Navigation ---------- */
+.practice-nav {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.practice-nav-btn {
+  flex: 1;
+}

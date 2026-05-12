@@ -1,0 +1,40 @@
+/* ---------- Page container ---------- */
+.qb-page {
+  padding: 24px;
+}
+
+/* ---------- Entrance animation ---------- */
+.qb-card {
+  animation: qbFadeIn 0.45s ease-out both;
+}
+
+@keyframes qbFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Title bar ---------- */
+.qb-title-bar {
+  margin-bottom: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qb-title {
+  margin: 0 !important;
+}
+
+.qb-filter {
+  width: 200px;
+}
+
+/* ---------- Edit modal ---------- */
+.qb-edit-form {
+  margin-top: 16px;
+}
+
+.qb-answer-select {
+  width: 120px;
+}

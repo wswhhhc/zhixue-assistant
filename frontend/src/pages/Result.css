@@ -1,0 +1,111 @@
+/* ---------- Page container ---------- */
+.result-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ---------- Entrance animation ---------- */
+.result-card {
+  animation: resultFadeIn 0.45s ease-out both;
+}
+
+@keyframes resultFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Loading / error ---------- */
+.result-loading {
+  display: flex;
+  justify-content: center;
+  padding: 80px;
+}
+
+.result-error {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  text-align: center;
+}
+
+/* ---------- Result header card ---------- */
+.result-header-card {
+  margin-bottom: 16px;
+  border-left: 4px solid;
+  animation: resultFadeIn 0.45s ease-out both;
+  animation-delay: 0s;
+}
+
+.result-header-card.correct {
+  border-left-color: #52c41a;
+}
+
+.result-header-card.wrong {
+  border-left-color: #ff4d4f;
+}
+
+.result-header-inner {
+  text-align: center;
+}
+
+.result-header-title {
+  margin-bottom: 4px !important;
+}
+
+.result-header-title.correct {
+  color: #52c41a !important;
+}
+
+.result-header-title.wrong {
+  color: #ff4d4f !important;
+}
+
+/* ---------- Detail cards ---------- */
+.result-detail-card {
+  margin-bottom: 16px;
+  animation: resultFadeIn 0.45s ease-out both;
+}
+
+.result-detail-card:nth-child(2) { animation-delay: 0.06s; }
+.result-detail-card:nth-child(3) { animation-delay: 0.12s; }
+.result-detail-card:nth-child(4) { animation-delay: 0.18s; }
+.result-detail-card:nth-child(5) { animation-delay: 0.24s; }
+
+.result-paragraph {
+  font-size: 15px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.result-review-content {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.result-options {
+  font-size: 14px;
+}
+
+.result-option-item {
+  margin-bottom: 4px;
+}
+
+.result-option-tag {
+  margin-left: 8px;
+}
+
+/* ---------- Action buttons ---------- */
+.result-action-btn {
+  margin-bottom: 12px;
+  height: 44px;
+  font-size: 16px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: opacity 0.25s, transform 0.2s;
+}
+
+.result-action-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

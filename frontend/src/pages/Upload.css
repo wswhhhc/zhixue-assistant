@@ -1,0 +1,66 @@
+/* ---------- Page container ---------- */
+.upload-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ---------- Entrance animation ---------- */
+.upload-card {
+  animation: uploadFadeIn 0.45s ease-out both;
+}
+
+@keyframes uploadFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Loading state ---------- */
+.upload-loading {
+  text-align: center;
+  padding: 60px;
+}
+
+.upload-loading-text {
+  margin-top: 16px;
+  color: #888;
+}
+
+/* ---------- Edit form ---------- */
+.upload-edit-form {
+  margin-top: 16px;
+}
+
+/* ---------- Preview ---------- */
+.upload-preview-card {
+  margin-top: 16px;
+}
+
+.upload-preview-content {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.upload-preview-options {
+  font-size: 14px;
+}
+
+.upload-preview-option {
+  margin-bottom: 2px;
+}
+
+.upload-preview-answer {
+  margin-top: 8px;
+}
+
+.upload-preview-kp {
+  color: #888;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* ---------- Alerts ---------- */
+.upload-alert-bottom {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}

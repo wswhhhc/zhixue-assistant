@@ -23,6 +23,14 @@
 /* ---------- List items ---------- */
 .favorites-list-item {
   cursor: pointer;
+  padding: 12px 0 !important;
+  border-radius: 8px !important;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s !important;
+}
+.favorites-list-item:hover {
+  background: rgba(102, 126, 234, 0.04) !important;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.06);
 }
 
 .favorites-meta-title {

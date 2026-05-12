@@ -2,6 +2,11 @@ import { InlineMath, BlockMath } from 'react-katex'
 import 'katex/dist/katex.min.css'
 import React from 'react'
 
+const KATEX_OPTIONS = {
+  throwOnError: false,
+  strict: false,
+}
+
 export function renderLatex(text: unknown): React.ReactNode[] {
   const raw = typeof text === 'string' ? text
     : Array.isArray(text) ? text.join('\n')
@@ -34,14 +39,14 @@ export function renderLatex(text: unknown): React.ReactNode[] {
     if (fullMatch.startsWith('$$') && fullMatch.endsWith('$$')) {
       const math = fullMatch.slice(2, -2)
       try {
-        parts.push(<BlockMath key={key++} math={math} />)
+        parts.push(<BlockMath key={key++} math={math} settings={KATEX_OPTIONS} />)
       } catch {
         parts.push(<span key={key++}>{fullMatch}</span>)
       }
     } else { // $...$
       const math = fullMatch.slice(1, -1)
       try {
-        parts.push(<InlineMath key={key++} math={math} />)
+        parts.push(<InlineMath key={key++} math={math} settings={KATEX_OPTIONS} />)
       } catch {
         parts.push(<span key={key++}>{fullMatch}</span>)
       }

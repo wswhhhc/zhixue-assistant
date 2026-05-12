@@ -6,9 +6,10 @@ __pycache__/
 *.pyc
 *.pyo
 
-backend/*.db
+data/
+*.db
+logs/
 backend/.env
 
 .env.local
 .DS_Store
-*.log

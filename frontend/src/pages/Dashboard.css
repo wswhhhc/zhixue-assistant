@@ -11,6 +11,14 @@
 .dashboard-card {
   animation: cardFadeIn 0.45s ease-out both;
 }
+.dashboard-card:nth-child(1) { animation-delay: 0.00s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.06s; }
+.dashboard-card:nth-child(3) { animation-delay: 0.12s; }
+.dashboard-card:nth-child(4) { animation-delay: 0.18s; }
+.dashboard-card:nth-child(5) { animation-delay: 0.24s; }
+.dashboard-card:nth-child(6) { animation-delay: 0.30s; }
+.dashboard-card:nth-child(7) { animation-delay: 0.36s; }
+.dashboard-card:nth-child(8) { animation-delay: 0.42s; }
 
 /* ---------- stat cards ---------- */
 .stat-card {

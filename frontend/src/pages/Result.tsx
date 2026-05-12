@@ -8,6 +8,21 @@ import { authFetch } from '../auth'
 
 const { Title, Paragraph } = Typography
 
+/** 将分析文本按段落分割，每段独立渲染，增强可读性 */
+function FormattedContent({ text }: { text: string }) {
+  if (!text) return null
+  const paragraphs = text.split(/\n\s*\n/).filter(Boolean)
+  return (
+    <>
+      {paragraphs.map((p, i) => (
+        <Paragraph key={i} className="result-paragraph">
+          {renderLatex(p)}
+        </Paragraph>
+      ))}
+    </>
+  )
+}
+
 const ERROR_TYPE_MAP: Record<string, string> = {
   concept_misunderstanding: '概念理解偏差',
   calculation_error: '计算错误',
@@ -146,24 +161,18 @@ export default function Result() {
         </Card>
 
         <Card title="AI 错因分析" className="result-detail-card">
-          <Paragraph className="result-paragraph">
-            {renderLatex(analysis)}
-          </Paragraph>
+          <FormattedContent text={analysis} />
         </Card>
 
         {solutionSteps && (
           <Card title="解题步骤" className="result-detail-card">
-            <Paragraph className="result-paragraph">
-              {renderLatex(solutionSteps)}
-            </Paragraph>
+            <FormattedContent text={solutionSteps} />
           </Card>
         )}
 
         {suggestion && (
           <Card title="学习建议" className="result-detail-card">
-            <Paragraph className="result-paragraph">
-              {renderLatex(suggestion)}
-            </Paragraph>
+            <FormattedContent text={suggestion} />
           </Card>
         )}
 

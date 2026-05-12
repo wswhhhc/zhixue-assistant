@@ -146,7 +146,8 @@ def get_timeline(
     user=Depends(get_current_user),
 ):
     uid = user.id if user else 1
-    start = datetime.now(timezone.utc) - timedelta(days=days)
+    BJT = timezone(timedelta(hours=8))
+    start = datetime.now(BJT) - timedelta(days=days)
 
     # answer records
     answers = (
@@ -161,26 +162,31 @@ def get_timeline(
         .all()
     )
 
+    def to_bjt(dt):
+        return dt.replace(tzinfo=timezone.utc).astimezone(BJT) if dt.tzinfo is None else dt.astimezone(BJT)
+
     events = []
 
     for r in answers:
         q = db.query(Question).filter(Question.id == r.question_id).first()
         kp = q.knowledge_point if q else ""
+        t = to_bjt(r.created_at)
         events.append({
             "type": "answer",
             "label": "答题" + ("✓" if r.is_correct else "✗"),
             "detail": f"{kp} — {'正确' if r.is_correct else '错误'}",
-            "time": r.created_at.strftime("%m-%d %H:%M"),
-            "timestamp": r.created_at.isoformat(),
+            "time": t.strftime("%m-%d %H:%M"),
+            "timestamp": t.isoformat(),
         })
 
     for c in checkins:
+        t = to_bjt(c.checkin_date)
         events.append({
             "type": "checkin",
             "label": "打卡",
             "detail": "完成每日打卡",
-            "time": c.checkin_date.strftime("%m-%d %H:%M") if hasattr(c.checkin_date, 'strftime') else str(c.checkin_date),
-            "timestamp": c.checkin_date.isoformat() if hasattr(c.checkin_date, 'isoformat') else str(c.checkin_date),
+            "time": t.strftime("%m-%d %H:%M"),
+            "timestamp": t.isoformat(),
         })
 
     events.sort(key=lambda e: e["timestamp"], reverse=True)

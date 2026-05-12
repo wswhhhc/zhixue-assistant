@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button, Typography, message, Tabs, Checkbox, Image } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined, RobotOutlined, ReloadOutlined, SafetyCertificateOutlined, CheckCircleOutlined } from '@ant-design/icons'
+import { UserOutlined, LockOutlined, MailOutlined, RobotOutlined, ReloadOutlined, SafetyCertificateOutlined } from '@ant-design/icons'
 import { API_BASE } from '../config'
 import { useAuth } from '../auth'
 import './Login.css'
@@ -27,9 +27,25 @@ export default function Login() {
   const [emailCountdown, setEmailCountdown] = useState(0)
   const [rememberMe, setRememberMe] = useState(() => !!localStorage.getItem('remembered_username'))
   const [success, setSuccess] = useState(false)
+  const [successUsername, setSuccessUsername] = useState('')
   const countdownRef = useRef<ReturnType<typeof setInterval>>()
   const [loginForm] = Form.useForm()
   const [registerForm] = Form.useForm()
+
+  const particles = useMemo(() =>
+    MATH_SYMBOLS.flatMap(s => [s, s, s]).map((sym, i) => {
+      const angle = (i / (MATH_SYMBOLS.length * 3)) * 360
+      const dist = 180 + Math.random() * 220
+      return {
+        symbol: sym,
+        x: Math.cos((angle * Math.PI) / 180) * dist,
+        y: Math.sin((angle * Math.PI) / 180) * dist,
+        rot: (Math.random() - 0.5) * 1080,
+        delay: i * 0.02,
+        size: 20 + Math.random() * 28,
+      }
+    }),
+  [])
 
   // Pre-fill remembered username
   useEffect(() => {
@@ -130,10 +146,11 @@ export default function Login() {
       }
 
       login(data.token, data.user_id, data.username)
+      setSuccessUsername(data.username)
       setSuccess(true)
       setTimeout(() => {
         navigate('/dashboard', { replace: true })
-      }, 800)
+      }, 2500)
     } catch {
       message.error('登录失败，请检查后端是否运行')
     } finally {
@@ -164,10 +181,11 @@ export default function Login() {
         return
       }
       login(data.token, data.user_id, data.username)
+      setSuccessUsername(data.username)
       setSuccess(true)
       setTimeout(() => {
         navigate('/dashboard', { replace: true })
-      }, 800)
+      }, 2500)
     } catch {
       message.error('注册失败，请检查后端是否运行')
     } finally {
@@ -368,11 +386,30 @@ export default function Login() {
       <div className="deco-blob deco-blob-2" />
       <div className="deco-blob deco-blob-3" />
 
-      {/* Success overlay */}
+      {/* Success overlay with particles */}
       {success && (
         <div className="success-overlay">
-          <div className="success-icon-wrapper">
-            <CheckCircleOutlined />
+          <div className="success-particles">
+            {particles.map((p, i) => (
+              <span
+                key={i}
+                className="success-particle"
+                style={{
+                  '--x': `${p.x}px`,
+                  '--y': `${p.y}px`,
+                  '--rot': `${p.rot}deg`,
+                  fontSize: p.size,
+                  animationDelay: `${p.delay}s`,
+                } as React.CSSProperties}
+              >
+                {p.symbol}
+              </span>
+            ))}
+          </div>
+          <div className="success-welcome">
+            <div className="success-welcome-icon">✓</div>
+            <div className="success-welcome-text">欢迎回来</div>
+            <div className="success-welcome-name">{successUsername}</div>
           </div>
         </div>
       )}

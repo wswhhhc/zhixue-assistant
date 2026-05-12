@@ -1,3 +1,4 @@
+import mimetypes
 from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI
@@ -6,6 +7,11 @@ from fastapi.responses import FileResponse, JSONResponse
 from database import Base, engine
 from seed import seed_database
 from routers import questions, practice, dashboard, wrongbook, upload, qa, auth, report, checkin, favorites, user_settings
+
+# 注册字体 MIME 类型（生产环境静态文件服务必需）
+mimetypes.add_type("font/woff2", ".woff2")
+mimetypes.add_type("font/woff", ".woff")
+mimetypes.add_type("font/ttf", ".ttf")
 
 
 @asynccontextmanager

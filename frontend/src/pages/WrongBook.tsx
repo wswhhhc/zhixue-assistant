@@ -139,6 +139,8 @@ export default function WrongBook() {
         ) : (
           <Empty description="暂无错题，继续保持！">
             <span className="wrongbook-empty-hint">答错的题目会自动收录到这里</span>
+            <br /><br />
+            <Button type="primary" onClick={() => navigate('/practice')}>去刷题</Button>
           </Empty>
         )}
       </Card>

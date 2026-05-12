@@ -11,9 +11,6 @@ services:
     environment:
       - DATABASE_URL=sqlite:///./data/zhixue.db
     volumes:
-      # 持久化 SQLite 数据库
-      - zhixue_data:/app/data
+      # 持久化 SQLite 数据库到宿主机 data/ 目录，永不丢失
+      - ./data:/app/data
     restart: unless-stopped
-
-volumes:
-  zhixue_data:

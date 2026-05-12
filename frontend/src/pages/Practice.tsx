@@ -48,8 +48,44 @@ export default function Practice() {
   const [favorited, setFavorited] = useState(false)
   const [favLoading, setFavLoading] = useState(false)
 
-  // 换题过渡动画
+  // 换题过渡动画（统一 0.2s 淡出 → 换内容 → 0.2s 淡入）
+  const TRANSITION_MS = 200
   const [transitioning, setTransitioning] = useState(false)
+  const transitionTimer = useRef<ReturnType<typeof setTimeout>>()
+
+  const startFadeOut = () => {
+    if (transitionTimer.current) clearTimeout(transitionTimer.current)
+    setTransitioning(true)
+  }
+
+  /** 本地数据切换（无网络延迟）：淡出 → 换内容 → 淡入 */
+  const transitionLocal = (updateFn: () => void) => {
+    startFadeOut()
+    transitionTimer.current = setTimeout(() => {
+      updateFn()
+      transitionTimer.current = setTimeout(() => setTransitioning(false), 30)
+    }, TRANSITION_MS)
+  }
+
+  /** 网络数据切换：淡出 + 发请求 → 等最 0.2s → 淡入 */
+  const transitionFetch = async (fetchFn: () => Promise<void>) => {
+    startFadeOut()
+    const start = Date.now()
+    try {
+      await fetchFn()
+    } catch {
+      // 请求失败由调用方处理，这里保证继续恢复 UI
+    }
+    const elapsed = Date.now() - start
+    if (elapsed < TRANSITION_MS) {
+      await new Promise(r => { transitionTimer.current = setTimeout(r, TRANSITION_MS - elapsed) })
+    }
+    setTransitioning(false)
+  }
+
+  useEffect(() => {
+    return () => { if (transitionTimer.current) clearTimeout(transitionTimer.current) }
+  }, [])
 
   const fetchKpList = async () => {
     try {
@@ -60,20 +96,16 @@ export default function Practice() {
 
   const fetchKpQuestions = async (kp: string) => {
     setLoading(true)
-    setTransitioning(true)
     setSelectedKp(kp)
-    try {
+    await transitionFetch(async () => {
       const res = await authFetch(`${API_BASE}/questions/by-kp/${encodeURIComponent(kp)}`)
       const data = await res.json()
       setKpQuestions(data)
       setKpIndex(0)
       if (data.length > 0) setQuestion(data[0])
       else message.warning('该知识点暂无题目')
-    } catch {
-      message.error('获取题目失败')
-    }
+    })
     setLoading(false)
-    setTimeout(() => setTransitioning(false), 50)
   }
 
   const checkFavorite = async (qid: number) => {
@@ -120,10 +152,9 @@ export default function Practice() {
 
   const fetchQuestion = useCallback(async (m: Mode, currentId?: number) => {
     setLoading(true)
-    setTransitioning(true)
     setSelected(null)
     setRecommendInfo(null)
-    try {
+    await transitionFetch(async () => {
       const qid = searchParams.get('question_id')
       let url: string
       if (qid) {
@@ -151,11 +182,8 @@ export default function Practice() {
         setQuestion(data)
         setRecommendInfo(null)
       }
-    } catch {
-      message.error('获取题目失败')
-    }
+    })
     setLoading(false)
-    setTimeout(() => setTransitioning(false), 50)
   }, [searchParams])
 
   useEffect(() => {
@@ -193,34 +221,36 @@ export default function Practice() {
 
   const handlePrevKp = () => {
     if (kpIndex <= 0) return
-    setTransitioning(true)
     const newIndex = kpIndex - 1
-    setKpIndex(newIndex)
-    setQuestion(kpQuestions[newIndex])
-    setSelected(null)
-    setTimeout(() => setTransitioning(false), 50)
+    transitionLocal(() => {
+      setKpIndex(newIndex)
+      setQuestion(kpQuestions[newIndex])
+      setSelected(null)
+    })
   }
 
   const handleNextKp = () => {
     if (kpIndex >= kpQuestions.length - 1) return
-    setTransitioning(true)
     const newIndex = kpIndex + 1
-    setKpIndex(newIndex)
-    setQuestion(kpQuestions[newIndex])
-    setSelected(null)
-    setTimeout(() => setTransitioning(false), 50)
+    transitionLocal(() => {
+      setKpIndex(newIndex)
+      setQuestion(kpQuestions[newIndex])
+      setSelected(null)
+    })
   }
 
   const handleNextSequential = async () => {
     if (!question) return
-    setTransitioning(true)
+    startFadeOut()
+    const t0 = Date.now()
     try {
       const res = await authFetch(`${API_BASE}/questions/sequential?current_id=${question.id}&direction=next`)
-      if (!res.ok) { setTransitioning(false); message.warning('已经是最后一题了'); return }
+      if (!res.ok) { if (transitionTimer.current) clearTimeout(transitionTimer.current); setTransitioning(false); message.warning('已经是最后一题了'); return }
       const data = await res.json()
       setQuestion(data)
       setSelected(null)
-      setTimeout(() => setTransitioning(false), 50)
+      const remain = TRANSITION_MS - (Date.now() - t0)
+      transitionTimer.current = setTimeout(() => setTransitioning(false), Math.max(remain, 30))
     } catch {
       message.error('获取下一题失败')
       setTransitioning(false)
@@ -229,14 +259,16 @@ export default function Practice() {
 
   const handlePrevSequential = async () => {
     if (!question) return
-    setTransitioning(true)
+    startFadeOut()
+    const t0 = Date.now()
     try {
       const res = await authFetch(`${API_BASE}/questions/sequential?current_id=${question.id}&direction=prev`)
-      if (!res.ok) { setTransitioning(false); message.warning('已经是第一题了'); return }
+      if (!res.ok) { if (transitionTimer.current) clearTimeout(transitionTimer.current); setTransitioning(false); message.warning('已经是第一题了'); return }
       const data = await res.json()
       setQuestion(data)
       setSelected(null)
-      setTimeout(() => setTransitioning(false), 50)
+      const remain = TRANSITION_MS - (Date.now() - t0)
+      transitionTimer.current = setTimeout(() => setTransitioning(false), Math.max(remain, 30))
     } catch {
       message.error('获取上一题失败')
       setTransitioning(false)
@@ -249,22 +281,22 @@ export default function Practice() {
 
   const handlePrevRedo = () => {
     if (!redoQuestions || redoIndex <= 0) return
-    setTransitioning(true)
     const newIndex = redoIndex - 1
-    setRedoIndex(newIndex)
-    setQuestion(redoQuestions[newIndex])
-    setSelected(null)
-    setTimeout(() => setTransitioning(false), 50)
+    transitionLocal(() => {
+      setRedoIndex(newIndex)
+      setQuestion(redoQuestions[newIndex])
+      setSelected(null)
+    })
   }
 
   const handleNextRedo = () => {
     if (!redoQuestions || redoIndex >= redoQuestions.length - 1) return
-    setTransitioning(true)
     const newIndex = redoIndex + 1
-    setRedoIndex(newIndex)
-    setQuestion(redoQuestions[newIndex])
-    setSelected(null)
-    setTimeout(() => setTransitioning(false), 50)
+    transitionLocal(() => {
+      setRedoIndex(newIndex)
+      setQuestion(redoQuestions[newIndex])
+      setSelected(null)
+    })
   }
 
   const handleSubmit = async () => {

@@ -46,9 +46,18 @@
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
+.practice-mode-selector .ant-segmented-item {
+  transition: all 0.25s ease !important;
+}
+
 .practice-mode-selector .ant-segmented-item-selected {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.35);
+}
+
+.practice-mode-selector .ant-segmented-item:not(.ant-segmented-item-selected):hover {
+  background: rgba(102, 126, 234, 0.06);
 }
 
 /* ---------- Info banners ---------- */
@@ -138,12 +147,13 @@
   cursor: pointer;
   background: #fff;
   font-size: 15px;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s, transform 0.2s;
 }
 
 .practice-option-item:hover {
   border-color: #667eea;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+  transform: translateX(4px);
 }
 
 .practice-option-item.selected {
@@ -157,18 +167,23 @@
   margin-top: 24px;
   height: 44px;
   font-size: 16px;
-  border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transition: opacity 0.25s, transform 0.2s;
+  border: none !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  transition: opacity 0.25s, transform 0.2s, box-shadow 0.25s !important;
 }
 
-.practice-submit-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+.practice-submit-btn:not(:disabled):hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35) !important;
+}
+
+.practice-submit-btn:not(:disabled):active {
+  transform: translateY(0);
 }
 
 .practice-submit-btn:disabled {
-  background: #d9d9d9;
+  background: #d9d9d9 !important;
 }
 
 /* ---------- Navigation ---------- */

@@ -76,6 +76,10 @@
   font-size: 15px;
   line-height: 1.8;
   white-space: pre-wrap;
+  margin-bottom: 8px;
+}
+.result-paragraph:last-child {
+  margin-bottom: 0;
 }
 
 .result-review-content {

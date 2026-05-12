@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Card, Table, Tag, Select, message, Typography,
-  Button, Modal, Form, Input, Tooltip,
+  Button, Modal, Form, Input, Tooltip, Empty,
 } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { API_BASE } from '../config'
 import { authFetch } from '../auth'
 import '../components/ActionButtons.css'
 import './QuestionBank.css'
+import { renderLatex } from '../utils/renderLatex'
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -144,6 +145,7 @@ export default function QuestionBank() {
       dataIndex: 'content',
       key: 'content',
       ellipsis: true,
+      render: (val: string) => renderLatex(val),
     },
     {
       title: '答案',
@@ -216,6 +218,7 @@ export default function QuestionBank() {
           columns={columns}
           rowKey="id"
           loading={loading}
+          locale={{ emptyText: <Empty description="暂无题目"><Button type="link" onClick={() => navigate('/upload')}>去上传题目</Button></Empty> }}
           pagination={{
             current: page,
             pageSize: 20,

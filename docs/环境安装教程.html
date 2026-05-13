@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智学助手 — 环境安装教程</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: #f5f7fb;
+            color: #1a1a2e;
+            line-height: 1.7;
+        }
+        .header {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 50%, #2d1b69 100%);
+            color: #fff;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.75; }
+        .container { max-width: 960px; margin: 0 auto; padding: 24px 20px; }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 24px;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .card-header .icon { font-size: 24px; }
+        .card-header .tag {
+            font-size: 11px;
+            font-weight: 400;
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        .tag-required { background: #fff1f0; color: #cf1322; }
+        .tag-optional { background: #f0f5ff; color: #0958d9; }
+        .card-body { padding: 20px 24px; }
+        .card-body h3 {
+            font-size: 15px;
+            margin: 16px 0 8px;
+            color: #1a1a2e;
+        }
+        .card-body h3:first-child { margin-top: 0; }
+        .card-body p { font-size: 14px; color: #444; margin-bottom: 10px; }
+        .card-body ul { padding-left: 20px; font-size: 14px; color: #444; margin-bottom: 10px; }
+        .card-body li { margin-bottom: 4px; }
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 4px 4px 4px 0;
+        }
+        .btn-primary { background: #1677ff; color: #fff; }
+        .btn-primary:hover { background: #4096ff; }
+        .btn-success { background: #52c41a; color: #fff; }
+        .btn-success:hover { background: #73d13d; }
+        .btn-ghost {
+            background: #f5f5f5; color: #333; border: 1px solid #d9d9d9;
+        }
+        .btn-ghost:hover { background: #e8e8e8; }
+        code {
+            background: #f0f2f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+            font-size: 13px;
+            color: #cf1322;
+        }
+        pre {
+            background: #1a1a2e;
+            color: #e6e6e6;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        pre .comment { color: #6a9955; }
+        .tip {
+            background: #f6ffed;
+            border-left: 4px solid #52c41a;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #333;
+            margin: 10px 0;
+        }
+        .warn {
+            background: #fffbe6;
+            border-left: 4px solid #faad14;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #333;
+            margin: 10px 0;
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #1677ff;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .step { display: flex; align-items: flex-start; margin-bottom: 12px; }
+        .step-content { flex: 1; font-size: 14px; color: #444; }
+        .step-content strong { color: #1a1a2e; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #fafafa; font-weight: 600; color: #333; }
+        tr:hover td { background: #fafafa; }
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            font-size: 13px;
+            color: #888;
+        }
+        .badge {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-win { background: #e6f7ff; color: #0078d4; }
+        .badge-mac { background: #f0f0f0; color: #333; }
+        .badge-linux { background: #fff7e6; color: #d46b08; }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 22px; }
+            .card-header { font-size: 16px; }
+            .card-body { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🦉 智学助手 — 环境安装教程</h1>
+    <p>从零开始搭建「AI 错题分析与自适应学习平台」所需的所有环境和步骤</p>
+</div>
+
+<div class="container">
+
+    <!-- ==================== 总览 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">📋</span> 需要安装的软件清单
+        </div>
+        <div class="card-body">
+            <table>
+                <tr><th style="width:40px">#</th><th>软件</th><th>版本要求</th><th>必装</th><th>用途</th></tr>
+                <tr><td>1</td><td>Git</td><td>任意较新版本</td><td>✅ 是</td><td>下载和管理项目代码</td></tr>
+                <tr><td>2</td><td>Node.js</td><td>≥ 18</td><td>✅ 是</td><td>运行前端（React 项目）</td></tr>
+                <tr><td>3</td><td>Python</td><td>3.10 ~ 3.12</td><td>✅ 是</td><td>运行后端（FastAPI）</td></tr>
+                <tr><td>4</td><td>Docker Desktop</td><td>最新版</td><td>⬜ 可选</td><td>一键容器化部署</td></tr>
+                <tr><td>5</td><td>VS Code</td><td>最新版</td><td>⬜ 推荐</td><td>代码编辑与开发</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== Git ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🔗</span> 1. 安装 Git
+            <span class="tag tag-required">必装</span>
+        </div>
+        <div class="card-body">
+            <p>Git 用于从 GitHub 下载项目代码，以及后续的版本管理。</p>
+
+            <h3>Windows</h3>
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-content">
+                    <strong>下载安装包</strong><br>
+                    访问 Git 官网下载 Windows 版（约 60MB）。
+                </div>
+            </div>
+            <div style="margin: 4px 0 14px 32px;">
+                <a class="btn btn-primary" href="https://git-scm.com/downloads/win" target="_blank">下载 Git for Windows</a>
+                <a class="btn btn-ghost" href="https://git-scm.com/downloads" target="_blank">官网首页</a>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-content">
+                    <strong>运行安装程序</strong> — 全部保持默认选项，一直点"Next"即可。
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <div class="step-content">
+                    <strong>验证安装</strong> — 打开命令提示符（Win+R → 输入 <code>cmd</code> → 回车），执行：
+                </div>
+            </div>
+            <pre>git --version</pre>
+            <p>看到类似 <code>git version 2.4x.x</code> 即安装成功。</p>
+
+            <h3>macOS</h3>
+            <div style="margin: 4px 0 14px 32px;">
+                <a class="btn btn-primary" href="https://git-scm.com/downloads/mac" target="_blank">下载 Git for macOS</a>
+            </div>
+            <p>或使用 Homebrew 安装：<code>brew install git</code></p>
+
+            <h3>Linux (Ubuntu/Debian)</h3>
+            <pre>sudo apt update<br>sudo apt install git -y</pre>
+
+            <h3>配置 Git（首次使用）</h3>
+            <p>打开命令行执行以下两行（替换为你自己的信息）：</p>
+            <pre>git config --global user.name "你的名字"<br>git config --global user.email "你的邮箱@example.com"</pre>
+
+            <div class="tip">
+                💡 安装完成后需重启命令行终端，环境变量才会生效。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Node.js ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🟩</span> 2. 安装 Node.js
+            <span class="tag tag-required">必装</span>
+        </div>
+        <div class="card-body">
+            <p>Node.js 用于运行前端项目（React + Vite），安装包自带 <strong>npm</strong>（包管理器）。</p>
+
+            <h3>下载</h3>
+            <div style="margin: 4px 0 14px;">
+                <a class="btn btn-success" href="https://nodejs.org/" target="_blank">Node.js 官网下载</a>
+                <a class="btn btn-primary" href="https://nodejs.org/dist/latest/" target="_blank">所有版本列表</a>
+            </div>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-content">
+                    <strong>选择版本</strong> — 本项目需要 <strong>Node.js ≥ 18</strong>，建议下载 <strong>LTS（长期支持版）</strong>。
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-content">
+                    <strong>Windows 安装</strong> — 下载 <code>.msi</code> 安装包，双击运行，<br>
+                    安装时 <strong>务必勾选</strong> "Add to PATH"（默认已勾选），其余一路 Next。
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <div class="step-content">
+                    <strong>验证安装</strong> — 打开新命令行窗口：
+                </div>
+            </div>
+            <pre>node --version<br>npm --version</pre>
+            <p>看到版本号（如 <code>v20.x.x</code> 和 <code>10.x.x</code>）即成功。</p>
+
+            <h3>macOS</h3>
+            <p>下载 <code>.pkg</code> 安装包，或使用 Homebrew：</p>
+            <pre>brew install node</pre>
+
+            <h3>Linux (Ubuntu/Debian)</h3>
+            <pre>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -<br>sudo apt install -y nodejs</pre>
+
+            <div class="tip">
+                💡 npm 在国内下载速度较慢时，可配置淘宝镜像加速：<br>
+                <code>npm config set registry https://registry.npmmirror.com</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Python ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🐍</span> 3. 安装 Python
+            <span class="tag tag-required">必装</span>
+        </div>
+        <div class="card-body">
+            <p>Python 用于运行后端 FastAPI 服务。本项目使用 Python 3.11，<strong>3.10 ~ 3.12</strong> 均可。</p>
+
+            <h3>下载</h3>
+            <div style="margin: 4px 0 14px;">
+                <a class="btn btn-success" href="https://www.python.org/downloads/" target="_blank">Python 官网下载</a>
+                <a class="btn btn-primary" href="https://www.python.org/downloads/release/python-3129/" target="_blank">Python 3.12 直接下载</a>
+            </div>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-content">
+                    <strong>Windows 安装</strong> — 运行下载的 <code>.exe</code> 安装包，<br>
+                    ⚠️ <strong>务必勾选底部</strong> <code>Add Python to PATH</code>，然后点击 "Install Now"。
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-content">
+                    <strong>验证安装</strong> — 打开新命令行窗口：
+                </div>
+            </div>
+            <pre>python --version</pre>
+            <p>看到 <code>Python 3.1x.x</code> 即成功。如果提示 <code>python</code> 找不到，尝试 <code>python3 --version</code>。</p>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <div class="step-content">
+                    <strong>验证 pip（包管理器）</strong>：
+                </div>
+            </div>
+            <pre>pip --version</pre>
+
+            <h3>macOS</h3>
+            <pre>brew install python@3.12</pre>
+
+            <h3>Linux (Ubuntu/Debian)</h3>
+            <pre>sudo apt update<br>sudo apt install python3 python3-pip python3-venv -y</pre>
+
+            <div class="warn">
+                ⚠️ 安装 Python 后如果命令行找不到 <code>python</code>，请检查环境变量 PATH 中是否包含 Python 安装路径，或重启命令行。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Docker（可选） ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🐳</span> 12. 安装 Docker Desktop（可选）
+            <span class="tag tag-optional">可选</span>
+        </div>
+        <div class="card-body">
+            <p>Docker 提供一键容器化部署，适合不想手动配置前后端环境的用户。安装后只需双击 <code>docker-start.bat</code> 即可启动项目。</p>
+
+            <h3>下载</h3>
+            <div style="margin: 4px 0 14px;">
+                <a class="btn btn-success" href="https://docs.docker.com/get-docker/" target="_blank">Docker 官网下载</a>
+                <a class="btn btn-primary" href="https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" target="_blank">Windows 直接下载</a>
+                <a class="btn btn-ghost" href="https://desktop.docker.com/mac/main/amd64/Docker.dmg" target="_blank">macOS Intel 下载</a>
+                <a class="btn btn-ghost" href="https://desktop.docker.com/mac/main/arm64/Docker.dmg" target="_blank">macOS Apple Silicon 下载</a>
+            </div>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-content">
+                    <strong>Windows 安装 Docker Desktop</strong> — 双击安装包，<br>
+                    安装时会提示启用 WSL 2（Windows 虚拟化功能），点击"是"启用，安装完成后 <strong>重启电脑</strong>。
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-content">
+                    <strong>验证安装</strong>：
+                </div>
+            </div>
+            <pre>docker --version<br>docker compose version</pre>
+            <p>看到版本号即安装成功。Docker Desktop 启动后，右下角任务栏会显示鲸鱼图标 🐳。</p>
+
+            <h3>系统要求（Windows）</h3>
+            <ul>
+                <li>Windows 10 64 位（22H2 或更新）/ Windows 11</li>
+                <li>BIOS 中已开启 <strong>虚拟化技术（VT-x/AMD-V）</strong></li>
+                <li>已安装 <strong>WSL 2</strong>（Docker 安装向导会自动处理）</li>
+            </ul>
+
+            <div class="tip">
+                💡 如果不确定 CPU 是否支持虚拟化，可打开任务管理器 → 性能 → CPU，查看"虚拟化"状态。<br>
+                💡 Docker 启动后内存占用约 2~4GB，如果电脑内存 ≤ 8GB，建议使用本地方式启动项目。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== VS Code ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">💻</span> 11. 安装 VS Code（推荐）
+            <span class="tag tag-optional">推荐</span>
+        </div>
+        <div class="card-body">
+            <p>Visual Studio Code 是轻量而强大的代码编辑器，适合开发调试本项目。</p>
+
+            <div style="margin: 4px 0 14px;">
+                <a class="btn btn-success" href="https://code.visualstudio.com/" target="_blank">VS Code 官网下载</a>
+                <a class="btn btn-primary" href="https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" target="_blank">Windows 直接下载</a>
+                <a class="btn btn-ghost" href="https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal" target="_blank">macOS 下载</a>
+            </div>
+
+            <h3>推荐安装的插件（扩展）</h3>
+            <p>安装后在 VS Code 左侧扩展面板搜索以下插件：</p>
+            <table>
+                <tr><th>插件名</th><th>搜索关键词</th><th>用途</th></tr>
+                <tr><td>Python</td><td><code>ms-python.python</code></td><td>Python 语法高亮、智能提示</td></tr>
+                <tr><td>TypeScript + JavaScript</td><td><code>ms-vscode.vscode-typescript-next</code></td><td>前端代码智能提示</td></tr>
+                <tr><td>ESLint</td><td><code>dbaeumer.vscode-eslint</code></td><td>前端代码规范检查</td></tr>
+                <tr><td>Vite</td><td><code>antfu.vite</code></td><td>Vite 项目支持</td></tr>
+                <tr><td>Chinese (简体中文)</td><td><code>ms-ceintl.vscode-language-pack-zh-hans</code></td><td>中文界面</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== 执行顺序总览 ==================== -->
+    <div class="card" style="border-left: 4px solid #1677ff;">
+        <div class="card-header">
+            <span class="icon">🗺️</span> 6. 安装执行顺序（看完再动手）
+        </div>
+        <div class="card-body">
+            <p>按照以下顺序安装和配置，缺一不可：</p>
+            <table>
+                <tr><th style="width:32px">#</th><th>步骤</th><th>说明</th><th>耗时</th></tr>
+                <tr><td>①</td><td>安装 Git</td><td>下载代码用（第 7 节）</td><td>2 分钟</td></tr>
+                <tr><td>②</td><td>安装 Node.js</td><td>运行前端（第 8 节）</td><td>3 分钟</td></tr>
+                <tr><td>③</td><td>安装 Python</td><td>运行后端（第 9 节）</td><td>5 分钟</td></tr>
+                <tr><td>④</td><td>获取项目代码</td><td>克隆或复制（第 10 节）</td><td>1 分钟</td></tr>
+                <tr><td>⑤</td><td>配置后端环境</td><td>创建 venv + pip install（第 11 节）</td><td>5 分钟</td></tr>
+                <tr><td>⑥</td><td>配置 API 密钥</td><td>填写 .env（第 12 节）</td><td>3 分钟</td></tr>
+                <tr><td>⑦</td><td><strong>启动项目</strong></td><td>双击 start.bat（第 13 节）</td><td>30 秒</td></tr>
+            </table>
+            <div class="warn">
+                ⚠️ <strong>不要跳步骤！</strong> 尤其是第 ⑤ 步（虚拟环境和 pip install）和第 ⑥ 步（API 密钥）最容易遗漏。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 克隆项目 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">📦</span> 7. 下载项目代码
+        </div>
+        <div class="card-body">
+            <p>打开命令行，进入你想存放项目的目录，执行以下命令：</p>
+            <pre>cd D:\<span class="comment"># 你想放的目录</span><br>git clone <span class="comment"># 项目仓库地址</span><br><span class="comment"># 例如：git clone https://github.com/your-username/your-repo.git</span><br>cd AI错题分析与自适应学习平台</pre>
+
+            <div class="tip">
+                💡 如果项目尚未上传到远程仓库，你可以直接将项目文件夹复制到你的电脑上。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 后端环境 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">⚙️</span> 8. 配置后端环境（关键步骤）
+        </div>
+        <div class="card-body">
+            <div class="warn">
+                ⚠️ <strong>这是最容易出错的一步！</strong> 请严格按照顺序操作，不要跳过任何子步骤。
+            </div>
+
+            <h3>8.1 创建虚拟环境</h3>
+            <p>在<strong>项目根目录</strong>打开命令行：</p>
+            <pre>python -m venv venv</pre>
+            <p>执行后项目根目录会多出一个 <code>venv/</code> 文件夹（约 20MB）。</p>
+
+            <div class="tip">
+                💡 如果提示 <code>python 不是内部或外部命令</code>，说明 Python 未添加到 PATH。<br>
+                解决方法：重新安装 Python，<strong>务必勾选 "Add Python to PATH"</strong>。
+            </div>
+
+            <h3>8.2 激活虚拟环境（这步经常被忘！）</h3>
+            <p><strong>Windows：</strong></p>
+            <pre>venv\Scripts\activate</pre>
+            <p><strong>macOS / Linux：</strong></p>
+            <pre>source venv/bin/activate</pre>
+            <p>激活后，命令行<strong>开头会出现 <code>(venv)</code></strong> 字样。<br>
+            <span style="color:#cf1322;">如果命令行前面没有 <code>(venv)</code>，说明没有激活，后续步骤会失败。</span></p>
+
+            <h3>8.3 安装 Python 依赖</h3>
+            <p><strong>确保命令行前缀有 (venv)</strong>，然后执行：</p>
+            <pre>cd backend<br>pip install -r requirements.txt</pre>
+            <p>等待安装完成，看到 <code>Successfully installed ...</code> 即成功。</p>
+            <p>本项目会安装以下依赖：</p>
+            <table>
+                <tr><th>包名</th><th>版本</th><th>用途</th></tr>
+                <tr><td>fastapi</td><td>0.115.0</td><td>Web 框架</td></tr>
+                <tr><td>uvicorn</td><td>0.30.6</td><td>ASGI 服务器</td></tr>
+                <tr><td>sqlalchemy</td><td>2.0.35</td><td>数据库 ORM</td></tr>
+                <tr><td>python-multipart</td><td>0.0.12</td><td>文件上传支持</td></tr>
+                <tr><td>httpx</td><td>0.27.2</td><td>HTTP 客户端（AI API 调用）</td></tr>
+                <tr><td>python-dotenv</td><td>1.0.1</td><td>环境变量加载</td></tr>
+                <tr><td>bcrypt</td><td>4.2.0</td><td>密码加密</td></tr>
+                <tr><td>PyJWT</td><td>2.9.0</td><td>JWT 用户认证</td></tr>
+                <tr><td>Pillow</td><td>11.0.0</td><td>图片处理（验证码）</td></tr>
+                <tr><td>aiofiles</td><td>24.1.0</td><td>异步文件操作</td></tr>
+            </table>
+
+            <h3>8.4 验证后端环境</h3>
+            <p>确保命令行前缀有 <code>(venv)</code>，执行：</p>
+            <pre>uvicorn --version</pre>
+            <p>看到版本号即表示环境配置成功。<br>
+            <span style="color:#cf1322;">如果提示 <code>uvicorn 不是内部或外部命令</code>，说明虚拟环境未激活或依赖未安装，请返回 8.2 重新操作。</span></p>
+
+            <div class="tip">
+                💡 安装过程中如果遇到网络慢的问题，可配置国内镜像源：<br>
+                <code>pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LLM API 配置 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🔑</span> 9. 配置 AI 密钥和环境变量
+        </div>
+        <div class="card-body">
+
+            <h3>9.1 注册 AI API 服务（任选一个）</h3>
+            <p>本项目使用 AI 实现批改、问答、生成相似题等功能。你需要注册一个 API 服务并获取密钥。</p>
+
+            <div style="margin: 10px 0;">
+                <a class="btn btn-primary" href="https://cloud.siliconflow.cn/" target="_blank">🔑 注册硅基流动（推荐，有免费额度）</a>
+                <a class="btn btn-ghost" href="https://platform.deepseek.com/" target="_blank">🔑 注册 DeepSeek</a>
+            </div>
+
+            <h3>9.2 编辑 .env 配置文件</h3>
+            <p>打开项目中的 <code>backend\.env</code> 文件，修改以下内容：</p>
+
+            <div class="warn">
+                ⚠️ <code>.env</code> 文件中原本可能带有测试密钥，<strong>请替换为你自己的 API Key</strong>，否则 AI 功能可能因额度用尽而不可用。
+            </div>
+
+            <p><strong>如果使用硅基流动（SiliconFlow）：</strong></p>
+            <pre>LLM_API_KEY=sk-你的硅基流动API密钥<br>LLM_BASE_URL=https://api.siliconflow.cn/v1<br>LLM_MODEL=Qwen/Qwen3-VL-8B-Instruct</pre>
+
+            <p><strong>如果使用 DeepSeek：</strong></p>
+            <pre>LLM_API_KEY=sk-你的DeepSeekAPI密钥<br>LLM_BASE_URL=https://api.deepseek.com<br>LLM_MODEL=deepseek-chat</pre>
+
+            <h3>9.3 配置邮箱（可选，用于注册）</h3>
+            <p>如果不需要注册功能（直接用测试账号），将这四行留空即可：</p>
+            <pre><span class="comment"># SMTP 邮箱配置（注册验证码用）</span><br>SMTP_HOST=<br>SMTP_PORT=<br>SMTP_USER=<br>SMTP_PASS=</pre>
+            <p>如果需要注册功能，填写 QQ 邮箱信息：</p>
+            <pre>SMTP_HOST=smtp.qq.com<br>SMTP_PORT=465<br>SMTP_USER=你的QQ邮箱@qq.com<br>SMTP_PASS=你的邮箱授权码 <span class="comment"># 不是 QQ 密码！</span></pre>
+
+            <div class="tip">
+                💡 <strong>如何获取 QQ 邮箱授权码？</strong><br>
+                登录 QQ 邮箱 → 设置 → 账户 → POP3/IMAP/SMTP 服务 → 开启并生成授权码。
+            </div>
+
+            <h3>9.4 配置前端 API 地址（可选）</h3>
+            <p>打开 <code>frontend/src/config.ts</code>：</p>
+            <pre>export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'</pre>
+            <p>本地开发时无需修改，默认指向后端 <code>localhost:8000</code>。</p>
+        </div>
+    </div>
+
+    <!-- ==================== 启动项目 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">🚀</span> 10. 启动项目
+        </div>
+        <div class="card-body">
+
+            <div class="warn">
+                ⚠️ <strong>启动前请确认：</strong><br>
+                ✅ 已完成 <code>python -m venv venv</code>（项目根目录存在 venv 文件夹）<br>
+                ✅ 已在虚拟环境内执行 <code>pip install -r requirements.txt</code><br>
+                ✅ 已在 <code>backend/.env</code> 中填入你的 API Key<br>
+                ✅ 已执行过 <code>cd frontend && npm install</code>（前端依赖安装）
+            </div>
+
+            <h3>方式一：双击 start.bat 启动（适合已准备就绪的情况）</h3>
+            <p>在项目根目录 <strong>双击</strong> <code>start.bat</code> 即可启动。</p>
+            <div class="warn" style="border-left-color:#faad14; background:#fffbe6;">
+                ⚠️ <strong>关于 start.bat 的注意事项（重要！）：</strong><br><br>
+                ① <strong>不激活虚拟环境</strong> — start.bat 不会自动激活 <code>venv</code>。<br>
+                如果你之前将后端依赖安装在虚拟环境中，需要<strong>先手动激活</strong>再双击 start.bat：<br>
+                <code>venv\Scripts\activate</code>（保持此窗口不关）→ 然后双击 <code>start.bat</code><br>
+                或者在启动 start.bat 之前，将后端依赖<strong>全局安装</strong>：<code>pip install -r backend\requirements.txt</code><br><br>
+                ② <strong>不安装前端依赖</strong> — start.bat 不会执行 <code>npm install</code>。<br>
+                如果从未安装过前端依赖，需要先执行：<br>
+                <code>cd frontend && npm install</code><br><br>
+                ③ 如果启动失败，请改用下方的"手动分步启动"方式排查问题。
+            </div>
+            <div class="step">
+                <span class="step-number">1</span>
+                <div class="step-content">
+                    <strong>双击 start.bat</strong> — 会弹出两个命令行窗口：后端（FastAPI）和前端（Vite）。
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <div class="step-content">
+                    <strong>访问项目</strong> — 打开浏览器访问 <a href="http://localhost:5173" target="_blank">http://localhost:5173</a>（前端）<br>
+                    或 <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>（后端，前后端合并）。
+                </div>
+            </div>
+            <div class="tip">
+                💡 关闭两个命令行窗口即可停止服务。<br>
+                💡 如果后端窗口闪退：说明 uvicorn 未找到，用上方的手动激活方式解决。<br>
+                💡 如果前端窗口闪退：说明未安装 Node.js 或未执行 npm install。
+            </div>
+
+            <h3>方式二：手动分步启动（推荐，最稳妥）</h3>
+            <p>这种方式每一步都可控，便于排查问题。</p>
+
+            <p><strong>第 1 步：激活虚拟环境</strong></p>
+            <pre>venv\Scripts\activate</pre>
+            <p>激活后命令行开头会出现 <code>(venv)</code>。</p>
+
+            <p><strong>第 2 步：安装前端依赖（仅首次需要）</strong></p>
+            <pre>cd frontend<br>npm install</pre>
+            <p>等待安装完成。</p>
+
+            <p><strong>第 3 步：启动后端（新开第一个终端）</strong></p>
+            <pre><span class="comment"># 先激活虚拟环境</span>
+venv\Scripts\activate
+<span class="comment"># 进入 backend 目录</span>
+cd backend
+<span class="comment"># 启动后端服务</span>
+uvicorn main:app --reload --host 0.0.0.0 --port 8000</pre>
+            <p>看到 <code>Uvicorn running on http://0.0.0.0:8000</code> 即启动成功。<br>
+            <span style="color:#cf1322;">如果提示 <code>uvicorn 不是内部或外部命令</code>：说明虚拟环境未激活或依赖未安装。</span></p>
+
+            <p><strong>第 4 步：启动前端（另开第二个终端）</strong></p>
+            <pre><span class="comment"># 进入 frontend 目录</span>
+cd frontend
+<span class="comment"># 启动开发服务器</span>
+npm run dev</pre>
+            <p>看到 <code>Local: http://localhost:5173</code> 即启动成功。<br>
+            <span style="color:#cf1322;">如果提示 <code>npm 不是内部或外部命令</code>：说明 Node.js 未安装或未添加到 PATH。</span></p>
+
+            <h3>方式三：Docker 部署（适合不想手动配环境的人）</h3>
+            <p>前提：已安装 Docker Desktop（第 4 节）。</p>
+            <p>在项目根目录，<strong>双击</strong> <code>docker-start.bat</code>：</p>
+            <pre>docker compose up -d --build</pre>
+            <p>首次启动需要下载基础镜像和构建，耗时约 5~15 分钟（取决于网络速度）。<br>
+            构建完成后访问 <a href="http://localhost:8000" target="_blank">http://localhost:8000</a> 即可使用。</p>
+            <p><strong>停止 Docker 项目：</strong> 双击 <code>docker-stop.bat</code> 或执行 <code>docker compose down</code>。</p>
+        </div>
+    </div>
+
+    <!-- ==================== 验证运行 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">✅</span> 13. 验证项目运行
+        </div>
+        <div class="card-body">
+            <p>打开浏览器，按以下步骤验证：</p>
+
+            <h3>步骤 1：打开登录页面</h3>
+            <p>访问 <a href="http://localhost:5173" target="_blank">http://localhost:5173</a>（本地开发）或 <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>（Docker）。</p>
+            <p>应看到智学助手登录页面，带有漂浮的数学符号背景和毛玻璃登录卡片。</p>
+
+            <h3>步骤 2：登录系统</h3>
+            <p>使用测试账号登录：</p>
+            <table>
+                <tr><th>用户名</th><th>密码</th></tr>
+                <tr><td><code>wsw</code></td><td><code>123456</code></td></tr>
+            </table>
+            <p>输入验证码图片中的字符（点击图片可刷新），点击"登录"。</p>
+
+            <h3>步骤 3：测试基本功能</h3>
+            <ul>
+                <li><strong>仪表盘</strong> — 查看统计数据、打卡、AI 问答</li>
+                <li><strong>刷题</strong> — 选择模式，开始答题</li>
+                <li><strong>错题本</strong> — 查看错题记录</li>
+            </ul>
+
+            <div class="tip">
+                💡 首次登录时数据为空是正常的，刷几道题后仪表盘和报告就会开始显示数据。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 常见问题 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">❓</span> 常见问题与排查指南
+        </div>
+        <div class="card-body">
+            <table>
+                <tr><th style="width:38%">问题</th><th>解决方法</th></tr>
+                <tr>
+                    <td><code>python</code> 不是内部或外部命令</td>
+                    <td>Python 未添加到 PATH。重新运行安装包，勾选 <strong>"Add Python to PATH"</strong>，然后重启命令行。</td>
+                </tr>
+                <tr>
+                    <td><code>pip</code> 不是内部或外部命令</td>
+                    <td>同上，或使用 <code>python -m pip</code> 代替 <code>pip</code>。</td>
+                </tr>
+                <tr>
+                    <td><code>npm</code> 不是内部或外部命令</td>
+                    <td>Node.js 未安装或未添加到 PATH。重新安装 Node.js。</td>
+                </tr>
+                <tr>
+                    <td><code>uvicorn</code> 不是内部或外部命令</td>
+                    <td><strong>最常见错误。</strong> 原因：虚拟环境未激活 或 依赖未安装。<br>
+                    解决方法：先执行 <code>venv\Scripts\activate</code>，确认命令行前缀出现 <code>(venv)</code>，<br>
+                    再执行 <code>pip install -r backend\requirements.txt</code>。</td>
+                </tr>
+                <tr>
+                    <td>启动后端报错：端口被占用</td>
+                    <td>执行 <code>netstat -ano | findstr :8000</code> 查看哪个进程占用了 8000 端口。<br>
+                    或修改启动命令中的端口号。</td>
+                </tr>
+                <tr>
+                    <td>前端页面白屏/空白</td>
+                    <td>打开浏览器开发者工具（F12）→ Console 面板，查看具体报错。<br>
+                    常见原因：后端未启动、API 地址配置错误。</td>
+                </tr>
+                <tr>
+                    <td>验证码图片加载不出来</td>
+                    <td>确认后端已启动且能访问 <code>http://localhost:8000</code>。<br>
+                    确认已安装 <code>Pillow</code>：在 venv 激活状态下执行 <code>pip install Pillow</code>。</td>
+                </tr>
+                <tr>
+                    <td>AI 功能无响应 / 一直转圈</td>
+                    <td>检查 <code>backend/.env</code> 中的 <code>LLM_API_KEY</code> 是否正确、是否还有余额。<br>
+                    如果使用硅基流动，去 <a href="https://cloud.siliconflow.cn/" target="_blank">控制台</a> 查看 API Key 状态。</td>
+                </tr>
+                <tr>
+                    <td>注册时收不到验证码</td>
+                    <td>检查 SMTP 配置是否正确，或直接用测试账号 <code>wsw / 123456</code> 登录。</td>
+                </tr>
+                <tr>
+                    <td>登录提示"用户名或密码错误"</td>
+                    <td>确认使用正确的用户名和密码。测试账号：<code>wsw / 123456</code>。<br>
+                    如果数据库被重置，首次启动会自动初始化测试数据。</td>
+                </tr>
+                <tr>
+                    <td>Docker 构建很慢</td>
+                    <td>首次构建需要下载约 1GB 的基础镜像，属正常现象。建议使用国内镜像加速：<br>
+                    在 Docker Desktop 设置中配置 <code>https://docker.mirrors.ustc.edu.cn</code> 为镜像加速器。</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== 环境速查 ==================== -->
+    <div class="card">
+        <div class="card-header">
+            <span class="icon">📌</span> 附 1：快速环境检查命令
+        </div>
+        <div class="card-body">
+            <p>在命令行中依次执行以下命令，确认所有环境已就绪：</p>
+            <pre>git --version<br>node --version<br>npm --version<br>python --version<br>pip --version<br>docker --version      <span class="comment"># 可选</span></pre>
+            <p>全部输出版本号即代表环境已就绪 ✅</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>智学助手 — AI 错题分析与自适应学习平台 · 环境安装教程</p>
+        <p style="font-size:12px; color:#aaa;">最后更新：2026 年 5 月</p>
+    </div>
+
+</div>
+</body>
+</html>

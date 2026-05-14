@@ -1,15 +1,15 @@
 import json
 import httpx
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy import func, case
 from sqlalchemy.orm import Session
 from database import get_db
-from models import Question, AnswerRecord
+from models import Question, AnswerRecord, UsageRecord
 from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
 from routers.auth import require_user
-from routers.deps import check_usage_limit, increment_usage
+from routers.deps import check_usage_limit
 
 router = APIRouter(prefix="/report", tags=["report"])
 
@@ -35,7 +35,7 @@ def generate_report(
     user=Depends(require_user),
 ):
     uid = user.id
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone(timedelta(hours=8)))
 
     # 用量检查
     allowed, used, limit = check_usage_limit(user, "report_gen", db)
@@ -44,7 +44,6 @@ def generate_report(
             status_code=403,
             detail=f"今日学习报告生成次数已用完（{used}/{limit}），升级会员可无限制使用",
         )
-    increment_usage(user, "report_gen", db)
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_ago = today_start - timedelta(days=13)
     # 提前捕获需要在生成器中使用的值，避免跨会话访问 ORM 对象
@@ -212,6 +211,17 @@ def generate_report(
                 "ai_advice": advice,
             }
 
+            # 直接设置为 1，而非累加（防止之前失败遗留的计数导致超过上限）
+            rec = db.query(UsageRecord).filter(
+                UsageRecord.user_id == uid,
+                UsageRecord.action == "report_gen",
+                UsageRecord.date == date.today(),
+            ).first()
+            if rec:
+                rec.count = 1
+            else:
+                db.add(UsageRecord(user_id=uid, action="report_gen", date=date.today(), count=1))
+            db.commit()
             yield _emit("progress", percent=100, message="报告生成完成！")
             yield _emit("done", report=report)
 

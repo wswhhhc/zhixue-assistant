@@ -477,7 +477,7 @@ export default function Dashboard() {
                     percent={Math.min(100, Math.round((stats.today_count || 0) / dailyGoal * 100))}
                     size="small"
                     showInfo={false}
-                    strokeColor={stats.today_count >= dailyGoal ? 'var(--sl-accent-sage)' : 'var(--sl-accent)'}
+                    strokeColor={stats.today_count >= dailyGoal ? 'var(--tech-accent-green)' : 'var(--tech-primary)'}
                   />
                 </>
               )}

@@ -26,6 +26,22 @@
   color: #888;
 }
 
+/* ---------- Streaming text ---------- */
+.upload-stream-box {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #f6f8fa;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* ---------- Edit form ---------- */
 .upload-edit-form {
   margin-top: 16px;

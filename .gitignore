@@ -13,3 +13,11 @@ backend/.env
 
 .env.local
 .DS_Store
+
+# 个人配置文件
+.gitconfig
+backend.log
+
+# Claude Code 配置
+.claude/
+backend/.claude/

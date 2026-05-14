@@ -1,0 +1,11 @@
+.payment-callback-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.payment-callback-box {
+  text-align: center;
+  padding: 60px;
+}

@@ -4,13 +4,17 @@ interface AuthState {
   token: string | null
   user_id: number | null
   username: string | null
+  membership: string              // "free" | "premium"
+  member_expires: string | null
 }
 
 interface AuthContextType extends AuthState {
-  login: (token: string, userId: number, username: string) => void
+  login: (token: string, userId: number, username: string, membership?: string, memberExpires?: string | null) => void
   updateProfile: (profile: { username: string }) => void
+  updateMembership: (membership: string, memberExpires: string | null) => void
   logout: () => void
   isAuthenticated: boolean
+  isPremium: boolean
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -20,7 +24,7 @@ function loadAuth(): AuthState {
     const raw = localStorage.getItem('auth')
     if (raw) return JSON.parse(raw)
   } catch { /* ignore */ }
-  return { token: null, user_id: null, username: null }
+  return { token: null, user_id: null, username: null, membership: 'free', member_expires: null }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -30,8 +34,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('auth', JSON.stringify(auth))
   }, [auth])
 
-  const login = (token: string, userId: number, username: string) => {
-    const data = { token, user_id: userId, username }
+  const login = (token: string, userId: number, username: string, membership = 'free', memberExpires: string | null = null) => {
+    const data = { token, user_id: userId, username, membership, member_expires: memberExpires }
     localStorage.setItem('auth', JSON.stringify(data))
     setAuth(data)
   }
@@ -44,13 +48,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
   }
 
+  const updateMembership = (membership: string, memberExpires: string | null) => {
+    setAuth((prev) => {
+      const next = { ...prev, membership, member_expires: memberExpires }
+      localStorage.setItem('auth', JSON.stringify(next))
+      return next
+    })
+  }
+
   const logout = () => {
-    setAuth({ token: null, user_id: null, username: null })
+    setAuth({ token: null, user_id: null, username: null, membership: 'free', member_expires: null })
     localStorage.removeItem('auth')
   }
 
+  const isPremium = auth.membership === 'premium' && (
+    auth.member_expires === null || new Date(auth.member_expires) > new Date()
+  )
+
   return (
-    <AuthContext.Provider value={{ ...auth, login, updateProfile, logout, isAuthenticated: !!auth.token }}>
+    <AuthContext.Provider value={{
+      ...auth, login, updateProfile, updateMembership, logout,
+      isAuthenticated: !!auth.token, isPremium,
+    }}>
       {children}
     </AuthContext.Provider>
   )
@@ -78,7 +97,6 @@ export function authFetch(url: string, options: RequestInit = {}) {
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  // 仅在非 GET 且有 JSON body 时加 Content-Type
   const hasBody = options.body !== undefined && options.body !== null
   if (hasBody && !(options.body instanceof FormData)) {
     headers['Content-Type'] = headers['Content-Type'] || 'application/json'

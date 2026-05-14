@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Card, Row, Col, Statistic, Button, Spin, Skeleton, Empty, message, Typography } from 'antd'
+import { Card, Row, Col, Statistic, Button, Progress, Empty, message, Typography } from 'antd'
 import { PrinterOutlined, DownloadOutlined, EditOutlined, CheckCircleOutlined, CloseCircleOutlined, TrophyOutlined } from '@ant-design/icons'
 import ReactEChartsCore from 'echarts-for-react'
 import { renderLatex } from '../utils/renderLatex'
@@ -39,13 +39,59 @@ const ERROR_COLORS: Record<string, string> = {
 export default function Report() {
   const [data, setData] = useState<ReportData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const [progressMsg, setProgressMsg] = useState('正在准备...')
   const reportRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    authFetch(`${API_BASE}/report/generate`)
-      .then((r) => r.json())
-      .then((d) => { setData(d); setLoading(false) })
-      .catch(() => { message.error('生成报告失败'); setLoading(false) })
+    let cancelled = false
+    const run = async () => {
+      try {
+        const res = await authFetch(`${API_BASE}/report/generate`)
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}))
+          message.error(errData.detail || '报告生成失败')
+          setLoading(false)
+          return
+        }
+        const reader = res.body!.getReader()
+        const decoder = new TextDecoder()
+        let buffer = ''
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done || cancelled) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue
+            try {
+              const evt = JSON.parse(line.slice(6))
+              if (evt.type === 'progress') {
+                setProgress(evt.percent)
+                setProgressMsg(evt.message)
+              } else if (evt.type === 'done') {
+                setData(evt.report)
+                setLoading(false)
+              } else if (evt.type === 'error') {
+                message.error(evt.message || '生成报告失败')
+                setLoading(false)
+              }
+            } catch { /* skip parse errors */ }
+          }
+        }
+      } catch {
+        if (!cancelled) {
+          message.error('生成报告失败，请稍后重试或联系客服')
+          setLoading(false)
+        }
+      }
+    }
+    run()
+    return () => { cancelled = true }
   }, [])
 
   const handlePrint = () => window.print()
@@ -66,26 +112,23 @@ export default function Report() {
   if (loading) {
     return (
       <div className="report-page">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <Card className="report-card" style={{ animationDelay: '0s' }}>
-            <Skeleton active paragraph={{ rows: 2 }} />
-          </Card>
-          <Row gutter={[16, 16]}>
-            {[1,2,3,4].map(i => (
-              <Col xs={12} sm={6} key={i}>
-                <Card className="report-card" style={{ animationDelay: `${i * 0.08}s` }}>
-                  <Skeleton active paragraph={{ rows: 1 }} title={{ width: '60%' }} />
-                </Card>
-              </Col>
-            ))}
-          </Row>
-          <Card className="report-card" style={{ animationDelay: '0.32s' }}>
-            <Skeleton active paragraph={{ rows: 4 }} />
-          </Card>
-          <Card className="report-card" style={{ animationDelay: '0.40s' }}>
-            <Skeleton active paragraph={{ rows: 3 }} />
-          </Card>
-        </div>
+        <Card className="report-card" style={{ textAlign: 'center', padding: '60px 40px' }}>
+          <div style={{ maxWidth: 400, margin: '0 auto' }}>
+            <Progress
+              type="circle"
+              percent={progress}
+              size={120}
+              status="active"
+              style={{ marginBottom: 24 }}
+            />
+            <Typography.Title level={4} style={{ marginTop: 16 }}>
+              {progressMsg}
+            </Typography.Title>
+            <Typography.Paragraph type="secondary" style={{ marginTop: 8 }}>
+              AI 正在分析你的学习数据，请稍候...
+            </Typography.Paragraph>
+          </div>
+        </Card>
       </div>
     )
   }

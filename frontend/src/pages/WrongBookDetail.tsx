@@ -34,10 +34,12 @@ interface DetailData {
     created_at: string
   }
   question: {
+    question_type?: string
     content: string
     options: string[]
     answer: string
     knowledge_point: string
+    explanation?: string
   } | null
 }
 
@@ -95,25 +97,52 @@ export default function WrongBookDetail() {
         <Paragraph className="wbd-content">
           {renderLatex(question.content)}
         </Paragraph>
-        <div className="wbd-options">
-          {question.options.map((opt, i) => {
-            const label = OPTION_LABELS[i]
-            const isUserAnswer = record.user_answer === label
-            const isCorrectAnswer = question.answer === label
-            let color = ''
-            if (isUserAnswer && isCorrectAnswer) color = '#52c41a'
-            else if (isUserAnswer && !isCorrectAnswer) color = '#ff4d4f'
-            else if (isCorrectAnswer) color = '#52c41a'
-            return (
-              <div key={label} className="wbd-option-item" style={{ color }}>
-                <strong>{label}.</strong> {renderLatex(opt)}
-                {isUserAnswer && <Tag className="wbd-option-tag" color="red">你的答案</Tag>}
-                {isCorrectAnswer && <Tag className="wbd-option-tag" color="green">正确答案</Tag>}
+        {question.question_type === 'fill' || question.question_type === 'judge' || question.question_type === 'subjective' ? (
+          <div className="wbd-options">
+            <div className="wbd-option-item" style={{ color: record.is_correct ? '#52c41a' : '#ff4d4f' }}>
+              你的答案：<strong>{renderLatex(record.user_answer)}</strong>
+              <Tag className="wbd-option-tag" color={record.is_correct ? 'green' : 'red'}>
+                {record.is_correct ? '正确' : '错误'}
+              </Tag>
+            </div>
+            {!record.is_correct && (
+              <div className="wbd-option-item" style={{ color: '#52c41a' }}>
+                正确答案：<strong>{renderLatex(question.answer)}</strong>
+                <Tag className="wbd-option-tag" color="green">正确答案</Tag>
               </div>
-            )
-          })}
-        </div>
+            )}
+          </div>
+        ) : (
+          <div className="wbd-options">
+            {question.options.map((opt, i) => {
+              const label = OPTION_LABELS[i]
+              const isUserAnswer = record.user_answer === label
+              const isCorrectAnswer = question.answer === label
+              let color = ''
+              if (isUserAnswer && isCorrectAnswer) color = '#52c41a'
+              else if (isUserAnswer && !isCorrectAnswer) color = '#ff4d4f'
+              else if (isCorrectAnswer) color = '#52c41a'
+              return (
+                <div key={label} className="wbd-option-item" style={{ color }}>
+                  <strong>{label}.</strong> {renderLatex(opt)}
+                  {isUserAnswer && <Tag className="wbd-option-tag" color="red">你的答案</Tag>}
+                  {isCorrectAnswer && <Tag className="wbd-option-tag" color="green">正确答案</Tag>}
+                </div>
+              )
+            })}
+          </div>
+        )}
       </Card>
+
+      {question.question_type === 'subjective' && question.explanation && (
+        <Card title="参考解题步骤" className="wbd-detail-card">
+          <div style={{ maxHeight: 400, overflow: 'auto' }}>
+            <Paragraph className="wbd-paragraph">
+              {renderLatex(question.explanation)}
+            </Paragraph>
+          </div>
+        </Card>
+      )}
 
       {/* 错因分析 */}
       <Card title="AI 错因分析" className="wbd-detail-card">
@@ -157,7 +186,7 @@ export default function WrongBookDetail() {
         <Button onClick={() => navigate('/wrong-book')}>返回错题本</Button>
         <Button
           type="primary"
-          onClick={() => navigate(`/practice?question_id=${record.question_id}`)}
+          onClick={() => navigate(`/practice?question_id=${record.id}`)}
         >
           重做此题
         </Button>

@@ -1,3 +1,6 @@
+/* ---------- Tech Design System Import ---------- */
+@import url('../styles/tech-design-system.css');
+
 /* ---------- Page container ---------- */
 .practice-page {
   max-width: 800px;
@@ -22,16 +25,34 @@
   padding: 80px;
 }
 
+.practice-loading .ant-spin {
+  color: var(--tech-primary);
+}
+
+.practice-loading .ant-spin-dot-item {
+  background: var(--tech-primary) !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
 .practice-submitting-text {
   margin: 16px 0;
   white-space: pre-wrap;
   font-size: 15px;
   line-height: 1.8;
+  color: var(--tech-text-secondary);
+  background: rgba(17, 24, 39, 0.6);
+  padding: 16px 20px;
+  border-radius: 12px;
+  border-left: 3px solid var(--tech-primary);
 }
 
 .practice-stream-spin {
   display: block;
   margin: 16px auto;
+}
+
+.practice-stream-spin .ant-spin-dot-item {
+  background: var(--tech-primary) !important;
 }
 
 /* ---------- Mode selector ---------- */
@@ -40,24 +61,28 @@
 }
 
 .practice-mode-selector .ant-segmented {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(17, 24, 39, 0.6);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
 }
 
 .practice-mode-selector .ant-segmented-item {
   transition: all 0.25s ease !important;
+  color: var(--tech-text-secondary) !important;
 }
 
 .practice-mode-selector .ant-segmented-item-selected {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.35);
+  background: var(--tech-gradient-primary);
+  color: #fff !important;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
 }
 
 .practice-mode-selector .ant-segmented-item:not(.ant-segmented-item-selected):hover {
-  background: rgba(102, 126, 234, 0.06);
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--tech-text-primary) !important;
 }
 
 /* ---------- Info banners ---------- */
@@ -67,26 +92,38 @@
 }
 
 .practice-info-banner-redo {
-  color: #1677ff;
+  color: var(--tech-primary);
   font-size: 13px;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
 .practice-info-banner-kp {
-  color: #1677ff;
+  color: var(--tech-primary);
   font-size: 13px;
   margin-left: 8px;
 }
 
 .practice-info-recommend {
   margin-bottom: 12px;
-  color: #667eea;
+  color: var(--tech-secondary);
   font-size: 12px;
-  opacity: 0.65;
+  opacity: 0.8;
   text-align: center;
 }
 
 .practice-kp-select {
   width: 280px;
+  background: rgba(17, 24, 39, 0.6) !important;
+}
+
+.practice-kp-select .ant-select-selector {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border-color: rgba(0, 212, 255, 0.2) !important;
+  color: var(--tech-text-primary) !important;
+}
+
+.practice-kp-select .ant-select-selection-placeholder {
+  color: var(--tech-text-muted) !important;
 }
 
 /* ---------- Question header ---------- */
@@ -98,32 +135,48 @@
 }
 
 .practice-question-meta {
-  color: #888;
+  color: var(--tech-text-muted);
   font-size: 13px;
+  font-family: var(--tech-font-mono);
 }
 
 .practice-question-seq {
   margin-left: 8px;
+  color: var(--tech-primary);
 }
 
 .practice-favorite-btn {
   cursor: pointer;
-  font-size: 20px;
-  color: #d9d9d9;
-  transition: color 0.3s, transform 0.2s;
+  font-size: 22px;
+  color: var(--tech-text-muted);
+  transition: all 0.3s ease;
 }
 
 .practice-favorite-btn:hover {
   transform: scale(1.2);
+  color: var(--tech-primary);
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
 }
 
 .practice-favorite-btn.favorited {
-  color: #faad14;
+  color: var(--tech-accent-orange);
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));
 }
 
 /* ---------- Question content ---------- */
 .practice-question-content {
   line-height: 1.8;
+  color: var(--tech-text-primary);
+  font-size: 16px;
+}
+
+.practice-question-content .katex {
+  color: var(--tech-text-primary);
+}
+
+.practice-question-content .katex-display {
+  margin: 16px 0;
+  overflow-x: auto;
 }
 
 /* ---------- Fade transition ---------- */
@@ -148,42 +201,149 @@
 }
 
 .practice-option-item {
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border: 1px solid #d9d9d9;
-  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
   cursor: pointer;
-  background: #fff;
+  background: rgba(17, 24, 39, 0.6);
   font-size: 15px;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s, transform 0.2s;
+  color: var(--tech-text-secondary);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
 }
 
 .practice-option-item:hover {
-  border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
-  transform: translateX(4px);
+  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.08);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  transform: translateX(6px);
+  color: var(--tech-text-primary);
 }
 
 .practice-option-item.selected {
-  background: #eef0ff;
-  border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--tech-primary);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.2), inset 0 0 20px rgba(0, 212, 255, 0.05);
+  color: var(--tech-text-primary);
+}
+
+/* 选项内的 Radio 样式覆盖 */
+.practice-option-item .ant-radio-wrapper {
+  color: inherit !important;
+  font-size: 15px;
+  width: 100%;
+}
+
+.practice-option-item .ant-radio-wrapper .ant-radio-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* 选项字母标签 (A/B/C/D) 固定在左边 */
+.practice-option-item .ant-radio-wrapper .ant-radio-label > strong {
+  flex-shrink: 0;
+  min-width: 40px;
+}
+
+/* 中间内容区域 - 占据剩余空间并居中 */
+.practice-option-item .ant-radio-wrapper .ant-radio-label > span {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.practice-option-item .ant-radio {
+  transform: scale(1.2);
+}
+
+.practice-option-item .ant-radio-inner {
+  background: rgba(17, 24, 39, 0.8) !important;
+  border-color: rgba(0, 212, 255, 0.3) !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+}
+
+.practice-option-item:hover .ant-radio-inner {
+  border-color: var(--tech-primary) !important;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+.practice-option-item.selected .ant-radio-inner {
+  background: var(--tech-primary) !important;
+  border-color: var(--tech-primary) !important;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+.practice-option-item.selected .ant-radio-checked .ant-radio-inner::after {
+  background: #fff !important;
+  transform: scale(0.6);
+}
+
+/* 选项字母标识 */
+.practice-option-item strong {
+  color: var(--tech-primary);
+  font-family: var(--tech-font-mono);
+  font-weight: 600;
+  font-size: 16px;
+  min-width: 24px;
+  text-align: center;
+  display: inline-block;
+  background: rgba(0, 212, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.practice-option-item:hover strong {
+  background: rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.practice-option-item.selected strong {
+  background: var(--tech-primary);
+  color: #030712;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
 }
 
 /* ---------- Submit button ---------- */
 .practice-submit-btn {
   margin-top: 24px;
-  height: 44px;
+  height: 48px;
   font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
   border: none !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  transition: opacity 0.25s, transform 0.2s, box-shadow 0.25s !important;
+  background: var(--tech-gradient-primary) !important;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3) !important;
+  transition: all 0.3s ease !important;
+  border-radius: 12px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.practice-submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.practice-submit-btn:not(:disabled):hover::before {
+  left: 100%;
 }
 
 .practice-submit-btn:not(:disabled):hover {
-  opacity: 0.92;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35) !important;
+  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4) !important;
 }
 
 .practice-submit-btn:not(:disabled):active {
@@ -191,16 +351,30 @@
 }
 
 .practice-submit-btn:disabled {
-  background: #d9d9d9 !important;
+  background: rgba(148, 163, 184, 0.2) !important;
+  color: var(--tech-text-muted) !important;
 }
 
 /* ---------- Navigation ---------- */
 .practice-nav {
-  margin-top: 8px;
+  margin-top: 16px;
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .practice-nav-btn {
   flex: 1;
+  height: 44px;
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  color: var(--tech-text-secondary) !important;
+  border-radius: 10px !important;
+  transition: all 0.3s ease !important;
+}
+
+.practice-nav-btn:hover {
+  border-color: var(--tech-primary) !important;
+  color: var(--tech-primary) !important;
+  background: rgba(0, 212, 255, 0.1) !important;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15) !important;
 }

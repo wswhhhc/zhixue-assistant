@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Question, AnswerRecord
 from routers.auth import require_user
+from config import beijing_time
 
 router = APIRouter(prefix="/wrong-book", tags=["wrong-book"])
 
@@ -53,7 +54,7 @@ def get_wrong_book(
                 "error_type": r.error_type,
                 "user_answer": r.user_answer,
                 "correct_answer": question.answer if question else "",
-                "created_at": r.created_at.strftime("%m-%d %H:%M"),
+                "created_at": beijing_time(r.created_at),
             }
         )
 
@@ -94,8 +95,10 @@ def get_wrong_questions(
     return [
         {
             "id": q.id,
+            "question_type": q.question_type or "choice",
             "content": q.content,
             "options": q.options,
+            "answer": q.answer,
             "knowledge_point": q.knowledge_point,
         }
         for q in questions
@@ -132,10 +135,11 @@ def get_wrong_detail(
             "solution_steps": record.solution_steps,
             "learning_suggestion": record.learning_suggestion,
             "similar_question": record.similar_question,
-            "created_at": record.created_at.strftime("%m-%d %H:%M"),
+            "created_at": beijing_time(record.created_at),
         },
         "question": {
             "id": question.id,
+            "question_type": question.question_type or "choice",
             "content": question.content,
             "options": question.options,
             "answer": question.answer,

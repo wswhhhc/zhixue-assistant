@@ -1,0 +1,203 @@
+.membership-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.membership-card {
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.membership-status-card {
+  text-align: center;
+  padding: 32px 20px;
+}
+
+.membership-badge {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.membership-badge.free {
+  color: #999;
+}
+
+.membership-badge.premium {
+  color: #faad14;
+}
+
+.membership-status-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.membership-expires {
+  color: #888;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.quota-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.quota-item {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.quota-item .quota-label {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.quota-item .quota-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.quota-value.low {
+  color: #ff4d4f;
+}
+
+.quota-value.ok {
+  color: #52c41a;
+}
+
+.quota-value.unlimited {
+  color: #faad14;
+}
+
+.redeem-section {
+  margin-top: 16px;
+}
+
+.redeem-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.redeem-input-row .ant-input {
+  flex: 1;
+}
+
+.benefit-table {
+  margin-top: 12px;
+}
+
+.benefit-table .benefit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.benefit-row:last-child {
+  border-bottom: none;
+}
+
+.benefit-label {
+  color: #333;
+}
+
+.benefit-free {
+  color: #ff4d4f;
+  font-weight: 500;
+}
+
+.benefit-premium {
+  color: #faad14;
+  font-weight: 500;
+}
+
+/* 套餐选择 */
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.plan-card {
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.plan-card:hover {
+  border-color: #faad14;
+  box-shadow: 0 4px 16px rgba(250, 173, 20, 0.15);
+}
+
+.plan-card.selected {
+  border-color: #faad14;
+  background: #fffbe6;
+}
+
+.plan-card .plan-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.plan-card .plan-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: #faad14;
+  margin-bottom: 4px;
+}
+
+.plan-card .plan-unit {
+  font-size: 13px;
+  color: #999;
+}
+
+.plan-card .plan-tag {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+}
+
+/* 二维码弹窗 */
+.qr-modal-body {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.qr-modal-body .qr-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #faad14;
+  margin: 16px 0 4px;
+}
+
+.qr-modal-body .qr-hint {
+  font-size: 13px;
+  color: #999;
+  margin-top: 12px;
+}
+
+.qr-modal-body .qr-status {
+  margin-top: 16px;
+  font-size: 15px;
+  color: #666;
+}
+
+/* 支付回调页眉隐藏 */
+.payment-callback-page {
+  margin: 0;
+  padding: 0;
+}

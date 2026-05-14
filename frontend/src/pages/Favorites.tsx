@@ -4,6 +4,7 @@ import { Card, List, Empty, message, Spin, Skeleton, Typography, Button, Modal, 
 import { DeleteOutlined } from '@ant-design/icons'
 import { API_BASE } from '../config'
 import { authFetch } from '../auth'
+import { renderLatex } from '../utils/renderLatex'
 import '../components/ActionButtons.css'
 import './Favorites.css'
 
@@ -88,7 +89,7 @@ export default function Favorites() {
                   }
                   description={
                     <Typography.Paragraph ellipsis={{ rows: 2 }} className="favorites-meta-desc">
-                      {item.content}
+                      {renderLatex(item.content)}
                     </Typography.Paragraph>
                   }
                 />

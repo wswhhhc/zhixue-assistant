@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Question, AnswerRecord, Checkin, User
 from routers.auth import require_user
+from config import beijing_time
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -125,7 +126,7 @@ def get_stats(
                 "content": content[:100] + "..." if len(content) > 100 else content,
                 "knowledge_point": question.knowledge_point if question else "",
                 "error_type": record.error_type,
-                "created_at": record.created_at.strftime("%m-%d %H:%M"),
+                "created_at": beijing_time(record.created_at),
             }
         )
 

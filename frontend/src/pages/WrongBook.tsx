@@ -4,6 +4,7 @@ import { Card, List, Pagination, Spin, Skeleton, Empty, message, Typography, Mod
 import { DeleteOutlined } from '@ant-design/icons'
 import { API_BASE } from '../config'
 import { authFetch } from '../auth'
+import { renderLatex } from '../utils/renderLatex'
 import '../components/ActionButtons.css'
 import './WrongBook.css'
 
@@ -116,7 +117,7 @@ export default function WrongBook() {
                         ellipsis={{ rows: 2 }}
                         className="wrongbook-meta-desc"
                       >
-                        {item.content}
+                        {renderLatex(item.content)}
                       </Typography.Paragraph>
                     }
                   />

@@ -36,10 +36,12 @@ const ERROR_TYPE_MAP: Record<string, string> = {
 interface ResultState {
   question: {
     id: number
+    question_type?: string
     content: string
     options: string[]
     answer: string
     knowledge_point: string
+    explanation?: string
   }
   userAnswer: string
   isCorrect: boolean
@@ -61,7 +63,12 @@ export default function Result() {
     setGenerating(true)
     try {
       const res = await authFetch(`${API_BASE}/practice/generate-similar?question_id=${displayState.question.id}`, { method: 'POST' })
-      if (!res.ok) { message.error('生成失败'); setGenerating(false); return }
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        message.error(errData.detail || '生成失败，升级会员可无限使用')
+        setGenerating(false)
+        return
+      }
       const data = await res.json()
       message.success('相似题已生成')
       navigate(`/practice?question_id=${data.id}`)
@@ -155,24 +162,51 @@ export default function Result() {
             {renderLatex(question.content)}
           </Paragraph>
           <div className="result-options">
-            {question.options.map((opt: string, i: number) => {
-              const label = String.fromCharCode(65 + i)
-              const isUA = userAnswer === label
-              const isCA = question.answer === label
-              let color = ''
-              if (isUA && isCA) color = '#52c41a'
-              else if (isUA && !isCA) color = '#ff4d4f'
-              else if (isCA) color = '#52c41a'
-              return (
-                <div key={label} className="result-option-item" style={{ color }}>
-                  <strong>{label}.</strong> {renderLatex(opt)}
-                  {isUA && <Tag className="result-option-tag" color={isCorrect ? 'green' : 'red'}>你的答案</Tag>}
-                  {isCA && <Tag className="result-option-tag" color="green">正确答案</Tag>}
+            {question.question_type === 'fill' || question.question_type === 'judge' || question.question_type === 'subjective' ? (
+              <>
+                <div className="result-option-item" style={{ color: isCorrect ? '#52c41a' : '#ff4d4f' }}>
+                  你的答案：<strong>{renderLatex(userAnswer)}</strong>
+                  <Tag className="result-option-tag" color={isCorrect ? 'green' : 'red'}>
+                    {isCorrect ? '正确' : '错误'}
+                  </Tag>
                 </div>
-              )
-            })}
+                {!isCorrect && (
+                  <div className="result-option-item" style={{ color: '#52c41a' }}>
+                    正确答案：<strong>{renderLatex(question.answer)}</strong>
+                    <Tag className="result-option-tag" color="green">正确答案</Tag>
+                  </div>
+                )}
+              </>
+            ) : (
+              question.options.map((opt: string, i: number) => {
+                const label = String.fromCharCode(65 + i)
+                const isUA = userAnswer === label
+                const isCA = question.answer === label
+                let color = ''
+                if (isUA && isCA) color = '#52c41a'
+                else if (isUA && !isCA) color = '#ff4d4f'
+                else if (isCA) color = '#52c41a'
+                return (
+                  <div key={label} className="result-option-item" style={{ color }}>
+                    <strong>{label}.</strong> {renderLatex(opt)}
+                    {isUA && <Tag className="result-option-tag" color={isCorrect ? 'green' : 'red'}>你的答案</Tag>}
+                    {isCA && <Tag className="result-option-tag" color="green">正确答案</Tag>}
+                  </div>
+                )
+              })
+            )}
           </div>
         </Card>
+
+        {question.question_type === 'subjective' && question.explanation && (
+          <Card title="参考解题步骤" className="result-detail-card">
+            <div style={{ maxHeight: 400, overflow: 'auto' }}>
+              <Paragraph className="result-paragraph">
+                {renderLatex(question.explanation)}
+              </Paragraph>
+            </div>
+          </Card>
+        )}
 
         <Card title="AI 错因分析" className="result-detail-card">
           <FormattedContent text={analysis} />

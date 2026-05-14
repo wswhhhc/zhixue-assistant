@@ -6,7 +6,8 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+from typing import Optional
 from sqlalchemy.orm import Session
 import bcrypt
 import jwt
@@ -23,6 +24,20 @@ security = HTTPBearer(auto_error=False)
 captcha_store: dict[str, dict] = {}
 # In-memory email verification code store
 email_code_store: dict[str, dict] = {}
+# Rate limit store: key -> list of timestamps
+rate_limit_store: dict[str, list[datetime]] = {}
+
+
+def _check_rate_limit(key: str, max_attempts: int = 5, window_seconds: int = 60):
+    """检查频率限制，超出则抛出 HTTPException"""
+    now = datetime.now(timezone.utc)
+    records = rate_limit_store.get(key, [])
+    # 清除窗口外的记录
+    records = [t for t in records if (now - t).total_seconds() < window_seconds]
+    if len(records) >= max_attempts:
+        raise HTTPException(status_code=429, detail="操作过于频繁，请稍后再试")
+    records.append(now)
+    rate_limit_store[key] = records
 
 
 class RegisterInput(BaseModel):
@@ -30,6 +45,20 @@ class RegisterInput(BaseModel):
     email: str
     password: str
     email_code: str = ""
+
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, v):
+        if len(v) < 2 or len(v) > 30:
+            raise ValueError("用户名长度 2-30 个字符")
+        return v
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v):
+        if len(v) < 6 or len(v) > 128:
+            raise ValueError("密码长度 6-128 个字符")
+        return v
 
 
 class SendCodeInput(BaseModel):
@@ -47,6 +76,8 @@ class AuthOut(BaseModel):
     token: str
     user_id: int
     username: str
+    membership: str = "free"
+    member_expires: Optional[datetime] = None
 
 
 class CaptchaOut(BaseModel):
@@ -176,45 +207,51 @@ def get_captcha():
 def send_code(data: SendCodeInput):
     now = datetime.now(timezone.utc)
 
-    # Rate limit: 60s 内不重复发送
+    # Rate limit: 每邮箱 60s 内不重复发送
     existing = email_code_store.get(data.email)
     if existing:
         elapsed = (now - existing["sent_at"]).total_seconds()
         if elapsed < 60:
             raise HTTPException(status_code=400, detail="请 60 秒后再试")
 
-    # 先查邮箱是否已被注册
-    db = SessionLocal()
-    try:
-        if db.query(User).filter(User.email == data.email).first():
-            raise HTTPException(status_code=400, detail="该邮箱已注册")
-    finally:
-        db.close()
-
     code = "".join(random.choices(string.digits, k=6))
     ok = send_verification_code(data.email, code)
     if not ok:
-        raise HTTPException(status_code=500, detail="验证码发送失败")
+        raise HTTPException(status_code=500, detail="验证码发送失败，请检查邮箱地址是否正确")
 
     email_code_store[data.email] = {
         "code": code,
         "sent_at": now,
         "expires_at": now + timedelta(minutes=5),
+        "attempts": 0,
     }
-    return {"message": "验证码已发送"}
+    return {"message": "验证码已发送，请查收邮件"}
 
 
 @router.post("/register")
 def register(data: RegisterInput, db: Session = Depends(get_db)):
+    _check_rate_limit(f"register:{data.email}", max_attempts=3, window_seconds=300)
+
+    # 输入校验
+    if len(data.username) < 2 or len(data.username) > 30:
+        raise HTTPException(status_code=400, detail="注册失败，请检查输入")
+    if len(data.password) < 6:
+        raise HTTPException(status_code=400, detail="注册失败，请检查输入")
+
     record = email_code_store.get(data.email)
     if not data.email_code or not record or record["code"] != data.email_code.strip():
-        raise HTTPException(status_code=400, detail="邮箱验证码错误或已过期")
+        # 验证失败，增加尝试次数，超限则删除验证码
+        if record:
+            record["attempts"] = record.get("attempts", 0) + 1
+            if record["attempts"] >= 5:
+                del email_code_store[data.email]
+        raise HTTPException(status_code=400, detail="注册失败，请检查输入")
     del email_code_store[data.email]
 
-    if db.query(User).filter(User.username == data.username).first():
-        raise HTTPException(status_code=400, detail="用户名已存在")
-    if db.query(User).filter(User.email == data.email).first():
-        raise HTTPException(status_code=400, detail="邮箱已注册")
+    if db.query(User).filter(
+        (User.username == data.username) | (User.email == data.email)
+    ).first():
+        raise HTTPException(status_code=400, detail="注册失败，请检查输入")
 
     user = User(
         username=data.username,
@@ -229,11 +266,14 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
         token=create_token(user.id),
         user_id=user.id,
         username=user.username,
+        membership=user.membership or "free",
+        member_expires=user.member_expires,
     )
 
 
 @router.post("/login")
 def login(data: LoginInput, db: Session = Depends(get_db)):
+    _check_rate_limit(f"login:{data.username}", max_attempts=10, window_seconds=60)
     if not data.captcha_id or not data.captcha_code:
         raise HTTPException(status_code=400, detail="请完成验证码")
     record = captcha_store.get(data.captcha_id)
@@ -252,12 +292,20 @@ def login(data: LoginInput, db: Session = Depends(get_db)):
         token=create_token(user.id),
         user_id=user.id,
         username=user.username,
+        membership=user.membership or "free",
+        member_expires=user.member_expires,
     )
 
 
 @router.get("/me")
 def get_me(user: User = Depends(require_user)):
-    return {"user_id": user.id, "username": user.username, "email": user.email}
+    return {
+        "user_id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "membership": user.membership or "free",
+        "member_expires": user.member_expires,
+    }
 
 
 @router.put("/password")
@@ -266,6 +314,7 @@ def change_password(
     db: Session = Depends(get_db),
     user: User = Depends(require_user),
 ):
+    _check_rate_limit(f"password:{user.id}", max_attempts=5, window_seconds=300)
     if not bcrypt.checkpw(data.old_password.encode(), user.password_hash.encode()):
         raise HTTPException(status_code=400, detail="原密码错误")
     if len(data.new_password) < 6:

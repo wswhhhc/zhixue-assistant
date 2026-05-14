@@ -1,0 +1,419 @@
+/**
+ * Tech Design System - 科技感设计系统
+ * 专为AI错题分析平台打造的高级未来感界面
+ */
+
+/* ============================================
+   字体导入 - 科技感字体组合
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+/* ============================================
+   CSS 变量定义
+   ============================================ */
+:root {
+  /* 主色调 - 深海蓝到科技青渐变 */
+  --tech-primary: #00d4ff;
+  --tech-primary-dark: #00a8cc;
+  --tech-primary-light: #7ee8ff;
+  --tech-secondary: #6366f1;
+  --tech-secondary-dark: #4f46e5;
+  
+  /* 强调色 - 数据可视化 */
+  --tech-accent-cyan: #22d3ee;
+  --tech-accent-purple: #a855f7;
+  --tech-accent-pink: #ec4899;
+  --tech-accent-green: #10b981;
+  --tech-accent-orange: #f59e0b;
+  
+  /* 深色主题背景色 */
+  --tech-bg-primary: #030712;
+  --tech-bg-secondary: #0a0f1c;
+  --tech-bg-tertiary: #111827;
+  --tech-bg-card: rgba(17, 24, 39, 0.7);
+  
+  /* 边框和分隔线 */
+  --tech-border: rgba(148, 163, 184, 0.1);
+  --tech-border-glow: rgba(0, 212, 255, 0.3);
+  
+  /* 文字颜色 */
+  --tech-text-primary: #f8fafc;
+  --tech-text-secondary: #94a3b8;
+  --tech-text-muted: #64748b;
+  
+  /* 渐变定义 */
+  --tech-gradient-primary: linear-gradient(135deg, #00d4ff 0%, #6366f1 50%, #a855f7 100%);
+  --tech-gradient-cyan: linear-gradient(135deg, #00d4ff 0%, #22d3ee 100%);
+  --tech-gradient-dark: linear-gradient(180deg, #030712 0%, #0a0f1c 100%);
+  --tech-gradient-glow: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+  
+  /* 阴影 */
+  --tech-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --tech-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --tech-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --tech-shadow-glow: 0 0 40px rgba(0, 212, 255, 0.3);
+  --tech-shadow-glow-sm: 0 0 20px rgba(0, 212, 255, 0.2);
+  
+  /* 间距 */
+  --tech-space-xs: 0.25rem;
+  --tech-space-sm: 0.5rem;
+  --tech-space-md: 1rem;
+  --tech-space-lg: 1.5rem;
+  --tech-space-xl: 2rem;
+  --tech-space-2xl: 3rem;
+  
+  /* 字体 */
+  --tech-font-display: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+  --tech-font-body: 'Noto Sans SC', 'Space Grotesk', sans-serif;
+  --tech-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  
+  /* 圆角 */
+  --tech-radius-sm: 6px;
+  --tech-radius-md: 12px;
+  --tech-radius-lg: 20px;
+  --tech-radius-xl: 28px;
+  
+  /* 过渡 */
+  --tech-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tech-transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tech-transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   全局基础样式
+   ============================================ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--tech-font-body);
+  background: var(--tech-bg-primary);
+  color: var(--tech-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--tech-bg-primary);
+  overflow-x: hidden;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tech-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tech-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tech-text-muted);
+}
+
+/* 选择文字样式 */
+::selection {
+  background: rgba(0, 212, 255, 0.3);
+  color: var(--tech-text-primary);
+}
+
+/* ============================================
+   科技感组件样式
+   ============================================ */
+
+/* 玻璃态卡片 */
+.tech-card {
+  background: var(--tech-bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--tech-border);
+  border-radius: var(--tech-radius-lg);
+  box-shadow: var(--tech-shadow-lg);
+  transition: var(--tech-transition-base);
+}
+
+.tech-card:hover {
+  border-color: var(--tech-border-glow);
+  box-shadow: var(--tech-shadow-glow-sm), var(--tech-shadow-lg);
+}
+
+/* 霓虹按钮 */
+.tech-button {
+  position: relative;
+  padding: 12px 28px;
+  font-family: var(--tech-font-display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: var(--tech-text-primary);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid var(--tech-border);
+  border-radius: var(--tech-radius-md);
+  cursor: pointer;
+  overflow: hidden;
+  transition: var(--tech-transition-base);
+}
+
+.tech-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tech-gradient-primary);
+  opacity: 0;
+  transition: var(--tech-transition-base);
+  z-index: -1;
+}
+
+.tech-button:hover {
+  border-color: var(--tech-primary);
+  box-shadow: var(--tech-shadow-glow-sm);
+  transform: translateY(-2px);
+}
+
+.tech-button:hover::before {
+  opacity: 1;
+}
+
+.tech-button:active {
+  transform: translateY(0);
+}
+
+/* 主要按钮 - 渐变填充 */
+.tech-button-primary {
+  background: var(--tech-gradient-primary);
+  border: none;
+  box-shadow: var(--tech-shadow-glow-sm);
+}
+
+.tech-button-primary:hover {
+  box-shadow: var(--tech-shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* 输入框 */
+.tech-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-family: var(--tech-font-body);
+  font-size: 15px;
+  color: var(--tech-text-primary);
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid var(--tech-border);
+  border-radius: var(--tech-radius-md);
+  outline: none;
+  transition: var(--tech-transition-base);
+}
+
+.tech-input::placeholder {
+  color: var(--tech-text-muted);
+}
+
+.tech-input:focus {
+  border-color: var(--tech-primary);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+/* 标题样式 */
+.tech-title {
+  font-family: var(--tech-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: var(--tech-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tech-title-alt {
+  font-family: var(--tech-font-display);
+  font-weight: 700;
+  color: var(--tech-text-primary);
+  text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+}
+
+/* 科技分割线 */
+.tech-divider {
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--tech-primary) 20%, 
+    var(--tech-secondary) 50%, 
+    var(--tech-primary) 80%, 
+    transparent 100%
+  );
+  opacity: 0.3;
+}
+
+/* 状态指示器 */
+.tech-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--tech-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.tech-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+  animation: techPulse 2s ease-in-out infinite;
+}
+
+.tech-status-online { color: var(--tech-accent-green); }
+.tech-status-busy { color: var(--tech-accent-orange); }
+.tech-status-offline { color: var(--tech-text-muted); }
+
+@keyframes techPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* 网格背景 */
+.tech-grid-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-grid-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* 发光边框 */
+.tech-glow-border {
+  position: relative;
+}
+
+.tech-glow-border::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: var(--tech-gradient-primary);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: var(--tech-transition-base);
+}
+
+.tech-glow-border:hover::after {
+  opacity: 1;
+}
+
+/* 扫描线效果 */
+.tech-scanline {
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 50%,
+    rgba(0, 212, 255, 0.02) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* 标签样式 */
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-family: var(--tech-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--tech-primary);
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--tech-radius-sm);
+}
+
+/* 数字显示 */
+.tech-number {
+  font-family: var(--tech-font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* 动画 */
+@keyframes techFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes techGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes techSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes techFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tech-animate-float {
+  animation: techFloat 6s ease-in-out infinite;
+}
+
+.tech-animate-glow {
+  animation: techGlow 3s ease-in-out infinite;
+}
+
+.tech-animate-slide-in {
+  animation: techSlideIn 0.6s ease-out;
+}
+
+.tech-animate-fade-in {
+  animation: techFadeIn 0.4s ease-out;
+}
+
+/* 延迟动画类 */
+.tech-delay-1 { animation-delay: 0.1s; }
+.tech-delay-2 { animation-delay: 0.2s; }
+.tech-delay-3 { animation-delay: 0.3s; }
+.tech-delay-4 { animation-delay: 0.4s; }
+.tech-delay-5 { animation-delay: 0.5s; }

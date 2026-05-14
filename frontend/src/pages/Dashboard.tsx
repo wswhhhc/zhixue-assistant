@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Card, Col, Row, Statistic, List, Tag, Spin, Skeleton, message, Empty,
-  Input, Button, Typography, Space, Progress, Tooltip, InputNumber,
+  Card, Col, Row, Statistic, List, message, Empty, Skeleton,
+  Input, Button, Space, Progress, InputNumber,
 } from 'antd'
 import { SendOutlined, ClockCircleOutlined, FlagOutlined, EditOutlined, CheckCircleOutlined, BookOutlined, TrophyOutlined, FireOutlined } from '@ant-design/icons'
 import { renderLatex } from '../utils/renderLatex'
@@ -12,9 +12,9 @@ import { API_BASE } from '../config'
 import { authFetch } from '../auth'
 
 const { TextArea } = Input
-const { Paragraph } = Typography
 
-const ERROR_TYPE_MAP: Record<string, string> = {
+// 错误类型映射（用于显示）
+const _ERROR_TYPE_MAP: Record<string, string> = {
   concept_misunderstanding: '概念理解偏差',
   calculation_error: '计算错误',
   careless_mistake: '审题/粗心失误',
@@ -73,36 +73,71 @@ export default function Dashboard() {
   const [goalInput, setGoalInput] = useState(10)
   const [editingGoal, setEditingGoal] = useState(false)
 
+  // 使用配额
+  const [quotas, setQuotas] = useState<Record<string, { used: number; limit: number }> | null>(null)
+
   // 学习动态
   const [timeline, setTimeline] = useState<{ type: string; label: string; detail: string; time: string }[]>([])
-  const [timelineLoading, setTimelineLoading] = useState(false)
 
   useEffect(() => {
-    Promise.all([
-      authFetch(`${API_BASE}/dashboard/stats`),
-      authFetch(`${API_BASE}/dashboard/trend?days=14`),
-      authFetch(`${API_BASE}/checkin/status`),
-      authFetch(`${API_BASE}/user/goal`),
-      authFetch(`${API_BASE}/dashboard/timeline?days=7`),
-    ])
-      .then(async ([sRes, tRes, cRes, gRes, tlRes]) => {
-        const [sData, tData, cData, gData, tlData] = await Promise.all([
-          sRes.json(), tRes.json(), cRes.json(), gRes.json(), tlRes.json(),
+    let cancelled = false
+
+    const fetchData = async () => {
+      try {
+        const results = await Promise.allSettled([
+          authFetch(`${API_BASE}/dashboard/stats`),
+          authFetch(`${API_BASE}/dashboard/trend?days=14`),
+          authFetch(`${API_BASE}/checkin/status`),
+          authFetch(`${API_BASE}/user/goal`),
+          authFetch(`${API_BASE}/dashboard/timeline?days=7`),
+          authFetch(`${API_BASE}/membership/status`),
         ])
-        setStats(sData)
-        setTrendData(tData)
-        setCheckedIn(cData.checked_in)
-        setStreak(cData.streak)
-        setWeekDays(cData.week)
-        setDailyGoal(gData.daily_goal)
-        setGoalInput(gData.daily_goal)
-        setTimeline(tlData)
+
+        if (cancelled) return
+
+        const [sRes, tRes, cRes, gRes, tlRes, mRes] = results.map(
+          (r) => (r.status === 'fulfilled' ? r.value : null),
+        )
+
+        if (sRes?.ok) {
+          const sData = await sRes.json()
+          setStats(sData)
+        }
+        if (tRes?.ok) {
+          const tData = await tRes.json()
+          setTrendData(tData)
+        }
+        if (cRes?.ok) {
+          const cData = await cRes.json()
+          setCheckedIn(cData.checked_in)
+          setStreak(cData.streak)
+          setWeekDays(cData.week)
+        }
+        if (gRes?.ok) {
+          const gData = await gRes.json()
+          setDailyGoal(gData.daily_goal)
+          setGoalInput(gData.daily_goal)
+        }
+        if (tlRes?.ok) {
+          const tlData = await tlRes.json()
+          setTimeline(tlData)
+        }
+        if (mRes?.ok) {
+          const mData = await mRes.json()
+          setQuotas(mData.quotas || null)
+        }
+
         setLoading(false)
-      })
-      .catch(() => {
-        message.error('获取数据失败')
-        setLoading(false)
-      })
+      } catch {
+        if (!cancelled) {
+          message.error('获取数据失败')
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchData()
+    return () => { cancelled = true }
   }, [])
 
   const handleAsk = async () => {
@@ -116,8 +151,14 @@ export default function Dashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: question.trim() }),
       })
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        message.error(errData.detail || 'AI 问答暂时不可用')
+        setAnswering(false)
+        return
+      }
       const reader = res.body?.getReader()
-      if (!reader) return
+      if (!reader) { setAnswering(false); return }
 
       const decoder = new TextDecoder()
       let buffer = ''
@@ -156,10 +197,21 @@ export default function Dashboard() {
         }
       }
     } catch {
-      message.error('请求失败，请检查后端是否运行')
+      message.error('请求失败，请稍后重试或联系客服')
     }
 
     setAnswering(false)
+    // AI 问答完成后刷新配额
+    refreshQuotas()
+  }
+  const refreshQuotas = async () => {
+    try {
+      const res = await authFetch(`${API_BASE}/membership/status`)
+      if (res.ok) {
+        const data = await res.json()
+        setQuotas(data.quotas || null)
+      }
+    } catch { /* ignore */ }
   }
 
   const handleCheckin = async () => {
@@ -246,9 +298,9 @@ export default function Dashboard() {
               ? stats.mastery.map((m) => m.mastery_rate)
               : [0],
             name: '掌握度',
-            areaStyle: { color: 'rgba(22, 119, 255, 0.2)' },
-            lineStyle: { color: '#1677ff' },
-            itemStyle: { color: '#1677ff' },
+            areaStyle: { color: 'rgba(139, 34, 82, 0.1)' },
+            lineStyle: { color: '#8b2252' },
+            itemStyle: { color: '#8b2252' },
           },
         ],
       },
@@ -278,7 +330,7 @@ export default function Dashboard() {
                   title="今日正确率"
                   value={stats.today_accuracy}
                   suffix="%"
-                  valueStyle={{ color: stats.today_accuracy >= 60 ? '#52c41a' : '#ff4d4f' }}
+                  valueStyle={{ color: stats.today_accuracy >= 60 ? 'var(--sl-accent-sage)' : 'var(--sl-accent)' }}
                 />
               </div>
             </Card>
@@ -303,13 +355,51 @@ export default function Dashboard() {
                   title="总正确率"
                   value={stats.total_accuracy}
                   suffix="%"
-                  valueStyle={{ color: stats.total_accuracy >= 60 ? '#52c41a' : '#ff4d4f' }}
+                  valueStyle={{ color: stats.total_accuracy >= 60 ? 'var(--sl-accent-sage)' : 'var(--sl-accent)' }}
                 />
               </div>
             </Card>
           </div>
         </Col>
       </Row>
+
+      {/* 使用配额 */}
+      {quotas && (
+        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+          {Object.entries({ qa_ask: 'AI 问答', report_gen: '学习报告', upload_image: '图片上传', gen_similar: '相似题' }).map(([key, label], i) => {
+            const q = quotas[key]
+            if (!q) return null
+            const pct = q.limit <= 0 ? 100 : Math.round((q.used / q.limit) * 100)
+            return (
+              <Col xs={12} sm={6} key={key}>
+                <div className="dashboard-card-wrap stat-card-wrap">
+                  <Card className="stat-card dashboard-card" style={{ animationDelay: `${0.32 + i * 0.08}s` }}>
+                  <Statistic
+  title={label}
+  value={q.limit <= 0 ? '∞' : `${q.used}/${q.limit}`}
+  suffix={q.limit <= 0 ? '无限制' : '次'}
+  valueStyle={{ 
+    fontSize: 20, 
+    color: q.limit > 0 && pct >= 100 ? '#ec4899' : (q.limit <= 0 ? '#fbbf24' : '#00d4ff'),
+    fontWeight: q.limit <= 0 ? 700 : 600,
+    textShadow: q.limit <= 0 ? '0 0 10px rgba(251, 191, 36, 0.4)' : 'none',
+  }}
+/>
+                    {q.limit > 0 && (
+                      <Progress
+                        percent={Math.min(pct, 100)}
+                        size="small"
+                        status={pct >= 100 ? 'exception' : 'active'}
+                        style={{ marginTop: 4 }}
+                      />
+                    )}
+                  </Card>
+                </div>
+              </Col>
+            )
+          })}
+        </Row>
+      )}
 
       {/* 打卡 + 今日目标 + 学习时长 */}
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
@@ -319,7 +409,7 @@ export default function Dashboard() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <FireOutlined style={{ color: '#ff6b35' }} /> 打卡
+                    <FireOutlined style={{ color: 'var(--sl-accent-gold)' }} /> 打卡
                   </div>
                   <div className="checkin-streak">
                     连续 <span className="checkin-streak-num">{streak}</span> 天
@@ -330,15 +420,8 @@ export default function Dashboard() {
                     const dayOfWeek = new Date(d.date).getDay()
                     const weekLabel = ['日', '一', '二', '三', '四', '五', '六'][dayOfWeek]
                     return (
-                      <div key={d.date} style={{ textAlign: 'center', fontSize: 11, color: '#999' }}>
-                        <div style={{
-                          width: 22, height: 22, borderRadius: '50%',
-                          background: d.checked ? '#1677ff' : '#eee',
-                          margin: '0 auto 2px',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          color: d.checked ? '#fff' : '#bbb',
-                          fontSize: 11, fontWeight: 600,
-                        }}>
+                      <div key={d.date} className="checkin-week-label">
+                        <div className={`checkin-dot ${d.checked ? 'checkin-dot-checked' : 'checkin-dot-unchecked'}`}>
                           {d.checked ? '✓' : ''}
                         </div>
                         <div>{weekLabel}</div>
@@ -363,10 +446,10 @@ export default function Dashboard() {
           <div className="dashboard-card-wrap">
             <Card className="dashboard-card" style={{ animationDelay: '0.38s' }}>
               <Statistic
-                title={<span><ClockCircleOutlined style={{ marginRight: 4, color: '#667eea' }} />今日学习时长</span>}
+                title={<span><ClockCircleOutlined style={{ marginRight: 4, color: 'var(--sl-accent-navy)' }} />今日学习时长</span>}
                 value={Math.round((stats.today_count || 0) * 2)}
                 suffix="分钟"
-                valueStyle={{ color: '#667eea' }}
+                valueStyle={{ color: 'var(--sl-accent-navy)' }}
               />
             </Card>
           </div>
@@ -374,7 +457,7 @@ export default function Dashboard() {
         <Col xs={12} lg={5}>
           <div className="dashboard-card-wrap">
             <Card className="dashboard-card" style={{ animationDelay: '0.44s' }}>
-              <div style={{ fontSize: 13, color: '#888', marginBottom: 4 }}>
+              <div style={{ fontSize: 13, color: 'var(--sl-text-muted)', marginBottom: 4 }}>
                 <FlagOutlined style={{ marginRight: 4 }} />今日目标
                 <a style={{ marginLeft: 6, fontSize: 12 }} onClick={() => setEditingGoal(!editingGoal)}>
                   {editingGoal ? '取消' : '修改'}
@@ -387,14 +470,14 @@ export default function Dashboard() {
                 </Space>
               ) : (
                 <>
-                  <div style={{ fontSize: 24, fontWeight: 600, color: '#1677ff' }}>
+                  <div className="goal-progress-value">
                     {stats.today_count}/{dailyGoal}
                   </div>
                   <Progress
                     percent={Math.min(100, Math.round((stats.today_count || 0) / dailyGoal * 100))}
                     size="small"
                     showInfo={false}
-                    strokeColor={stats.today_count >= dailyGoal ? '#52c41a' : '#1677ff'}
+                    strokeColor={stats.today_count >= dailyGoal ? 'var(--sl-accent-sage)' : 'var(--sl-accent)'}
                   />
                 </>
               )}
@@ -405,7 +488,7 @@ export default function Dashboard() {
 
       {/* AI 问答 */}
       <div className="dashboard-card-wrap">
-        <Card title={<span style={{ color: '#667eea' }}>AI 问答</span>} className="ai-card dashboard-card" style={{ marginBottom: 16, animationDelay: '0.50s' }}>
+        <Card title={<span style={{ color: 'var(--sl-text-primary)' }}>AI 问答 {quotas?.qa_ask && quotas.qa_ask.limit > 0 ? <span style={{ fontSize: 12, color: 'var(--sl-text-muted)', fontWeight: 400 }}>（剩余 {Math.max(0, quotas.qa_ask.limit - quotas.qa_ask.used)} 次）</span> : <span style={{ fontSize: 12, color: 'var(--sl-accent-gold)', fontWeight: 400 }}>（无限制）</span>}</span>} className="ai-card dashboard-card" style={{ marginBottom: 16, animationDelay: '0.50s' }}>
           {answer && (
             <div ref={answerRef} className="ai-answer-box">
               {renderLatex(answer)}
@@ -479,9 +562,9 @@ export default function Dashboard() {
                     smooth: true,
                     symbol: 'circle',
                     symbolSize: 6,
-                    lineStyle: { color: '#1677ff', width: 2 },
-                    itemStyle: { color: '#1677ff' },
-                    areaStyle: { color: 'rgba(22, 119, 255, 0.08)' },
+                    lineStyle: { color: '#8b2252', width: 2 },
+                    itemStyle: { color: '#8b2252' },
+                    areaStyle: { color: 'rgba(139, 34, 82, 0.06)' },
                   },
                 ],
               }}
@@ -521,10 +604,10 @@ export default function Dashboard() {
                       <List.Item.Meta
                         title={<span>{item.knowledge_point}</span>}
                         description={
-                          <span style={{ fontSize: 13 }}>{item.content}</span>
+                          <span style={{ fontSize: 13 }}>{renderLatex(item.content)}</span>
                         }
                       />
-                      <div style={{ fontSize: 12, color: '#999' }}>{item.created_at}</div>
+                      <div style={{ fontSize: 12, color: 'var(--sl-text-muted)' }}>{item.created_at}</div>
                     </List.Item>
                   )}
                 />

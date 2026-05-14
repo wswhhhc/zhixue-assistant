@@ -1,27 +1,36 @@
-/* ---------- Animated background ---------- */
+/**
+ * AppLayout - 科技感布局样式
+ * 深色主题 + 霓虹光效
+ */
+
+@import url('../styles/tech-design-system.css');
+
+/* ============================================
+   布局容器
+   ============================================ */
 .content-area {
   min-height: calc(100vh - 64px);
   position: relative;
-  background: linear-gradient(135deg, #e8e0ff 0%, #dce5ff 20%, #f0dcff 40%, #d8f0ff 60%, #e5e0ff 80%, #e8e0ff 100%);
-  background-size: 600% 600%;
-  animation: contentGradient 18s ease-in-out infinite alternate;
+  background: var(--tech-bg-primary);
+  overflow: hidden;
 }
 
-/* Floating light blobs - layer 1 */
+/* 网格背景 */
 .content-area::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(ellipse at 12% 45%, rgba(102, 126, 234, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse at 88% 25%, rgba(118, 75, 218, 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse at 45% 85%, rgba(72, 150, 200, 0.10) 0%, transparent 50%);
-  animation: blobDrift 20s ease-in-out infinite alternate;
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
-/* Floating light blobs - layer 2 */
+/* 装饰光晕 */
 .content-area::after {
   content: '';
   position: fixed;
@@ -29,89 +38,546 @@
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse at 75% 60%, rgba(102, 126, 234, 0.10) 0%, transparent 50%),
-    radial-gradient(ellipse at 25% 75%, rgba(118, 75, 218, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 55% 20%, rgba(200, 72, 150, 0.06) 0%, transparent 45%);
-  animation: blobDrift2 25s ease-in-out infinite alternate-reverse;
+    radial-gradient(ellipse at 20% 30%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(99, 102, 241, 0.04) 0%, transparent 50%);
 }
 
-/* Content above background */
+/* 内容层级 */
 .content-area > * {
   position: relative;
   z-index: 1;
 }
 
-/* ---------- Page transition ---------- */
+/* ============================================
+   页面过渡动画
+   ============================================ */
 .page-transition {
-  animation: pageEnter 0.35s ease-out;
+  animation: techPageEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes pageEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes techPageEnter {
+  from { 
+    opacity: 0; 
+    transform: translateY(16px);
+    filter: blur(4px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
-/* 延迟显示骨架屏，快速切换时不闪 */
-.page-transition .ant-skeleton {
+/* ============================================
+   卡片样式
+   ============================================ */
+.content-area .ant-card {
+  background: rgba(17, 24, 39, 0.7) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 212, 255, 0.1) !important;
+  border-radius: 16px !important;
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 212, 255, 0.05) !important;
+  transition: all 0.3s ease;
+}
+
+.content-area .ant-card:hover {
+  border-color: rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(0, 212, 255, 0.08) !important;
+}
+
+.content-area .ant-card-head {
+  background: rgba(17, 24, 39, 0.4) !important;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.content-area .ant-card-head-title {
+  color: var(--tech-text-primary) !important;
+  font-family: var(--tech-font-display);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.content-area .ant-card-body {
+  color: var(--tech-text-secondary);
+}
+
+/* ============================================
+   菜单样式 - 全局（包括头部导航）
+   ============================================ */
+.ant-menu-horizontal {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+/* 头部导航菜单 - 强制覆盖 - 超小光晕 */
+.header-menu.ant-menu-dark .ant-menu-item-selected,
+.header-menu.ant-menu-dark.ant-menu-horizontal .ant-menu-item-selected,
+.ant-layout-header .header-menu.ant-menu-dark .ant-menu-item.ant-menu-item-selected,
+[class*="header-menu"] [class*="ant-menu-item-selected"] {
+  color: #a855f7 !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%) !important;
+  box-shadow: none !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+  padding: 4px 16px !important;
+}
+
+.header-menu.ant-menu-dark .ant-menu-item-selected::after,
+.header-menu.ant-menu-dark.ant-menu-horizontal .ant-menu-item-selected::after,
+.ant-layout-header .header-menu.ant-menu-dark .ant-menu-item.ant-menu-item-selected::after,
+[class*="header-menu"] [class*="ant-menu-item-selected"]::after {
+  display: none !important;
+}
+
+.ant-menu-overflow.ant-menu-horizontal .ant-menu-item {
+  color: var(--tech-text-secondary) !important;
+  font-family: var(--tech-font-body);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease !important;
+  border-radius: 20px !important;  /* 加大圆角变成胶囊形 */
+  margin: 0 8px !important;  /* 增大间距 */
+  padding: 4px 16px !important;  /* 水平padding */
+}
+
+.ant-menu-overflow.ant-menu-horizontal .ant-menu-item:hover {
+  color: var(--tech-text-primary) !important;
+  background: rgba(0, 212, 255, 0.08) !important;
+}
+
+/* 选中状态 - 科技感紫色光晕效果 */
+.ant-layout-header .ant-menu-overflow.ant-menu-horizontal .ant-menu-item.ant-menu-item-selected,
+.ant-layout-header .ant-menu-overflow.ant-menu-dark .ant-menu-item.ant-menu-item-selected,
+.ant-menu-overflow.ant-menu-dark .ant-menu-item-selected {
+  color: #a855f7 !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
+  box-shadow: 0 1px 3px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 4px rgba(168, 85, 247, 0.3) !important;
+  padding: 4px 16px !important;
+}
+
+.ant-layout-header .ant-menu-overflow.ant-menu-horizontal .ant-menu-item.ant-menu-item-selected::after,
+.ant-layout-header .ant-menu-overflow.ant-menu-dark .ant-menu-item.ant-menu-item-selected::after,
+.ant-menu-overflow.ant-menu-dark .ant-menu-item-selected::after {
+  display: none !important;
+}
+
+/* 内容区域菜单继承全局样式 */
+.content-area .ant-menu-horizontal {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.content-area .ant-menu-overflow.ant-menu-horizontal .ant-menu-item {
+  color: var(--tech-text-secondary) !important;
+  font-family: var(--tech-font-body);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease !important;
+  border-radius: 20px !important;
+  margin: 0 8px !important;
+  padding: 4px 16px !important;
+}
+
+.content-area .ant-menu-overflow.ant-menu-horizontal .ant-menu-item:hover {
+  color: var(--tech-text-primary) !important;
+  background: rgba(0, 212, 255, 0.08) !important;
+}
+
+.content-area .ant-menu-overflow.ant-menu-horizontal .ant-menu-item.ant-menu-item-selected,
+.content-area .ant-menu-overflow.ant-menu-dark .ant-menu-item.ant-menu-item-selected {
+  color: #a855f7 !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
+  box-shadow: 0 1px 3px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 4px rgba(168, 85, 247, 0.3) !important;
+  padding: 4px 16px !important;
+}
+
+.content-area .ant-menu-overflow.ant-menu-horizontal .ant-menu-item.ant-menu-item-selected::after,
+.content-area .ant-menu-overflow.ant-menu-dark .ant-menu-item.ant-menu-item-selected::after {
+  display: none !important;
+}
+
+/* ============================================
+   表格样式
+   ============================================ */
+.content-area .ant-table {
+  background: transparent !important;
+}
+
+.content-area .ant-table-thead > tr > th {
+  background: rgba(17, 24, 39, 0.8) !important;
+  color: var(--tech-text-primary) !important;
+  font-family: var(--tech-font-display);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+}
+
+.content-area .ant-table-tbody > tr > td {
+  color: var(--tech-text-secondary) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+}
+
+.content-area .ant-table-tbody > tr:hover > td {
+  background: rgba(0, 212, 255, 0.05) !important;
+}
+
+/* ============================================
+   按钮样式
+   ============================================ */
+.content-area .ant-btn-primary {
+  background: var(--tech-gradient-primary) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3) !important;
+  transition: all 0.3s ease;
+}
+
+.content-area .ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4) !important;
+}
+
+.content-area .ant-btn-default {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  color: var(--tech-text-primary) !important;
+}
+
+.content-area .ant-btn-default:hover {
+  border-color: var(--tech-primary) !important;
+  color: var(--tech-primary) !important;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+
+.content-area .ant-btn-text {
+  color: var(--tech-text-secondary) !important;
+}
+
+.content-area .ant-btn-text:hover {
+  color: var(--tech-primary) !important;
+  background: rgba(0, 212, 255, 0.1) !important;
+}
+
+/* ============================================
+   输入框样式
+   ============================================ */
+.content-area .ant-input,
+.content-area .ant-input-affix-wrapper {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  color: var(--tech-text-primary) !important;
+  border-radius: 8px !important;
+}
+
+.content-area .ant-input::placeholder,
+.content-area .ant-input-affix-wrapper .ant-input::placeholder {
+  color: var(--tech-text-muted) !important;
+}
+
+.content-area .ant-input:focus,
+.content-area .ant-input-affix-wrapper:focus,
+.content-area .ant-input-affix-wrapper-focused {
+  border-color: var(--tech-primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1) !important;
+}
+
+.content-area .ant-input-affix-wrapper .anticon {
+  color: var(--tech-text-muted) !important;
+}
+
+/* ============================================
+   选择器样式
+   ============================================ */
+.content-area .ant-select-selector {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  color: var(--tech-text-primary) !important;
+}
+
+.content-area .ant-select-focused .ant-select-selector {
+  border-color: var(--tech-primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1) !important;
+}
+
+/* ============================================
+   标签页样式
+   ============================================ */
+.content-area .ant-tabs-tab {
+  color: var(--tech-text-muted) !important;
+}
+
+.content-area .ant-tabs-tab:hover {
+  color: var(--tech-text-secondary) !important;
+}
+
+.content-area .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--tech-primary) !important;
+}
+
+.content-area .ant-tabs-ink-bar {
+  background: var(--tech-gradient-primary) !important;
+  box-shadow: 0 0 10px var(--tech-primary);
+}
+
+/* ============================================
+   统计数字样式
+   ============================================ */
+.tech-stat {
+  text-align: center;
+  padding: 24px;
+}
+
+.tech-stat-value {
+  font-family: var(--tech-font-mono);
+  font-size: 36px;
+  font-weight: 700;
+  background: var(--tech-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tech-stat-label {
+  color: var(--tech-text-muted);
+  font-size: 14px;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   进度条样式
+   ============================================ */
+.content-area .ant-progress-bg {
+  background: var(--tech-gradient-primary) !important;
+}
+
+.content-area .ant-progress-inner {
+  background: rgba(17, 24, 39, 0.8) !important;
+}
+
+/* ============================================
+   分页样式
+   ============================================ */
+.content-area .ant-pagination-item {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+.content-area .ant-pagination-item a {
+  color: var(--tech-text-secondary) !important;
+}
+
+.content-area .ant-pagination-item:hover {
+  border-color: var(--tech-primary) !important;
+}
+
+.content-area .ant-pagination-item:hover a {
+  color: var(--tech-primary) !important;
+}
+
+.content-area .ant-pagination-item-active {
+  background: var(--tech-gradient-primary) !important;
+  border-color: transparent !important;
+}
+
+.content-area .ant-pagination-item-active a {
+  color: #fff !important;
+}
+
+/* ============================================
+   模态框样式
+   ============================================ */
+.content-area .ant-modal-content {
+  background: rgba(17, 24, 39, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.content-area .ant-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+}
+
+.content-area .ant-modal-title {
+  color: var(--tech-text-primary) !important;
+  font-family: var(--tech-font-display);
+}
+
+.content-area .ant-modal-close {
+  color: var(--tech-text-muted) !important;
+}
+
+.content-area .ant-modal-close:hover {
+  color: var(--tech-primary) !important;
+  background: rgba(0, 212, 255, 0.1) !important;
+}
+
+/* ============================================
+   抽屉样式
+   ============================================ */
+.content-area .ant-drawer-content {
+  background: rgba(17, 24, 39, 0.98) !important;
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(0, 212, 255, 0.1) !important;
+}
+
+.content-area .ant-drawer-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+}
+
+.content-area .ant-drawer-title {
+  color: var(--tech-text-primary) !important;
+}
+
+/* ============================================
+   消息提示样式
+   ============================================ */
+.ant-message-notice-content {
+  background: rgba(17, 24, 39, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  border-radius: 12px !important;
+  color: var(--tech-text-primary) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ============================================
+   徽章样式
+   ============================================ */
+.content-area .ant-badge-count {
+  background: var(--tech-gradient-primary) !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+}
+
+/* ============================================
+   标签样式
+   ============================================ */
+.content-area .ant-tag {
+  background: rgba(0, 212, 255, 0.1) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  color: var(--tech-primary) !important;
+  font-family: var(--tech-font-mono);
+  font-size: 12px;
+}
+
+.content-area .ant-tag-blue {
+  background: rgba(0, 212, 255, 0.1) !important;
+  border-color: rgba(0, 212, 255, 0.2) !important;
+  color: var(--tech-primary) !important;
+}
+
+.content-area .ant-tag-green {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+  color: var(--tech-accent-green) !important;
+}
+
+.content-area .ant-tag-red {
+  background: rgba(236, 72, 153, 0.1) !important;
+  border-color: rgba(236, 72, 153, 0.2) !important;
+  color: var(--tech-accent-pink) !important;
+}
+
+.content-area .ant-tag-gold {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+  color: var(--tech-accent-orange) !important;
+}
+
+/* ============================================
+   骨架屏样式
+   ============================================ */
+.content-area .ant-skeleton {
   animation: skeletonDelay 0.15s ease-out;
 }
+
+.content-area .ant-skeleton-title,
+.content-area .ant-skeleton-paragraph > li {
+  background: linear-gradient(90deg, rgba(17, 24, 39, 0.8) 25%, rgba(0, 212, 255, 0.1) 50%, rgba(17, 24, 39, 0.8) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: skeletonShine 1.5s infinite !important;
+}
+
 @keyframes skeletonDelay {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* ---------- Glass cards ---------- */
-.content-area .ant-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.55) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03) !important;
+@keyframes skeletonShine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-.content-area .ant-card:hover {
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.08) !important;
+/* ============================================
+   加载动画
+   ============================================ */
+.content-area .ant-spin-dot-item {
+  background: var(--tech-primary) !important;
 }
 
-.content-area .ant-card-head {
-  background: rgba(255, 255, 255, 0.25) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.35) !important;
+.content-area .ant-spin-text {
+  color: var(--tech-text-secondary) !important;
 }
 
-/* ---------- Nav highlight ---------- */
-.content-area .ant-menu-horizontal .ant-menu-item {
-  transition: all 0.2s ease !important;
-  border-radius: 6px;
-  margin: 0 2px !important;
-}
-.content-area .ant-menu-horizontal .ant-menu-item-selected {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-radius: 6px;
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.15);
-}
-.content-area .ant-menu-horizontal .ant-menu-item-selected::after {
-  border-bottom-color: #667eea !important;
-}
-.content-area .ant-menu-horizontal .ant-menu-item:not(.ant-menu-item-selected):hover {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-radius: 6px;
+/* ============================================
+   分隔线样式
+   ============================================ */
+.content-area .ant-divider {
+  border-color: rgba(0, 212, 255, 0.1) !important;
 }
 
-/* ---------- Animations ---------- */
-@keyframes contentGradient {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.content-area .ant-divider-horizontal.ant-divider-with-text {
+  color: var(--tech-text-muted) !important;
+  font-family: var(--tech-font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
 }
 
-@keyframes blobDrift {
-  0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(-3%, 2%) scale(1.2); }
-  100% { transform: translate(2%, -3%) scale(1.1); }
+.content-area .ant-divider-horizontal.ant-divider-with-text::before,
+.content-area .ant-divider-horizontal.ant-divider-with-text::after {
+  border-color: rgba(0, 212, 255, 0.2) !important;
 }
 
-@keyframes blobDrift2 {
-  0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(3%, -2%) scale(1.15); }
-  100% { transform: translate(-2%, 3%) scale(1.05); }
+/* ============================================
+   结果/空状态样式
+   ============================================ */
+.content-area .ant-empty-description {
+  color: var(--tech-text-muted) !important;
+}
+
+.content-area .ant-empty-img-simple-path {
+  fill: rgba(0, 212, 255, 0.1) !important;
+}
+
+.content-area .ant-empty-img-simple-ellipse {
+  fill: rgba(0, 212, 255, 0.05) !important;
+}
+
+/* ============================================
+   时间线样式
+   ============================================ */
+.content-area .ant-timeline-item-head {
+  background: var(--tech-bg-primary) !important;
+  border-color: var(--tech-primary) !important;
+}
+
+.content-area .ant-timeline-item-content {
+  color: var(--tech-text-secondary) !important;
+}
+
+.content-area .ant-timeline-item-tail {
+  border-left-color: rgba(0, 212, 255, 0.2) !important;
 }

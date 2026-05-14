@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Button, Card, Radio, Spin, Skeleton, Typography, message, Segmented, Select, Space } from 'antd'
+import { Button, Card, Radio, Spin, Skeleton, Typography, message, Segmented, Select, Space, Input } from 'antd'
 import { renderLatex } from '../utils/renderLatex'
 import { StarOutlined, StarFilled } from '@ant-design/icons'
 import './Practice.css'
@@ -14,9 +14,11 @@ interface Question {
   id: number
   subject: string
   chapter: string
+  question_type?: string
   content: string
   options: string[]
   knowledge_point: string
+  explanation?: string
 }
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D']
@@ -401,6 +403,7 @@ export default function Practice() {
               setStreamText(fullText)
             } else if (data.type === 'done') {
               recordId = data.record_id
+              if (data.is_correct !== undefined) isCorrect = data.is_correct
             } else if (data.type === 'error') {
               message.error(data.message)
             }
@@ -422,7 +425,7 @@ export default function Practice() {
         })
       }
     } catch {
-      message.error('提交失败，请检查后端是否运行')
+      message.error('提交失败，请稍后重试或联系客服')
       setSubmitting(false)
     }
   }
@@ -472,7 +475,7 @@ export default function Practice() {
       <div className="practice-page">
         <Card>
           <Title level={4}>AI 正在批改...</Title>
-          <Paragraph>{renderLatex(question.content)}</Paragraph>
+          <Paragraph>{question && renderLatex(question.content)}</Paragraph>
           <div className="practice-submitting-text">
             {streamText || '正在生成分析...'}
           </div>
@@ -563,23 +566,52 @@ export default function Practice() {
         {question && (
           <>
             <div className="practice-options">
-              <Radio.Group
-                value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-                style={{ width: '100%' }}
-              >
-                {question.options.map((opt, i) => (
+              {question.question_type === 'judge' ? (
+                <Radio.Group
+                  value={selected}
+                  onChange={(e) => setSelected(e.target.value)}
+                  style={{ width: '100%', marginBottom: 16 }}
+                >
                   <div
-                    key={OPTION_LABELS[i]}
-                    className={`practice-option-item${selected === OPTION_LABELS[i] ? ' selected' : ''}`}
-                    onClick={() => setSelected(OPTION_LABELS[i])}
+                    className={`practice-option-item${selected === '对' ? ' selected' : ''}`}
+                    onClick={() => setSelected('对')}
                   >
-                    <Radio value={OPTION_LABELS[i]}>
-                      <strong>{OPTION_LABELS[i]}.</strong> {renderLatex(opt)}
-                    </Radio>
+                    <Radio value="对"><strong>对</strong></Radio>
                   </div>
-                ))}
-              </Radio.Group>
+                  <div
+                    className={`practice-option-item${selected === '错' ? ' selected' : ''}`}
+                    onClick={() => setSelected('错')}
+                  >
+                    <Radio value="错"><strong>错</strong></Radio>
+                  </div>
+                </Radio.Group>
+              ) : question.question_type === 'fill' || question.question_type === 'subjective' ? (
+                <Input
+                  size="large"
+                  value={selected || ''}
+                  onChange={(e) => setSelected(e.target.value)}
+                  placeholder="请输入你的答案..."
+                  style={{ marginBottom: 16 }}
+                />
+              ) : (
+                <Radio.Group
+                  value={selected}
+                  onChange={(e) => setSelected(e.target.value)}
+                  style={{ width: '100%' }}
+                >
+                  {question.options.map((opt, i) => (
+                    <div
+                      key={OPTION_LABELS[i]}
+                      className={`practice-option-item${selected === OPTION_LABELS[i] ? ' selected' : ''}`}
+                      onClick={() => setSelected(OPTION_LABELS[i])}
+                    >
+                      <Radio value={OPTION_LABELS[i]}>
+                        <strong>{OPTION_LABELS[i]}.</strong> {renderLatex(opt)}
+                      </Radio>
+                    </div>
+                  ))}
+                </Radio.Group>
+              )}
             </div>
 
             <Button

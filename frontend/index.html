@@ -1,13 +1,97 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>智学助手</title>
+    <meta name="description" content="智学助手 - AI驱动的智能错题分析与自适应学习平台" />
+    <meta name="theme-color" content="#030712" />
+    
+    <!-- 预加载字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" 
+      rel="stylesheet"
+    />
+    
+    <title>智学助手 | 智能错题分析与自适应学习平台</title>
+    
+    <style>
+      /* 全局基础样式 - 防止闪烁 */
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: #030712;
+      }
+      
+      /* 加载动画 */
+      #loader {
+        position: fixed;
+        inset: 0;
+        background: #030712;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+      
+      #loader.hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+      
+      .loader-content {
+        text-align: center;
+      }
+      
+      .loader-spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid rgba(0, 212, 255, 0.1);
+        border-top-color: #00d4ff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+      }
+      
+      .loader-text {
+        color: #94a3b8;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 14px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
+    <!-- 加载动画 -->
+    <div id="loader">
+      <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Loading...</div>
+      </div>
+    </div>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <script>
+      // 页面加载完成后隐藏loader
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+          setTimeout(() => {
+            loader.classList.add('hidden');
+          }, 300);
+        }
+      });
+    </script>
   </body>
 </html>

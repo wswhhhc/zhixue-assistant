@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Favorite, Question
 from routers.auth import require_user
+from config import beijing_time
 
 router = APIRouter(prefix="/favorites", tags=["favorites"])
 
@@ -27,7 +28,7 @@ def list_favorites(
             "question_id": f.question_id,
             "content": q.content[:120] + "..." if q and len(q.content) > 120 else (q.content if q else ""),
             "knowledge_point": q.knowledge_point if q else "",
-            "created_at": f.created_at.strftime("%m-%d %H:%M"),
+            "created_at": beijing_time(f.created_at),
         })
     return items
 

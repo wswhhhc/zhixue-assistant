@@ -16,6 +16,14 @@ export function renderLatex(text: unknown): React.ReactNode[] {
   let s = raw.replace(/\\\(/g, '$').replace(/\\\)/g, '$')
   s = s.replace(/\\\[/g, '$$').replace(/\\\]/g, '$$')
 
+  // If no $/$$ delimiters found but contains LaTeX commands, auto-wrap
+  if (!s.includes('$')) {
+    const latexPattern = /\\(?:frac|int|sum|cos|sin|tan|lim|log|ln|sqrt|pi|infty|alpha|beta|gamma|theta|partial|rightarrow|leftrightarrow|to|mapsto|cancel|underline|overline|vec|tilde|hat|dot|ddot|text|mbox|mathrm|mathbf|mathit|boxed|begin|end|[a-zA-Z]+)/;
+    if (latexPattern.test(s)) {
+      s = '$' + s + '$';
+    }
+  }
+
   const parts: React.ReactNode[] = []
   let key = 0
 
@@ -63,11 +71,31 @@ export function renderLatex(text: unknown): React.ReactNode[] {
   return parts
 }
 
+const CN_KEY_MAP: Record<string, string> = {
+  '分析': 'analysis',
+  '解题步骤': 'solution_steps',
+  '学习建议': 'suggestion',
+  '建议': 'suggestion',
+  '巩固练习': 'similar_question',
+  '相似题': 'similar_question',
+  '错因类型': 'error_type',
+  '错误类型': 'error_type',
+}
+
 export function extractJsonFromText(text: string) {
   const jsonMatch = text.match(/\{[\s\S]*\}/)
   if (jsonMatch) {
     try {
-      return JSON.parse(jsonMatch[0])
+      const parsed = JSON.parse(jsonMatch[0])
+      if (parsed && typeof parsed === 'object') {
+        // Map Chinese keys to English
+        const mapped: Record<string, unknown> = {}
+        for (const [k, v] of Object.entries(parsed)) {
+          mapped[CN_KEY_MAP[k] || k] = v
+        }
+        return mapped
+      }
+      return parsed
     } catch {
       return null
     }

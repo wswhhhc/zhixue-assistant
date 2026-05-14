@@ -9,6 +9,7 @@ from schemas import QuestionOut
 from routers.auth import require_user
 
 class QuestionUpdate(BaseModel):
+    question_type: Optional[str] = None
     content: Optional[str] = None
     options: Optional[List[str]] = None
     answer: Optional[str] = None
@@ -53,6 +54,7 @@ def list_questions(
         "items": [
             {
                 "id": q.id,
+                "question_type": q.question_type or "choice",
                 "content": q.content[:150] + "..." if len(q.content) > 150 else q.content,
                 "options": q.options,
                 "answer": q.answer,
@@ -90,6 +92,7 @@ def list_by_kp(
     return [
         {
             "id": q.id,
+            "question_type": q.question_type or "choice",
             "content": q.content,
             "options": q.options,
             "answer": q.answer,
@@ -154,6 +157,8 @@ def update_question(
     if question.user_id != user.id:
         raise HTTPException(status_code=403, detail="只能编辑自己上传的题目")
 
+    if data.question_type is not None:
+        question.question_type = data.question_type
     if data.content is not None:
         question.content = data.content
     if data.options is not None:

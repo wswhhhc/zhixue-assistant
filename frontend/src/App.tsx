@@ -14,6 +14,8 @@ import QuestionBank from './pages/QuestionBank'
 
 import Report from './pages/Report'
 import Favorites from './pages/Favorites'
+import Membership from './pages/Membership'
+import PaymentCallback from './pages/PaymentCallback'
 
 export default function App() {
   return (
@@ -21,6 +23,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Navigate to="/login" replace />} />
+        <Route path="/payment/callback" element={<PaymentCallback />} />
         <Route
           path="/*"
           element={
@@ -36,6 +39,7 @@ export default function App() {
                   <Route path="/question-bank" element={<QuestionBank />} />
                   <Route path="/report" element={<Report />} />
                   <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/membership" element={<Membership />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>

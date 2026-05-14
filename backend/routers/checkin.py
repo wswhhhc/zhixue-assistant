@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database import get_db
 from models import Checkin
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/checkin", tags=["checkin"])
 
@@ -36,8 +36,8 @@ def calc_streak(db: Session, user_id: int) -> int:
 
 
 @router.post("")
-def checkin(user=Depends(get_current_user), db: Session = Depends(get_db)):
-    uid = user.id if user else 1
+def checkin(user=Depends(require_user), db: Session = Depends(get_db)):
+    uid = user.id
     today = date.today()
     today_start = datetime(today.year, today.month, today.day)
 
@@ -61,8 +61,8 @@ def checkin(user=Depends(get_current_user), db: Session = Depends(get_db)):
 
 
 @router.get("/status")
-def checkin_status(user=Depends(get_current_user), db: Session = Depends(get_db)):
-    uid = user.id if user else 1
+def checkin_status(user=Depends(require_user), db: Session = Depends(get_db)):
+    uid = user.id
     today = date.today()
 
     checked_in = (

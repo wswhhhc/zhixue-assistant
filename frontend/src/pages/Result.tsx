@@ -93,7 +93,11 @@ export default function Result() {
       .catch(() => setLoading(false))
   }, [id, state])
 
+  // 合并 state，优先使用 location state，否则用 fetchedState
   const displayState = state || fetchedState
+
+  // 确保 question 数据存在
+  const hasValidQuestion = displayState?.question && displayState.question.content
 
   if (loading) {
     return (
@@ -105,10 +109,11 @@ export default function Result() {
     )
   }
 
-  if (!displayState) {
+  if (!displayState || !hasValidQuestion) {
     return (
-      <div className="result-error">
+      <div className="result-error" style={{ textAlign: 'center', padding: '40px 20px' }}>
         <Title level={4}>结果数据未找到</Title>
+        <Paragraph style={{ color: '#888' }}>页面跳转数据已过期，请重新刷题</Paragraph>
         <Button type="primary" onClick={() => navigate('/practice')}>返回刷题</Button>
       </div>
     )
@@ -116,8 +121,17 @@ export default function Result() {
 
   try {
     const { question, userAnswer, isCorrect, analysisText } = displayState
-    const parsed = extractJsonFromText(analysisText)
-    const analysis = parsed?.analysis || analysisText
+    
+    // 防御性检查
+    if (!question || typeof question !== 'object') {
+      throw new Error('题目数据无效')
+    }
+    if (!Array.isArray(question.options)) {
+      throw new Error('选项数据无效')
+    }
+    
+    const parsed = extractJsonFromText(analysisText || '')
+    const analysis = parsed?.analysis || analysisText || ''
     const solutionSteps = parsed?.solution_steps || ''
     const suggestion = parsed?.suggestion || ''
     const similarQuestion = parsed?.similar_question || ''

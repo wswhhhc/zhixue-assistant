@@ -129,9 +129,17 @@
 /* ---------- Fade transition ---------- */
 .practice-content-fade {
   transition: opacity 0.2s ease;
+  opacity: 1;
 }
 .practice-content-fade.fade-out {
   opacity: 0;
+  /* 保险：最多持续 1 秒后强制恢复 */
+  animation: forceFadeIn 1s ease forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes forceFadeIn {
+  to { opacity: 1; }
 }
 
 /* ---------- Options ---------- */

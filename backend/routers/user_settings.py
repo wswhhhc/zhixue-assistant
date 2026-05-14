@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -10,9 +10,9 @@ router = APIRouter(prefix="/user", tags=["user"])
 @router.get("/goal")
 def get_goal(
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     u = db.query(User).filter(User.id == uid).first()
     return {"daily_goal": u.daily_goal if u else 10}
 
@@ -21,11 +21,11 @@ def get_goal(
 def set_goal(
     daily_goal: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
     if daily_goal < 1 or daily_goal > 200:
         raise HTTPException(status_code=400, detail="目标范围 1-200")
-    uid = user.id if user else 1
+    uid = user.id
     u = db.query(User).filter(User.id == uid).first()
     if not u:
         raise HTTPException(status_code=404, detail="用户不存在")

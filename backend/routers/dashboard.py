@@ -4,7 +4,7 @@ from sqlalchemy import func, case
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Question, AnswerRecord, Checkin, User
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -13,9 +13,9 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 def get_trend(
     days: int = Query(7, description="天数"),
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    user_id = user.id if user else 1
+    user_id = user.id
     start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=days - 1)
 
     raw = (
@@ -49,9 +49,9 @@ def get_trend(
 @router.get("/stats")
 def get_stats(
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    user_id = user.id if user else 1
+    user_id = user.id
 
     today_start = datetime.now(timezone.utc).replace(
         hour=0, minute=0, second=0, microsecond=0
@@ -143,9 +143,9 @@ def get_stats(
 def get_timeline(
     days: int = Query(7),
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     BJT = timezone(timedelta(hours=8))
     start = datetime.now(BJT) - timedelta(days=days)
 

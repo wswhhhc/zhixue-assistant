@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from database import Base, engine
+from config import CORS_ALLOW_ORIGINS
 from seed import seed_database
 from routers import questions, practice, dashboard, wrongbook, upload, qa, auth, report, checkin, favorites, user_settings
 
@@ -26,9 +27,10 @@ app = FastAPI(title="智学助手", lifespan=lifespan)
 # CORS 允许前端开发服务器
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ALLOW_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 app.include_router(questions.router)

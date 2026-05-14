@@ -9,7 +9,7 @@ from database import get_db
 from models import Question, AnswerRecord
 from schemas import AnswerSubmit
 from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/practice", tags=["practice"])
 
@@ -17,9 +17,9 @@ router = APIRouter(prefix="/practice", tags=["practice"])
 @router.get("/recommend")
 def recommend_question(
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
 
     # calculate mastery per knowledge point
     raw = (
@@ -194,18 +194,17 @@ def parse_llm_response(text):
 def submit_answer(
     data: AnswerSubmit,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
     question = db.query(Question).filter(Question.id == data.question_id).first()
     if not question:
         return {"error": "题目不存在"}
     # 确保用户只能作答可见的题目
-    uid = user.id if user else 1
+    uid = user.id
     if question.source != "system" and question.user_id != uid:
         return {"error": "无权访问该题目"}
 
     is_correct = question.answer == data.answer
-    uid = user.id if user else 1
 
     def event_stream():
         try:
@@ -290,9 +289,9 @@ def submit_answer(
 def generate_similar(
     question_id: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     question = db.query(Question).filter(Question.id == question_id).first()
     if not question:
         raise HTTPException(status_code=404, detail="题目不存在")
@@ -367,7 +366,7 @@ def generate_similar(
         answer=result.get("answer", ""),
         knowledge_point=result.get("knowledge_point", question.knowledge_point),
         source="ai_generated",
-        user_id=user.id if user else 1,
+        user_id=user.id,
     )
     db.add(new_q)
     db.commit()

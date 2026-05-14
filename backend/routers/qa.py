@@ -1,9 +1,11 @@
 import json
 import httpx
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
+from models import User
+from routers.auth import require_user
 
 router = APIRouter(prefix="/qa", tags=["qa"])
 
@@ -16,7 +18,7 @@ SYSTEM_PROMPT = "你是一位专业的数学老师，擅长高等数学。请用
 
 
 @router.post("/ask")
-def ask_question(data: AskInput):
+def ask_question(data: AskInput, user: User = Depends(require_user)):
     def event_stream():
         try:
             yield f"data: {json.dumps({'type': 'meta'})}\n\n"

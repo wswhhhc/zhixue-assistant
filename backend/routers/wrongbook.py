@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Question, AnswerRecord
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/wrong-book", tags=["wrong-book"])
 
@@ -21,9 +21,9 @@ def get_wrong_book(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=10, ge=1, le=50),
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     query = db.query(AnswerRecord).filter(
         AnswerRecord.is_correct == False,
         AnswerRecord.user_id == uid,
@@ -69,9 +69,9 @@ def get_wrong_book(
 @router.get("/questions")
 def get_wrong_questions(
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     wrong_records = (
         db.query(AnswerRecord.question_id)
         .filter(
@@ -106,9 +106,9 @@ def get_wrong_questions(
 def get_wrong_detail(
     record_id: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     record = (
         db.query(AnswerRecord)
         .filter(AnswerRecord.id == record_id, AnswerRecord.user_id == uid)
@@ -148,9 +148,9 @@ def get_wrong_detail(
 def delete_wrong_record(
     record_id: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     record = (
         db.query(AnswerRecord)
         .filter(AnswerRecord.id == record_id, AnswerRecord.user_id == uid)

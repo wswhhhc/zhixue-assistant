@@ -217,35 +217,43 @@ export default function Login() {
       <Form.Item style={{ marginBottom: 0 }}>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <div
-            onClick={captchaLoading ? undefined : () => fetchCaptcha(true)}
-            style={{ position: 'relative', flexShrink: 0, cursor: captchaLoading ? 'not-allowed' : 'pointer' }}
+            onClick={captchaLoading || !captchaImage ? undefined : () => fetchCaptcha(true)}
+            style={{ position: 'relative', flexShrink: 0, cursor: (captchaLoading || !captchaImage) ? 'not-allowed' : 'pointer', minWidth: 130, height: 48, background: 'rgba(255,255,255,0.05)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <Image
-              src={captchaImage}
-              alt="验证码"
-              preview={false}
-              style={{
-                height: 48,
-                borderRadius: 8,
-                display: 'block',
-                border: '1px solid rgba(255,255,255,0.1)',
-                opacity: captchaLoading ? 0.5 : 1,
-              }}
-            />
-            <ReloadOutlined
-              spin={captchaLoading}
-              style={{
-                position: 'absolute',
-                bottom: 4,
-                right: 4,
-                color: '#fff',
-                fontSize: 12,
-                background: 'rgba(0,0,0,0.45)',
-                borderRadius: 10,
-                padding: 3,
-                cursor: 'pointer',
-              }}
-            />
+            {captchaImage ? (
+              <>
+                <Image
+                  src={captchaImage}
+                  alt="验证码"
+                  preview={false}
+                  style={{
+                    height: 48,
+                    borderRadius: 8,
+                    display: 'block',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    opacity: captchaLoading ? 0.5 : 1,
+                  }}
+                />
+                <ReloadOutlined
+                  spin={captchaLoading}
+                  style={{
+                    position: 'absolute',
+                    bottom: 4,
+                    right: 4,
+                    color: '#fff',
+                    fontSize: 12,
+                    background: 'rgba(0,0,0,0.45)',
+                    borderRadius: 10,
+                    padding: 3,
+                    cursor: 'pointer',
+                  }}
+                />
+              </>
+            ) : (
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
+                {captchaLoading ? '加载中...' : '点击刷新'}
+              </span>
+            )}
           </div>
           <Form.Item name="captcha_code" rules={[{ required: true, message: '请输入验证码' }]} noStyle>
             <Input

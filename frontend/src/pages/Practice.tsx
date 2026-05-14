@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Button, Card, Radio, Spin, Skeleton, Typography, message, Segmented, Select } from 'antd'
+import { Button, Card, Radio, Spin, Skeleton, Typography, message, Segmented, Select, Space } from 'antd'
 import { renderLatex } from '../utils/renderLatex'
 import { StarOutlined, StarFilled } from '@ant-design/icons'
 import './Practice.css'
@@ -51,11 +51,22 @@ export default function Practice() {
   // 换题过渡动画（统一 0.2s 淡出 → 换内容 → 0.2s 淡入）
   const TRANSITION_MS = 200
   const [transitioning, setTransitioning] = useState(false)
-  const transitionTimer = useRef<ReturnType<typeof setTimeout>>()
+  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const clearTransitionTimer = () => {
+    if (transitionTimer.current) {
+      clearTimeout(transitionTimer.current)
+      transitionTimer.current = null
+    }
+  }
 
   const startFadeOut = () => {
-    if (transitionTimer.current) clearTimeout(transitionTimer.current)
+    clearTransitionTimer()
     setTransitioning(true)
+  }
+
+  const endFadeTransition = () => {
+    setTransitioning(false)
   }
 
   /** 本地数据切换（无网络延迟）：淡出 → 换内容 → 淡入 */
@@ -63,7 +74,9 @@ export default function Practice() {
     startFadeOut()
     transitionTimer.current = setTimeout(() => {
       updateFn()
-      transitionTimer.current = setTimeout(() => setTransitioning(false), 30)
+      transitionTimer.current = setTimeout(() => {
+        endFadeTransition()
+      }, 30)
     }, TRANSITION_MS)
   }
 
@@ -71,20 +84,23 @@ export default function Practice() {
   const transitionFetch = async (fetchFn: () => Promise<void>) => {
     startFadeOut()
     const start = Date.now()
+    let success = false
     try {
       await fetchFn()
+      success = true
     } catch {
       // 请求失败由调用方处理，这里保证继续恢复 UI
     }
     const elapsed = Date.now() - start
-    if (elapsed < TRANSITION_MS) {
-      await new Promise(r => { transitionTimer.current = setTimeout(r, TRANSITION_MS - elapsed) })
-    }
-    setTransitioning(false)
+    const remaining = Math.max(0, TRANSITION_MS - elapsed)
+    
+    transitionTimer.current = setTimeout(() => {
+      endFadeTransition()
+    }, remaining + 30)
   }
 
   useEffect(() => {
-    return () => { if (transitionTimer.current) clearTimeout(transitionTimer.current) }
+    return () => { clearTransitionTimer() }
   }, [])
 
   const fetchKpList = async () => {
@@ -154,38 +170,65 @@ export default function Practice() {
     setLoading(true)
     setSelected(null)
     setRecommendInfo(null)
-    await transitionFetch(async () => {
-      const qid = searchParams.get('question_id')
-      let url: string
-      if (qid) {
-        url = `${API_BASE}/questions/${qid}`
-      } else if (m === 'sequential') {
-        const savedId = localStorage.getItem('practice_sequential_id')
-        const startId = currentId || (savedId ? Number(savedId) : null)
-        if (startId) {
-          url = `${API_BASE}/questions/${startId}`
-        } else {
-          url = `${API_BASE}/questions/sequential?current_id=0&direction=next`
-        }
-      } else if (m === 'recommend') {
-        url = `${API_BASE}/practice/recommend`
+    
+    const qid = searchParams.get('question_id')
+    let url: string
+    if (qid) {
+      url = `${API_BASE}/questions/${qid}`
+    } else if (m === 'sequential') {
+      const savedId = localStorage.getItem('practice_sequential_id')
+      const startId = currentId || (savedId ? Number(savedId) : null)
+      if (startId) {
+        url = `${API_BASE}/questions/${startId}`
       } else {
-        url = `${API_BASE}/questions/random`
+        url = `${API_BASE}/questions/sequential?current_id=0&direction=next`
       }
+    } else if (m === 'recommend') {
+      url = `${API_BASE}/practice/recommend`
+    } else {
+      url = `${API_BASE}/questions/random`
+    }
 
+    try {
       const res = await authFetch(url)
-      const data = await res.json()
-      if (data.question) {
-        setQuestion(data.question)
-        setRecommendInfo(data.recommendation || null)
-      } else {
-        setQuestion(data)
-        setRecommendInfo(null)
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        message.error(errData.detail || '获取题目失败')
+        setQuestion(null)
+        setLoading(false)
+        return
       }
-    })
+      
+      const data = await res.json()
+      
+      // 检查错误响应
+      if (data.error) {
+        message.error(data.error)
+        setQuestion(null)
+        setLoading(false)
+        return
+      }
+      
+      // 提取题目数据（支持两种格式）
+      const questionData = data.question || data
+      if (!questionData || !questionData.id) {
+        message.error('题目数据无效')
+        setQuestion(null)
+        setLoading(false)
+        return
+      }
+      
+      setQuestion(questionData)
+      setRecommendInfo(data.recommendation || null)
+    } catch (e) {
+      message.error('获取题目失败，请刷新重试')
+      setQuestion(null)
+    }
+    
     setLoading(false)
   }, [searchParams])
 
+  // 初始加载和参数变化时重新加载
   useEffect(() => {
     fetchKpList()
     if (searchParams.get('redo_all')) {
@@ -193,7 +236,8 @@ export default function Practice() {
     } else {
       fetchQuestion(mode)
     }
-  }, []) // only on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.get('question_id'), searchParams.get('redo_all'), mode])
 
   // 当问题切换时检查收藏状态，并保存顺序刷题进度
   useEffect(() => {
@@ -206,6 +250,11 @@ export default function Practice() {
   }, [question?.id])
 
   const handleModeChange = (newMode: Mode) => {
+    // 清除URL参数，避免干扰模式切换
+    if (searchParams.get('question_id') || searchParams.get('redo_all')) {
+      navigate('/practice', { replace: true })
+    }
+    
     setMode(newMode)
     if (newMode === 'kp_practice') {
       if (selectedKp) {
@@ -215,7 +264,8 @@ export default function Practice() {
       }
     } else {
       setKpQuestions([])
-      fetchQuestion(newMode)
+      // 延迟执行，等待 navigate 完成
+      setTimeout(() => fetchQuestion(newMode), 0)
     }
   }
 
@@ -240,36 +290,48 @@ export default function Practice() {
   }
 
   const handleNextSequential = async () => {
-    if (!question) return
+    if (!question || transitioning) return
     startFadeOut()
     const t0 = Date.now()
     try {
       const res = await authFetch(`${API_BASE}/questions/sequential?current_id=${question.id}&direction=next`)
-      if (!res.ok) { if (transitionTimer.current) clearTimeout(transitionTimer.current); setTransitioning(false); message.warning('已经是最后一题了'); return }
+      if (!res.ok) {
+        clearTransitionTimer()
+        setTransitioning(false)
+        message.warning('已经是最后一题了')
+        return
+      }
       const data = await res.json()
       setQuestion(data)
       setSelected(null)
-      const remain = TRANSITION_MS - (Date.now() - t0)
-      transitionTimer.current = setTimeout(() => setTransitioning(false), Math.max(remain, 30))
+      const remain = Math.max(0, TRANSITION_MS - (Date.now() - t0))
+      transitionTimer.current = setTimeout(() => setTransitioning(false), remain + 30)
     } catch {
+      clearTransitionTimer()
       message.error('获取下一题失败')
       setTransitioning(false)
     }
   }
 
   const handlePrevSequential = async () => {
-    if (!question) return
+    if (!question || transitioning) return
     startFadeOut()
     const t0 = Date.now()
     try {
       const res = await authFetch(`${API_BASE}/questions/sequential?current_id=${question.id}&direction=prev`)
-      if (!res.ok) { if (transitionTimer.current) clearTimeout(transitionTimer.current); setTransitioning(false); message.warning('已经是第一题了'); return }
+      if (!res.ok) {
+        clearTransitionTimer()
+        setTransitioning(false)
+        message.warning('已经是第一题了')
+        return
+      }
       const data = await res.json()
       setQuestion(data)
       setSelected(null)
-      const remain = TRANSITION_MS - (Date.now() - t0)
-      transitionTimer.current = setTimeout(() => setTransitioning(false), Math.max(remain, 30))
+      const remain = Math.max(0, TRANSITION_MS - (Date.now() - t0))
+      transitionTimer.current = setTimeout(() => setTransitioning(false), remain + 30)
     } catch {
+      clearTransitionTimer()
       message.error('获取上一题失败')
       setTransitioning(false)
     }
@@ -365,11 +427,41 @@ export default function Practice() {
     }
   }
 
-  if (!question && mode !== 'kp_practice') {
+  // 加载中状态
+  if (loading && !question) {
     return (
       <div className="practice-page">
         <Card className="practice-card">
           <Skeleton active paragraph={{ rows: 4 }} />
+        </Card>
+      </div>
+    )
+  }
+  
+  // 无题目状态（加载失败或题目不存在）
+  if (!question && mode !== 'kp_practice') {
+    return (
+      <div className="practice-page">
+        <Card className="practice-card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+          <Title level={4}>暂无可用题目</Title>
+          <p style={{ color: '#888', marginBottom: 24 }}>
+            {searchParams.get('question_id') 
+              ? '指定题目不存在或无权访问' 
+              : '当前模式下暂无题目'}
+          </p>
+          <Space>
+            <Button onClick={() => { 
+              searchParams.get('question_id') 
+                ? navigate('/practice') 
+                : handleModeChange('random')
+            }}>
+              {searchParams.get('question_id') ? '返回普通刷题' : '切换随机模式'}
+            </Button>
+            <Button type="primary" onClick={() => fetchQuestion(mode)}>
+              重试
+            </Button>
+          </Space>
         </Card>
       </div>
     )

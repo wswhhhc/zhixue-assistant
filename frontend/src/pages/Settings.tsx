@@ -3,11 +3,12 @@ import { Card, Form, Input, Button, Typography, message } from 'antd'
 import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons'
 import './Settings.css'
 import { API_BASE } from '../config'
-import { authFetch } from '../auth'
+import { authFetch, useAuth } from '../auth'
 
 const { Title } = Typography
 
 export default function Settings() {
+  const { updateProfile } = useAuth()
   const [loading, setLoading] = useState(false)
   const [pwdLoading, setPwdLoading] = useState(false)
   const [passwordForm] = Form.useForm()
@@ -36,6 +37,7 @@ export default function Settings() {
         return
       }
       message.success('个人信息已更新')
+      updateProfile({ username: data.username })
       profileForm.setFieldsValue({ username: data.username, email: data.email })
     } catch {
       message.error('更新失败')

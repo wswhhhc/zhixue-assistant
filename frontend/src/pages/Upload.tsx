@@ -251,8 +251,8 @@ export default function UploadPage() {
           />
           <Space>
             <Button onClick={resetForm}>继续上传</Button>
-            {confirmResult.review?.passed !== false ? (
-              <Button type="primary" onClick={() => navigate('/practice')}>
+            {confirmResult.review?.passed !== false && confirmResult.question_id ? (
+              <Button type="primary" onClick={() => navigate(`/practice?question_id=${confirmResult.question_id}`)}>
                 去刷题
               </Button>
             ) : (

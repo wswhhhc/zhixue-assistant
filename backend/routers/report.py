@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Question, AnswerRecord
 from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/report", tags=["report"])
 
@@ -43,9 +43,9 @@ def call_llm(messages, max_tokens=2048):
 @router.get("/generate")
 def generate_report(
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     now = datetime.now(timezone.utc)
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_ago = today_start - timedelta(days=13)
@@ -145,7 +145,7 @@ def generate_report(
 
     return {
         "generated_at": now.strftime("%Y-%m-%d %H:%M"),
-        "username": user.username if user else "用户",
+        "username": user.username,
         "stats": {
             "today_count": today_count,
             "today_accuracy": today_accuracy,

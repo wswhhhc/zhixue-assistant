@@ -8,6 +8,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (token: string, userId: number, username: string) => void
+  updateProfile: (profile: { username: string }) => void
   logout: () => void
   isAuthenticated: boolean
 }
@@ -35,13 +36,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuth(data)
   }
 
+  const updateProfile = (profile: { username: string }) => {
+    setAuth((prev) => {
+      const next = { ...prev, username: profile.username }
+      localStorage.setItem('auth', JSON.stringify(next))
+      return next
+    })
+  }
+
   const logout = () => {
     setAuth({ token: null, user_id: null, username: null })
     localStorage.removeItem('auth')
   }
 
   return (
-    <AuthContext.Provider value={{ ...auth, login, logout, isAuthenticated: !!auth.token }}>
+    <AuthContext.Provider value={{ ...auth, login, updateProfile, logout, isAuthenticated: !!auth.token }}>
       {children}
     </AuthContext.Provider>
   )

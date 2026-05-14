@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Favorite, Question
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/favorites", tags=["favorites"])
 
@@ -10,9 +10,9 @@ router = APIRouter(prefix="/favorites", tags=["favorites"])
 @router.get("")
 def list_favorites(
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     records = (
         db.query(Favorite)
         .filter(Favorite.user_id == uid)
@@ -36,9 +36,9 @@ def list_favorites(
 def check_favorite(
     question_id: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     exists = (
         db.query(Favorite)
         .filter(Favorite.user_id == uid, Favorite.question_id == question_id)
@@ -51,9 +51,9 @@ def check_favorite(
 def add_favorite(
     question_id: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     q = db.query(Question).filter(Question.id == question_id).first()
     if not q:
         raise HTTPException(status_code=404, detail="题目不存在")
@@ -76,9 +76,9 @@ def add_favorite(
 def remove_favorite(
     question_id: int,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     fav = (
         db.query(Favorite)
         .filter(Favorite.user_id == uid, Favorite.question_id == question_id)

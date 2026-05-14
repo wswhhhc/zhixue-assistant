@@ -9,7 +9,7 @@ from typing import List
 from database import get_db
 from models import Question
 from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
-from routers.auth import get_current_user
+from routers.auth import require_user
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
@@ -222,9 +222,9 @@ D. {opt3}
 def upload_confirm(
     data: ConfirmInput,
     db: Session = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_user),
 ):
-    uid = user.id if user else 1
+    uid = user.id
     prompt = REVIEW_PROMPT.format(
         content=data.content,
         opt0=data.options[0] if len(data.options) > 0 else "",

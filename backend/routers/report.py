@@ -1,13 +1,13 @@
 import json
 import httpx
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy import func, case
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Question, AnswerRecord, UsageRecord
-from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
+from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, BEIJING_TZ
 from routers.auth import require_user
 from routers.deps import check_usage_limit
 
@@ -35,7 +35,7 @@ def generate_report(
     user=Depends(require_user),
 ):
     uid = user.id
-    now = datetime.now(timezone(timedelta(hours=8)))
+    now = datetime.now(BEIJING_TZ)
 
     # 用量检查
     allowed, used, limit = check_usage_limit(user, "report_gen", db)

@@ -634,9 +634,8 @@ export default function Login() {
       )}
 
       {/* 登录卡片 */}
-      <div 
+      <div
         className={`glass-card ${success ? 'glass-card-exit' : ''}`}
-        style={parallaxStyle(15)}
       >
         {/* 主题切换按钮 */}
         <Button

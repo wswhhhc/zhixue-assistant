@@ -141,3 +141,67 @@
 .admin-login-page .glow-orb-2 {
   background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%) !important;
 }
+
+/* ============================================
+   亮色主题覆写
+   ============================================ */
+[data-theme="light"] .admin-login-card {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(124, 58, 237, 0.2) !important;
+  box-shadow:
+    0 0 0 1px rgba(124, 58, 237, 0.05),
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 80px rgba(124, 58, 237, 0.06) !important;
+}
+
+[data-theme="light"] .admin-login-card:hover {
+  border-color: rgba(124, 58, 237, 0.35) !important;
+  box-shadow:
+    0 0 0 1px rgba(124, 58, 237, 0.08),
+    0 25px 50px -12px rgba(0, 0, 0, 0.2),
+    0 0 100px rgba(124, 58, 237, 0.1) !important;
+}
+
+[data-theme="light"] .admin-login-card .brand-title {
+  background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="light"] .admin-login-card .ant-input-affix-wrapper {
+  background: #ffffff !important;
+  border-color: rgba(100, 116, 139, 0.2) !important;
+}
+
+[data-theme="light"] .admin-login-card .ant-input-affix-wrapper:hover {
+  border-color: rgba(124, 58, 237, 0.4) !important;
+}
+
+[data-theme="light"] .admin-login-card .ant-input-affix-wrapper-focused {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+}
+
+[data-theme="light"] .admin-login-card .brand-icon-inner::before {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  opacity: 0.15;
+}
+
+[data-theme="light"] .admin-login-card::before {
+  border-top-color: #7c3aed !important;
+  border-left-color: #7c3aed !important;
+}
+
+[data-theme="light"] .admin-login-card::after {
+  border-bottom-color: #4f46e5 !important;
+  border-right-color: #4f46e5 !important;
+}
+
+[data-theme="light"] .admin-login-card:hover::before {
+  box-shadow: -5px -5px 20px rgba(124, 58, 237, 0.25) !important;
+}
+
+[data-theme="light"] .admin-login-card:hover::after {
+  box-shadow: 5px 5px 20px rgba(79, 70, 229, 0.25) !important;
+}

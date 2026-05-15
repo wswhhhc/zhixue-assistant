@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Card, Form, Input, Button, Typography, message } from 'antd'
-import { UserOutlined, LockOutlined, RocketOutlined } from '@ant-design/icons'
+import { UserOutlined, LockOutlined, RocketOutlined, SunOutlined, MoonOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { setAdminAuth } from '../../adminAuth'
 import { API_BASE } from '../../config'
+import { useTheme } from '../../contexts/ThemeContext'
 import '../Login.css'
 import './AdminLogin.css'
 
@@ -25,6 +26,7 @@ const PARTICLE_CONFIG = {
 export default function AdminLogin() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const { isDark, toggleTheme } = useTheme()
 
   // 鼠标位置追踪
   const mouseRef = useRef({ x: 0, y: 0 })
@@ -224,6 +226,22 @@ export default function AdminLogin() {
           width: 420,
         }}
       >
+        {/* 主题切换按钮 */}
+        <Button
+          type="text"
+          icon={isDark ? <SunOutlined /> : <MoonOutlined />}
+          onClick={toggleTheme}
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            color: isDark ? '#f59e0b' : '#7c3aed',
+            fontSize: 18,
+            transition: 'all 0.3s ease',
+            zIndex: 100,
+          }}
+          title={isDark ? '切换到亮色模式' : '切换到深色模式'}
+        />
         <div className="brand-section">
           <div className="brand-icon-wrapper">
             <div className="brand-icon-inner">

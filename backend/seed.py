@@ -316,8 +316,8 @@ def seed_database():
         db.add(test_user)
         db.commit()
     else:
-        existing_user.role = "admin"
-        db.commit()
+        # wsw 保持普通用户角色
+        pass
 
     # ---- test users user1~user5 with demo data ----
     _KP_MAP = {

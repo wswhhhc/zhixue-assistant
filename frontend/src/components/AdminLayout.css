@@ -1,21 +1,544 @@
-/* 管理员侧边栏选中发光特效 */
+/**
+ * AdminLayout - 深空紫晶主题
+ * 深色背景 + 紫晶光效 + 毛玻璃质感
+ */
 
-.admin-sider .ant-menu-item-selected {
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
+@import url('../styles/tech-design-system.css');
+
+/* ============================================
+   侧边栏基础样式
+   ============================================ */
+.admin-sider {
+  position: relative;
+  overflow: visible !important;
 }
 
-.admin-sider .ant-menu-item-selected::after {
+/* 折叠状态 */
+.admin-sider-collapsed {
+  overflow: visible !important;
+}
+
+/* 折叠按钮和谐样式 */
+.sider-toggle-btn:hover {
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15) !important;
+}
+
+.sider-toggle-btn:active {
+  transform: scale(0.98) !important;
+}
+
+/* 折叠状态下按钮居中 */
+.admin-sider-collapsed .sider-toggle-btn {
+  left: 50% !important;
+  right: auto !important;
+  padding: 0 !important;
+}
+
+.admin-sider-collapsed .sider-toggle-btn:hover {
+  background: rgba(168, 85, 247, 0.2) !important;
+}
+
+/* ============================================
+   Tooltip 紫晶主题样式
+   ============================================ */
+.admin-tooltip .ant-tooltip-inner {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(168, 85, 247, 0.1) !important;
+}
+
+.admin-tooltip .ant-tooltip-arrow::before {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Tooltip 动画优化 */
+.admin-tooltip.ant-tooltip-placement-top .ant-tooltip-arrow {
+  bottom: -5px;
+}
+
+.admin-tooltip.ant-tooltip-placement-bottom .ant-tooltip-arrow {
+  top: -5px;
+}
+
+/* 折叠状态下的菜单样式 */
+.admin-sider-collapsed .ant-menu {
+  padding: 0 !important;
+}
+
+.admin-sider-collapsed .ant-menu-item {
+  margin: 6px 8px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-sider-collapsed .ant-menu-item .ant-menu-item-icon {
+  font-size: 20px;
+  margin: 0 !important;
+}
+
+.admin-sider-collapsed .ant-menu-item .ant-menu-title-content {
+  display: none !important;
+}
+
+/* 折叠状态下的选中指示条 */
+.admin-sider-collapsed .ant-menu-item-selected::after {
+  right: -8px;
+  height: 20px;
+}
+
+/* 折叠状态下的光晕 */
+.admin-sider-collapsed .ant-menu-item-selected::before {
+  left: 4px;
+  right: 4px;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 10px;
+}
+
+/* 侧边栏背景光晕 */
+.admin-sider::before {
   content: '';
   position: absolute;
-  right: 0;
-  top: 4px;
-  bottom: 4px;
-  width: 3px;
-  background: #00d4ff;
-  border-radius: 3px 0 0 3px;
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+}
+
+/* 侧边栏网格纹理 */
+.admin-sider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  background-image: 
+    linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ============================================
+   菜单项基础样式
+   ============================================ */
+.admin-sider .ant-menu {
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-sider .ant-menu-item {
+  position: relative;
+  margin: 6px 12px !important;
+  border-radius: 10px !important;
+  padding-left: 16px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: rgba(148, 163, 184, 0.9) !important;
 }
 
 .admin-sider .ant-menu-item:hover {
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.1);
+  color: #e2e8f0 !important;
+  background: rgba(168, 85, 247, 0.1) !important;
+}
+
+/* ============================================
+   选中项 - 紫晶光效
+   ============================================ */
+.admin-sider .ant-menu-item-selected {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%) !important;
+  color: #fff !important;
+  position: relative;
+  overflow: visible !important;
+}
+
+/* 选中项光晕层 - 位于元素外部 */
+.admin-sider .ant-menu-item-selected::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: -2px;
+  bottom: -2px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 
+    0 0 20px rgba(168, 85, 247, 0.25),
+    0 0 40px rgba(168, 85, 247, 0.1),
+    inset 0 0 12px rgba(168, 85, 247, 0.05);
+  pointer-events: none;
+  z-index: -1;
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* 右侧指示条 */
+.admin-sider .ant-menu-item-selected::after {
+  content: '';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: linear-gradient(180deg, #a855f7 0%, #6366f1 100%);
+  border-radius: 2px 0 0 2px;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.8);
+  opacity: 1 !important;
+}
+
+/* 选中项图标和文字 */
+.admin-sider .ant-menu-item-selected .ant-menu-item-icon {
+  color: #a855f7 !important;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+}
+
+.admin-sider .ant-menu-item-selected .ant-menu-title-content {
+  color: #fff !important;
+  font-weight: 600;
+  text-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+}
+
+/* ============================================
+   动画效果
+   ============================================ */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(168, 85, 247, 0.25),
+      0 0 40px rgba(168, 85, 247, 0.1),
+      inset 0 0 12px rgba(168, 85, 247, 0.05);
+  }
+  50% {
+    box-shadow: 
+      0 0 28px rgba(168, 85, 247, 0.35),
+      0 0 56px rgba(168, 85, 247, 0.15),
+      inset 0 0 16px rgba(168, 85, 247, 0.08);
+  }
+}
+
+/* ============================================
+   Logo区域样式
+   ============================================ */
+.admin-sider .admin-logo {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-sider .admin-logo-icon {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%) !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.2) !important;
+}
+
+.admin-sider .admin-logo-icon svg {
+  color: #a855f7 !important;
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.5));
+}
+
+/* ============================================
+   管理端内容区域样式覆盖
+   ============================================ */
+.admin-content-area {
+  min-height: calc(100vh - 56px);
+  position: relative;
+  background: var(--tech-bg-primary);
+  overflow: hidden;
+}
+
+/* 网格背景 */
+.admin-content-area::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    linear-gradient(rgba(168, 85, 247, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* 装饰光晕 */
+.admin-content-area::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(168, 85, 247, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
+}
+
+.admin-content-area > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   管理端卡片样式
+   ============================================ */
+.admin-content-area .ant-card {
+  background: rgba(17, 24, 39, 0.7) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(168, 85, 247, 0.15) !important;
+  border-radius: 16px !important;
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(168, 85, 247, 0.05) !important;
+  transition: all 0.3s ease;
+}
+
+.admin-content-area .ant-card:hover {
+  border-color: rgba(168, 85, 247, 0.25) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(168, 85, 247, 0.06) !important;
+}
+
+.admin-content-area .ant-card-head {
+  background: rgba(17, 24, 39, 0.4) !important;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.1) !important;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.admin-content-area .ant-card-head-title {
+  color: #e2e8f0 !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   管理端表格样式
+   ============================================ */
+.admin-content-area .ant-table {
+  background: transparent !important;
+}
+
+.admin-content-area .ant-table-thead > tr > th {
+  background: rgba(17, 24, 39, 0.8) !important;
+  color: #e2e8f0 !important;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.15) !important;
+}
+
+.admin-content-area .ant-table-tbody > tr > td {
+  color: #cbd5e1 !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+}
+
+.admin-content-area .ant-table-tbody > tr:hover > td {
+  background: rgba(168, 85, 247, 0.05) !important;
+}
+
+/* ============================================
+   管理端按钮样式
+   ============================================ */
+.admin-content-area .ant-btn-primary {
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3) !important;
+  transition: all 0.3s ease;
+}
+
+.admin-content-area .ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4) !important;
+}
+
+.admin-content-area .ant-btn-default {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  color: #e2e8f0 !important;
+}
+
+.admin-content-area .ant-btn-default:hover {
+  border-color: #a855f7 !important;
+  color: #a855f7 !important;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+}
+
+/* ============================================
+   管理端输入框样式
+   ============================================ */
+.admin-content-area .ant-input,
+.admin-content-area .ant-input-affix-wrapper {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  color: #e2e8f0 !important;
+  border-radius: 8px !important;
+}
+
+.admin-content-area .ant-input:focus,
+.admin-content-area .ant-input-affix-wrapper:focus,
+.admin-content-area .ant-input-affix-wrapper-focused {
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1) !important;
+}
+
+/* ============================================
+   管理端标签样式
+   ============================================ */
+.admin-content-area .ant-tag {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  color: #a855f7 !important;
+}
+
+.admin-content-area .ant-tag-green {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+  color: #10b981 !important;
+}
+
+.admin-content-area .ant-tag-red {
+  background: rgba(236, 72, 153, 0.1) !important;
+  border-color: rgba(236, 72, 153, 0.2) !important;
+  color: #ec4899 !important;
+}
+
+.admin-content-area .ant-tag-gold {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+  color: #f59e0b !important;
+}
+
+/* ============================================
+   表格操作按钮样式
+   ============================================ */
+.admin-content-area .table-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-content-area .table-actions .ant-btn {
+  height: 28px;
+  width: 28px;
+  padding: 0;
+  font-size: 13px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.admin-content-area .table-actions .ant-btn .anticon {
+  font-size: 14px;
+}
+
+/* 编辑按钮 */
+.admin-content-area .table-actions .ant-btn:not(.ant-btn-dangerous) {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border: 1px solid rgba(168, 85, 247, 0.25) !important;
+  color: #a855f7 !important;
+}
+
+.admin-content-area .table-actions .ant-btn:not(.ant-btn-dangerous):hover {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: rgba(168, 85, 247, 0.4) !important;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.15);
+}
+
+/* 删除按钮 */
+.admin-content-area .table-actions .ant-btn-dangerous,
+.admin-content-area .table-actions .ant-btn.ant-btn-dangerous {
+  background: rgba(236, 72, 153, 0.1) !important;
+  border: 1px solid rgba(236, 72, 153, 0.25) !important;
+  color: #ec4899 !important;
+}
+
+.admin-content-area .table-actions .ant-btn-dangerous:hover,
+.admin-content-area .table-actions .ant-btn.ant-btn-dangerous:hover {
+  background: rgba(236, 72, 153, 0.2) !important;
+  border-color: rgba(236, 72, 153, 0.4) !important;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.15);
+}
+
+/* 次要操作按钮 */
+.admin-content-area .table-actions .ant-btn-default {
+  background: rgba(148, 163, 184, 0.1) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  color: #94a3b8 !important;
+}
+
+.admin-content-area .table-actions .ant-btn-default:hover {
+  background: rgba(148, 163, 184, 0.2) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+/* 修复 Popconfirm 包裹的按钮 */
+.admin-content-area .table-actions .ant-popover-open .ant-btn,
+.admin-content-area .table-actions .ant-popconfirm .ant-btn {
+  background: rgba(236, 72, 153, 0.1) !important;
+  border: 1px solid rgba(236, 72, 153, 0.25) !important;
+  color: #ec4899 !important;
+}
+
+/* ============================================
+   管理端分页样式
+   ============================================ */
+.admin-content-area .ant-pagination-item {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+.admin-content-area .ant-pagination-item a {
+  color: #94a3b8 !important;
+}
+
+.admin-content-area .ant-pagination-item-active {
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
+  border-color: transparent !important;
+}
+
+.admin-content-area .ant-pagination-item-active a {
+  color: #fff !important;
+}
+
+/* ============================================
+   统计卡片样式
+   ============================================ */
+.admin-stat-card {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: 1px solid rgba(168, 85, 247, 0.15) !important;
+  border-radius: 12px !important;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.admin-stat-card:hover {
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.1);
+}
+
+.admin-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.admin-stat-label {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 4px;
 }

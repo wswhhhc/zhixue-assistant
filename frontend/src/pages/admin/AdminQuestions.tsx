@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  Table, Select, Input, Button, Tag, Modal, Form, Space, message, Popconfirm, Radio,
+  Table, Select, Input, Button, Tag, Modal, Form, Space, message, Popconfirm, Radio, Tooltip,
 } from 'antd'
 import AntUpload from 'antd/es/upload'
 import { SearchOutlined, EditOutlined, DeleteOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons'
@@ -257,10 +257,14 @@ export default function AdminQuestions() {
     {
       title: '操作', key: 'action', width: 120,
       render: (_: unknown, record: QuestionItem) => (
-        <Space>
-          <Button type="link" icon={<EditOutlined />} onClick={() => openEdit(record)}>
-            编辑
-          </Button>
+        <div className="table-actions">
+          <Tooltip title="编辑题目" placement="top" overlayClassName="admin-tooltip">
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(record)}
+            />
+          </Tooltip>
           <Popconfirm
             title="确定删除此题？"
             description="删除后关联的答题记录也会一并清除"
@@ -268,18 +272,29 @@ export default function AdminQuestions() {
             okText="确定"
             cancelText="取消"
           >
-            <Button type="link" danger icon={<DeleteOutlined />}>
-              删除
-            </Button>
+            <Tooltip title="删除题目" placement="top" overlayClassName="admin-tooltip">
+              <Button
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+              />
+            </Tooltip>
           </Popconfirm>
-        </Space>
+        </div>
       ),
     },
   ]
 
   return (
     <div>
-      <h2 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>
+      <h2 style={{
+        marginBottom: 24,
+        fontSize: 24,
+        fontWeight: 700,
+        color: '#e2e8f0',
+        fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
+        letterSpacing: '0.5px',
+      }}>
         题库管理
       </h2>
 

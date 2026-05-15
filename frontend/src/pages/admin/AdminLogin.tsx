@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { setAdminAuth } from '../../adminAuth'
 import { API_BASE } from '../../config'
 import '../Login.css'
+import './AdminLogin.css'
 
 const { Title, Text } = Typography
 
@@ -116,7 +117,7 @@ export default function AdminLogin() {
 
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(0, 212, 255, ${particle.opacity})`
+        ctx.fillStyle = `rgba(168, 85, 247, ${particle.opacity})`
         ctx.fill()
 
         for (let j = i + 1; j < particles.length; j++) {
@@ -130,7 +131,7 @@ export default function AdminLogin() {
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
             ctx.lineTo(other.x, other.y)
-            ctx.strokeStyle = `rgba(0, 212, 255, ${opacity})`
+            ctx.strokeStyle = `rgba(168, 85, 247, ${opacity})`
             ctx.lineWidth = 0.5
             ctx.stroke()
           }
@@ -183,7 +184,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="login-page">
+    <div className="login-page admin-login-page">
       {/* Canvas 粒子网格背景 */}
       <canvas ref={canvasRef} className="particle-canvas" />
 
@@ -218,10 +219,9 @@ export default function AdminLogin() {
 
       {/* 登录卡片 */}
       <Card
-        className="glass-card"
+        className="glass-card admin-login-card"
         style={{
           width: 420,
-          border: '1px solid rgba(0, 212, 255, 0.15)',
         }}
       >
         <div className="brand-section">
@@ -250,7 +250,7 @@ export default function AdminLogin() {
               loading={loading}
               block
               size="large"
-              className="login-btn"
+              className="login-btn admin-login-btn"
             >
               登 录
             </Button>
@@ -264,7 +264,9 @@ export default function AdminLogin() {
           <a
             href="/login"
             onClick={(e) => { e.preventDefault(); navigate('/login') }}
-            style={{ color: 'rgba(0, 212, 255, 0.6)', fontSize: 13 }}
+            style={{ color: 'rgba(168, 85, 247, 0.7)', fontSize: 13, transition: 'color 0.3s ease' }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#a855f7' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(168, 85, 247, 0.7)' }}
           >
             ← 返回用户登录
           </a>

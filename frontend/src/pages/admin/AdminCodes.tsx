@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
-  Table, Tag, Button, InputNumber, Space, message, Typography, Card,
+  Table, Tag, Button, InputNumber, Space, message, Typography, Card, Tooltip,
 } from 'antd'
-import { GiftOutlined } from '@ant-design/icons'
+import { GiftOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { adminFetch } from '../../adminAuth'
 
 interface CodeItem {
@@ -93,18 +93,43 @@ export default function AdminCodes() {
       render: (t: string) => t ? new Date(t).toLocaleDateString('zh-CN') : '-',
     },
     {
-      title: '操作', key: 'action', width: 80,
+      title: '操作', key: 'action', width: 60,
       render: (_: unknown, r: CodeItem) => (
-        <Button type="link" onClick={() => handleToggle(r.id, !r.is_active)}>
-          {r.is_active ? '禁用' : '启用'}
-        </Button>
+        <div className="table-actions">
+          <Tooltip title={r.is_active ? '禁用兑换码' : '启用兑换码'} placement="top" overlayClassName="admin-tooltip">
+            <Button
+              size="small"
+              onClick={() => handleToggle(r.id, !r.is_active)}
+              icon={r.is_active ? <CloseOutlined /> : <CheckOutlined />}
+              style={{
+                background: r.is_active ? 'rgba(236, 72, 153, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                border: `1px solid ${r.is_active ? 'rgba(236, 72, 153, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
+                color: r.is_active ? '#ec4899' : '#10b981',
+                borderRadius: '6px',
+                height: '28px',
+                width: '28px',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ]
 
   return (
     <div>
-      <h2 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>
+      <h2 style={{
+        marginBottom: 24,
+        fontSize: 24,
+        fontWeight: 700,
+        color: '#e2e8f0',
+        fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
+        letterSpacing: '0.5px',
+      }}>
         兑换码管理
       </h2>
 
@@ -133,11 +158,11 @@ export default function AdminCodes() {
                   style={{
                     padding: '4px 8px',
                     marginBottom: 4,
-                    background: 'rgba(3, 7, 18, 0.8)',
+                    background: 'rgba(17, 24, 39, 0.8)',
                     borderRadius: 4,
                     cursor: 'pointer',
                     fontFamily: 'monospace',
-                    color: '#00d4ff',
+                    color: '#a855f7',
                     fontSize: 13,
                   }}
                   onClick={() => {

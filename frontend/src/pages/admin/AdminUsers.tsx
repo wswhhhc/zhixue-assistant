@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  Table, Input, Tag, Button, Modal, Radio, InputNumber, Space, message, Typography,
+  Table, Input, Tag, Button, Modal, Radio, InputNumber, Space, message, Typography, Tooltip,
 } from 'antd'
 import { SearchOutlined, EditOutlined, FileTextOutlined } from '@ant-design/icons'
 import { adminFetch } from '../../adminAuth'
@@ -122,16 +122,24 @@ export default function AdminUsers() {
       render: (t: string | null) => t ? new Date(t).toLocaleDateString('zh-CN') : '-',
     },
     {
-      title: '操作', key: 'action', width: 140,
+      title: '操作', key: 'action', width: 100,
       render: (_: unknown, record: UserItem) => (
-        <Space>
-          <Button type="link" icon={<FileTextOutlined />} onClick={() => openUserQuestions(record)}>
-            上传题
-          </Button>
-          <Button type="link" icon={<EditOutlined />} onClick={() => openEdit(record)}>
-            编辑
-          </Button>
-        </Space>
+        <div className="table-actions">
+          <Tooltip title="查看上传题目" placement="top" overlayClassName="admin-tooltip">
+            <Button
+              size="small"
+              icon={<FileTextOutlined />}
+              onClick={() => openUserQuestions(record)}
+            />
+          </Tooltip>
+          <Tooltip title="编辑用户" placement="top" overlayClassName="admin-tooltip">
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(record)}
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ]
@@ -145,7 +153,14 @@ export default function AdminUsers() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>
+      <h2 style={{
+        marginBottom: 24,
+        fontSize: 24,
+        fontWeight: 700,
+        color: '#e2e8f0',
+        fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
+        letterSpacing: '0.5px',
+      }}>
         用户管理
       </h2>
 

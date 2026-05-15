@@ -291,7 +291,7 @@ export default function AdminQuestions() {
         marginBottom: 24,
         fontSize: 24,
         fontWeight: 700,
-        color: '#e2e8f0',
+        color: 'var(--tech-text-primary)',
         fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
         letterSpacing: '0.5px',
       }}>

@@ -9,10 +9,21 @@ __pycache__/
 data/
 *.db
 logs/
+
+# 环境变量文件
+.env
+.env.*
 backend/.env
 
-.env.local
+# 系统文件
 .DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # 个人配置文件
 .gitconfig

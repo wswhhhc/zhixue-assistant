@@ -11,8 +11,11 @@ import {
   LogoutOutlined,
   CrownOutlined,
   RocketOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../auth'
+import { useTheme } from '../contexts/ThemeContext'
 import './AppLayout.css'
 
 const { Header, Content } = Layout
@@ -32,11 +35,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const location = useLocation()
   const { isAuthenticated, username, isPremium, logout } = useAuth()
+  const { isDark, toggleTheme } = useTheme()
 
   const selectedKey = '/' + location.pathname.split('/')[1]
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#030712' }}>
+    <Layout style={{ minHeight: '100vh', background: 'var(--tech-bg-primary)' }}>
       <Header
         style={{
           display: 'flex',
@@ -46,10 +50,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           zIndex: 100,
           height: 64,
           padding: '0 24px',
-          background: 'rgba(3, 7, 18, 0.95)',
+          background: 'var(--tech-bg-primary)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(0, 212, 255, 0.1)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
+          borderBottom: '1px solid var(--tech-border)',
+          boxShadow: 'var(--tech-shadow-md)',
         }}
       >
         {/* Logo */}
@@ -78,7 +82,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           >
             <RocketOutlined style={{ 
               fontSize: 20, 
-              background: 'linear-gradient(135deg, #00d4ff 0%, #6366f1 100%)',
+              background: 'var(--tech-gradient-primary)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }} />
@@ -86,7 +90,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <Typography.Title
             level={4}
             style={{ 
-              color: '#fff', 
+              color: 'var(--tech-text-primary)', 
               margin: 0, 
               fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
               fontWeight: 700,
@@ -100,7 +104,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* 导航菜单 */}
         <Menu
-          theme="dark"
+          theme={isDark ? 'dark' : 'light'}
           mode="horizontal"
           selectedKeys={[selectedKey]}
           items={menuItems}
@@ -160,7 +164,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             {/* 用户头像 - 点击进入设置 */}
             <Avatar 
               style={{ 
-                background: 'linear-gradient(135deg, #00d4ff 0%, #6366f1 100%)',
+                background: 'var(--tech-gradient-primary)',
                 cursor: 'pointer',
               }}
               onClick={() => navigate('/settings')}
@@ -168,13 +172,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               {username?.[0]?.toUpperCase() || 'U'}
             </Avatar>
 
+            {/* 主题切换按钮 */}
+            <Button
+              type="text"
+              icon={isDark ? <SunOutlined /> : <MoonOutlined />}
+              onClick={toggleTheme}
+              style={{
+                color: isDark ? '#f59e0b' : '#4f46e5',
+                fontSize: 18,
+                transition: 'all 0.3s ease',
+              }}
+              title={isDark ? '切换到亮色模式' : '切换到深色模式'}
+            />
+
             {/* 退出按钮 */}
             <Button
               type="text"
               icon={<LogoutOutlined />}
               onClick={() => { logout(); navigate('/login') }}
               style={{ 
-                color: 'rgba(148, 163, 184, 0.8)',
+                color: 'var(--tech-text-secondary)',
                 fontSize: 18,
               }}
             />

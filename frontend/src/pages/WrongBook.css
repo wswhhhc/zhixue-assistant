@@ -61,3 +61,21 @@
 .wrongbook-empty-hint {
   color: #888;
 }
+
+/* ---------- Light Theme Overrides ---------- */
+[data-theme="light"] .wrongbook-meta-title {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .wrongbook-date {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .wrongbook-empty-hint {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .wrongbook-list-item:hover {
+  background: rgba(79, 70, 229, 0.04) !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.06);
+}

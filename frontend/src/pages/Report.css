@@ -94,3 +94,13 @@
   .report-stat-card .ant-statistic-content { font-size: 20px !important; }
   .report-stat-card-icon { width: 36px; height: 36px; font-size: 16px; }
 }
+
+/* ---------- Light Theme Overrides ---------- */
+[data-theme="light"] .report-stat-card .ant-statistic-title {
+  color: var(--tech-text-muted) !important;
+}
+
+[data-theme="light"] .report-stat-card-icon-brand1 { background: linear-gradient(135deg, rgba(2, 132, 199, 0.1), rgba(79, 70, 229, 0.08)); color: #0284c7; }
+[data-theme="light"] .report-stat-card-icon-brand2 { background: linear-gradient(135deg, rgba(5, 150, 105, 0.1), rgba(16, 185, 129, 0.08)); color: #059669; }
+[data-theme="light"] .report-stat-card-icon-brand3 { background: linear-gradient(135deg, rgba(219, 39, 119, 0.1), rgba(236, 72, 153, 0.08)); color: #db2777; }
+[data-theme="light"] .report-stat-card-icon-brand4 { background: linear-gradient(135deg, rgba(2, 132, 199, 0.1), rgba(8, 145, 178, 0.08)); color: #0284c7; }

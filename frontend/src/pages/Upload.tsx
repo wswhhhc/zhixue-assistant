@@ -209,15 +209,15 @@ export default function UploadPage() {
         className: 'dark-modal',
         styles: {
           container: {
-            background: 'rgba(17, 24, 39, 0.98)',
-            border: '1px solid rgba(0, 212, 255, 0.2)',
+            background: 'var(--tech-bg-card)',
+            border: '1px solid var(--tech-border)',
             borderRadius: 16,
           },
           body: {
-            background: 'rgba(17, 24, 39, 0.98)',
+            background: 'var(--tech-bg-card)',
           },
         },
-        content: <div style={{ maxHeight: 400, overflow: 'auto', whiteSpace: 'pre-wrap', color: '#e2e8f0' }}>正在连接...</div>,
+        content: <div style={{ maxHeight: 400, overflow: 'auto', whiteSpace: 'pre-wrap', color: 'var(--tech-text-primary)' }}>正在连接...</div>,
         width: 600,
         okText: '关闭',
       })
@@ -265,13 +265,13 @@ export default function UploadPage() {
                 modal.update({
                   title: 'AI 解答结果',
                   content: (
-                    <div>
-                      <p><strong>答案：</strong>{data.answer}</p>
+                    <div style={{ color: 'var(--tech-text-primary)' }}>
+                      <p><strong style={{ color: 'var(--tech-primary)' }}>答案：</strong>{data.answer}</p>
                       {data.explanation && (
                         <>
-                          <Divider />
-                          <p><strong>解题过程：</strong></p>
-                          <Paragraph style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
+                          <Divider style={{ borderColor: 'var(--tech-border)' }} />
+                          <p><strong style={{ color: 'var(--tech-accent-purple)' }}>解题过程：</strong></p>
+                          <Paragraph style={{ background: 'var(--tech-bg-secondary)', border: '1px solid var(--tech-border)', padding: 12, borderRadius: 8, color: 'var(--tech-text-primary)' }}>
                             {renderLatex(data.explanation)}
                           </Paragraph>
                         </>
@@ -318,22 +318,22 @@ export default function UploadPage() {
         className: 'dark-modal',
         styles: {
           container: {
-            background: 'rgba(17, 24, 39, 0.98)',
-            border: '1px solid rgba(0, 212, 255, 0.2)',
+            background: 'var(--tech-bg-card)',
+            border: '1px solid var(--tech-border)',
             borderRadius: 16,
           },
           body: {
-            background: 'rgba(17, 24, 39, 0.98)',
+            background: 'var(--tech-bg-card)',
           },
         },
         content: (
-          <div style={{ color: '#e2e8f0' }}>
-            <p><strong style={{ color: '#00d4ff' }}>答案：</strong>{data.answer}</p>
+          <div style={{ color: 'var(--tech-text-primary)' }}>
+            <p><strong style={{ color: 'var(--tech-primary)' }}>答案：</strong>{data.answer}</p>
             {data.explanation && (
               <>
-                <Divider style={{ borderColor: 'rgba(0, 212, 255, 0.2)' }} />
-                <p><strong style={{ color: '#a855f7' }}>解题过程：</strong></p>
-                <Paragraph style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
+                <Divider style={{ borderColor: 'var(--tech-border)' }} />
+                <p><strong style={{ color: 'var(--tech-accent-purple)' }}>解题过程：</strong></p>
+                <Paragraph style={{ background: 'var(--tech-bg-secondary)', border: '1px solid var(--tech-border)', padding: 12, borderRadius: 8, color: 'var(--tech-text-primary)' }}>
                   {renderLatex(data.explanation)}
                 </Paragraph>
               </>
@@ -391,22 +391,22 @@ export default function UploadPage() {
           className: 'dark-modal',
           styles: {
             container: {
-              background: 'rgba(17, 24, 39, 0.98)',
+              background: 'var(--tech-bg-card)',
               border: '1px solid rgba(239, 68, 68, 0.4)',
               borderRadius: 16,
             },
             body: {
-              background: 'rgba(17, 24, 39, 0.98)',
+              background: 'var(--tech-bg-card)',
             },
           },
           content: (
-            <div style={{ color: '#e2e8f0' }}>
-              <p><strong style={{ color: '#00d4ff' }}>正确答案：</strong>{data.correct_answer}</p>
+            <div style={{ color: 'var(--tech-text-primary)' }}>
+              <p><strong style={{ color: 'var(--tech-primary)' }}>正确答案：</strong>{data.correct_answer}</p>
               {data.explanation && (
                 <>
-                  <Divider style={{ borderColor: 'rgba(0, 212, 255, 0.2)' }} />
-                  <p><strong style={{ color: '#a855f7' }}>说明：</strong></p>
-                  <div style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.15)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
+                  <Divider style={{ borderColor: 'var(--tech-border)' }} />
+                  <p><strong style={{ color: 'var(--tech-accent-purple)' }}>说明：</strong></p>
+                  <div style={{ background: 'var(--tech-bg-secondary)', border: '1px solid var(--tech-border)', padding: 12, borderRadius: 8, color: 'var(--tech-text-primary)' }}>
                     {data.explanation}
                   </div>
                 </>

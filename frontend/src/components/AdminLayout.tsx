@@ -9,10 +9,13 @@ import {
   RocketOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from '@ant-design/icons'
 import { useNavigate, useLocation, Outlet } from 'react-router-dom'
 import { useState } from 'react'
 import { getAdminAuth, clearAdminAuth } from '../adminAuth'
+import { useTheme } from '../contexts/ThemeContext'
 import './AppLayout.css'
 import './AdminLayout.css'
 
@@ -31,6 +34,7 @@ export default function AdminLayout() {
   const location = useLocation()
   const auth = getAdminAuth()
   const [collapsed, setCollapsed] = useState(false)
+  const { isDark, toggleTheme } = useTheme()
 
   const selectedKey = '/' + location.pathname.split('/').slice(1, 3).join('/')
 
@@ -44,14 +48,14 @@ export default function AdminLayout() {
   }
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#030712' }}>
+    <Layout style={{ minHeight: '100vh', background: 'var(--tech-bg-primary)' }}>
       <Sider
         className={`admin-sider ${collapsed ? 'admin-sider-collapsed' : ''}`}
         width={collapsed ? 80 : 240}
         style={{
-          background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(17, 24, 39, 0.98) 100%)',
-          borderRight: '1px solid rgba(168, 85, 247, 0.1)',
-          boxShadow: '4px 0 24px rgba(0, 0, 0, 0.4)',
+          background: 'var(--tech-gradient-dark)',
+          borderRight: '1px solid var(--tech-border)',
+          boxShadow: 'var(--tech-shadow-md)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
@@ -66,8 +70,8 @@ export default function AdminLayout() {
             right: collapsed ? undefined : 20,
             width: collapsed ? 36 : 'auto',
             height: 36,
-            background: 'rgba(168, 85, 247, 0.08)',
-            border: '1px solid rgba(168, 85, 247, 0.15)',
+            background: 'var(--tech-bg-tertiary)',
+            border: '1px solid var(--tech-border)',
             borderRadius: 18,
             display: 'flex',
             alignItems: 'center',
@@ -81,15 +85,16 @@ export default function AdminLayout() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: collapsed ? 0 : 8 }}>
             {collapsed ? (
-              <MenuUnfoldOutlined style={{ fontSize: 14, color: 'rgba(168, 85, 247, 0.8)' }} />
+              <MenuUnfoldOutlined style={{ fontSize: 14, color: 'var(--tech-accent-purple)' }} />
             ) : (
               <>
-                <MenuFoldOutlined style={{ fontSize: 14, color: 'rgba(168, 85, 247, 0.8)' }} />
+                <MenuFoldOutlined style={{ fontSize: 14, color: 'var(--tech-accent-purple)' }} />
                 <span style={{ 
                   fontSize: 12, 
-                  color: 'rgba(168, 85, 247, 0.6)',
+                  color: 'var(--tech-accent-purple)',
                   fontFamily: "'Noto Sans SC', sans-serif",
                   whiteSpace: 'nowrap',
+                  opacity: 0.7,
                 }}>
                   收起菜单
                 </span>
@@ -106,7 +111,7 @@ export default function AdminLayout() {
             alignItems: 'center',
             justifyContent: collapsed ? 'center' : 'flex-start',
             gap: collapsed ? 0 : 12,
-            borderBottom: '1px solid rgba(168, 85, 247, 0.15)',
+            borderBottom: '1px solid var(--tech-border)',
             cursor: 'pointer',
             padding: collapsed ? '0' : '0 20px',
             transition: 'all 0.3s ease',
@@ -131,7 +136,7 @@ export default function AdminLayout() {
           {!collapsed && (
             <Typography.Text
               style={{
-                color: '#fff',
+                color: 'var(--tech-text-primary)',
                 fontSize: 18,
                 fontWeight: 700,
                 letterSpacing: 1,
@@ -145,7 +150,7 @@ export default function AdminLayout() {
         </div>
 
         <Menu
-          theme="dark"
+          theme={isDark ? 'dark' : 'light'}
           mode="inline"
           inlineCollapsed={collapsed}
           selectedKeys={[selectedKey]}
@@ -166,17 +171,17 @@ export default function AdminLayout() {
           style={{
             height: 56,
             padding: '0 24px',
-            background: 'rgba(3, 7, 18, 0.95)',
+            background: 'var(--tech-bg-primary)',
             backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(168, 85, 247, 0.1)',
-            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
+            borderBottom: '1px solid var(--tech-border)',
+            boxShadow: 'var(--tech-shadow-md)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
         >
           <Typography.Text style={{ 
-            color: 'rgba(148, 163, 184, 0.8)', 
+            color: 'var(--tech-text-secondary)', 
             fontSize: 14,
             fontFamily: "'Noto Sans SC', sans-serif",
           }}>
@@ -184,27 +189,45 @@ export default function AdminLayout() {
           </Typography.Text>
           <Space size={16}>
             <Typography.Text style={{ 
-              color: '#a855f7', 
+              color: 'var(--tech-accent-purple)', 
               fontSize: 14,
               fontWeight: 600,
-              textShadow: '0 0 12px rgba(168, 85, 247, 0.3)',
+              textShadow: isDark 
+                ? '0 0 12px rgba(168, 85, 247, 0.3)' 
+                : '0 0 8px rgba(124, 58, 237, 0.2)',
             }}>
               {auth?.username || '管理员'}
             </Typography.Text>
+
+            {/* 主题切换按钮 */}
+            <Button
+              type="text"
+              icon={isDark ? <SunOutlined /> : <MoonOutlined />}
+              onClick={toggleTheme}
+              style={{
+                color: isDark ? '#f59e0b' : 'var(--tech-accent-purple)',
+                fontSize: 18,
+                transition: 'all 0.3s ease',
+              }}
+              title={isDark ? '切换到亮色模式' : '切换到深色模式'}
+            />
+
             <Button
               type="text"
               icon={<LogoutOutlined />}
               onClick={handleLogout}
               style={{ 
-                color: 'rgba(148, 163, 184, 0.8)',
+                color: 'var(--tech-text-secondary)',
                 transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#a855f7';
-                e.currentTarget.style.textShadow = '0 0 8px rgba(168, 85, 247, 0.4)';
+                e.currentTarget.style.color = isDark ? '#a855f7' : '#7c3aed';
+                e.currentTarget.style.textShadow = isDark 
+                  ? '0 0 8px rgba(168, 85, 247, 0.4)' 
+                  : '0 0 6px rgba(124, 58, 237, 0.3)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(148, 163, 184, 0.8)';
+                e.currentTarget.style.color = 'var(--tech-text-secondary)';
                 e.currentTarget.style.textShadow = 'none';
               }}
             >

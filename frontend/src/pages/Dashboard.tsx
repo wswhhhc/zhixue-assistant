@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Card, Col, Row, Statistic, List, message, Empty, Skeleton,
@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import { SendOutlined, ClockCircleOutlined, FlagOutlined, EditOutlined, CheckCircleOutlined, BookOutlined, TrophyOutlined, FireOutlined } from '@ant-design/icons'
 import { renderLatex } from '../utils/renderLatex'
+import { useChartTheme } from '../hooks/useChartTheme'
 import './Dashboard.css'
 import ReactEChartsCore from 'echarts-for-react'
 import { API_BASE } from '../config'
@@ -52,6 +53,7 @@ interface StatsData {
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  const chartColors = useChartTheme()
   const [stats, setStats] = useState<StatsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [trendData, setTrendData] = useState<{ date: string; total: number; correct: number; accuracy: number }[] | null>(null)
@@ -256,6 +258,123 @@ export default function Dashboard() {
     }
   }
 
+  // 雷达图配置 - 动态主题色
+  const radarOption = useMemo(() => ({
+    backgroundColor: 'transparent',
+    tooltip: {
+      backgroundColor: chartColors.tooltipBg,
+      borderColor: chartColors.tooltipBorder,
+      textStyle: { color: chartColors.textColor },
+    },
+    radar: {
+      indicator: stats?.mastery.length
+        ? stats.mastery.map((m) => ({ name: m.knowledge_point, max: 100 }))
+        : [{ name: '暂无数据', max: 100 }],
+      shape: 'polygon',
+      splitNumber: 5,
+      axisName: {
+        color: chartColors.mutedTextColor,
+        fontSize: 12,
+      },
+      splitLine: {
+        lineStyle: {
+          color: chartColors.splitLineColor,
+        },
+      },
+      splitArea: {
+        areaStyle: {
+          color: [chartColors.splitLineColor, 'transparent'],
+        },
+      },
+      axisLine: {
+        lineStyle: {
+          color: chartColors.axisLineColor,
+        },
+      },
+    },
+    series: [
+      {
+        type: 'radar',
+        data: [
+          {
+            value: stats?.mastery.length
+              ? stats.mastery.map((m) => m.mastery_rate)
+              : [0],
+            name: '掌握度',
+            areaStyle: {
+              color: {
+                type: 'radial',
+                x: 0.5,
+                y: 0.5,
+                r: 0.5,
+                colorStops: [
+                  { offset: 0, color: chartColors.radarFillStart },
+                  { offset: 1, color: chartColors.radarFillEnd },
+              ],
+              },
+            },
+            lineStyle: {
+              color: chartColors.lineColor,
+              width: 2,
+            },
+            itemStyle: {
+              color: chartColors.lineColor,
+              borderColor: '#fff',
+              borderWidth: 1,
+            },
+          },
+        ],
+      },
+    ],
+  }), [stats, chartColors])
+
+  // 趋势图配置 - 动态主题色
+  const trendOption = useMemo(() => trendData ? {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: chartColors.tooltipBg,
+      borderColor: chartColors.tooltipBorder,
+      textStyle: { color: chartColors.textColor },
+    },
+    xAxis: {
+      type: 'category',
+      data: trendData.map(d => d.date),
+      axisLabel: { fontSize: 11, color: chartColors.mutedTextColor },
+      axisLine: { lineStyle: { color: chartColors.axisLineColor } },
+    },
+    yAxis: {
+      type: 'value',
+      min: 0,
+      max: 100,
+      axisLabel: { fontSize: 11, formatter: '{value}%', color: chartColors.mutedTextColor },
+      axisLine: { lineStyle: { color: chartColors.axisLineColor } },
+      splitLine: { lineStyle: { color: chartColors.splitLineColor } },
+    },
+    grid: { left: 45, right: 16, top: 8, bottom: 24 },
+    series: [
+      {
+        type: 'line',
+        data: trendData.map(d => d.accuracy),
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 6,
+        lineStyle: { color: chartColors.lineColor, width: 2 },
+        itemStyle: { color: chartColors.lineColor },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: chartColors.areaStartColor },
+              { offset: 1, color: chartColors.areaEndColor },
+            ],
+          },
+        },
+      },
+    ],
+  } : null, [trendData, chartColors])
+
   if (loading) {
     return (
       <div className="dashboard-page">
@@ -278,75 +397,6 @@ export default function Dashboard() {
         </div>
       </div>
     )
-  }
-
-  const radarOption = {
-    backgroundColor: 'transparent',
-    tooltip: {
-      backgroundColor: 'rgba(17, 24, 39, 0.9)',
-      borderColor: 'rgba(0, 212, 255, 0.3)',
-      textStyle: { color: '#e2e8f0' },
-    },
-    radar: {
-      indicator: stats.mastery.length > 0
-        ? stats.mastery.map((m) => ({ name: m.knowledge_point, max: 100 }))
-        : [{ name: '暂无数据', max: 100 }],
-      shape: 'polygon',
-      splitNumber: 5,
-      axisName: {
-        color: '#94a3b8',
-        fontSize: 12,
-      },
-      splitLine: {
-        lineStyle: {
-          color: 'rgba(0, 212, 255, 0.15)',
-        },
-      },
-      splitArea: {
-        areaStyle: {
-          color: ['rgba(0, 212, 255, 0.02)', 'rgba(0, 212, 255, 0.05)'],
-        },
-      },
-      axisLine: {
-        lineStyle: {
-          color: 'rgba(0, 212, 255, 0.2)',
-        },
-      },
-    },
-    series: [
-      {
-        type: 'radar',
-        data: [
-          {
-            value: stats.mastery.length > 0
-              ? stats.mastery.map((m) => m.mastery_rate)
-              : [0],
-            name: '掌握度',
-            areaStyle: {
-              color: {
-                type: 'radial',
-                x: 0.5,
-                y: 0.5,
-                r: 0.5,
-                colorStops: [
-                  { offset: 0, color: 'rgba(0, 212, 255, 0.3)' },
-                  { offset: 1, color: 'rgba(168, 85, 247, 0.15)' },
-              ],
-              },
-            },
-            lineStyle: {
-              color: '#00d4ff',
-              width: 2,
-            },
-            itemStyle: {
-              color: '#00d4ff',
-              borderColor: '#fff',
-              borderWidth: 1,
-            },
-          },
-        ],
-      },
-    ],
   }
 
   return (
@@ -372,7 +422,7 @@ export default function Dashboard() {
                   title="今日正确率"
                   value={stats.today_accuracy}
                   suffix="%"
-                  valueStyle={{ color: stats.today_accuracy >= 60 ? 'var(--sl-accent-sage)' : 'var(--sl-accent)' }}
+                  valueStyle={{ color: stats.today_accuracy >= 60 ? 'var(--tech-accent-green)' : 'var(--tech-accent-pink)' }}
                 />
               </div>
             </Card>
@@ -397,7 +447,7 @@ export default function Dashboard() {
                   title="总正确率"
                   value={stats.total_accuracy}
                   suffix="%"
-                  valueStyle={{ color: stats.total_accuracy >= 60 ? 'var(--sl-accent-sage)' : 'var(--sl-accent)' }}
+                  valueStyle={{ color: stats.total_accuracy >= 60 ? 'var(--tech-accent-green)' : 'var(--tech-accent-pink)' }}
                 />
               </div>
             </Card>
@@ -422,9 +472,9 @@ export default function Dashboard() {
   suffix={q.limit <= 0 ? '无限制' : '次'}
   valueStyle={{ 
     fontSize: 20, 
-    color: q.limit > 0 && pct >= 100 ? '#ec4899' : (q.limit <= 0 ? '#fbbf24' : '#00d4ff'),
+    color: q.limit > 0 && pct >= 100 ? '#ec4899' : (q.limit <= 0 ? '#f59e0b' : 'var(--tech-primary)'),
     fontWeight: q.limit <= 0 ? 700 : 600,
-    textShadow: q.limit <= 0 ? '0 0 10px rgba(251, 191, 36, 0.4)' : 'none',
+    textShadow: q.limit <= 0 ? '0 0 10px rgba(245, 158, 11, 0.4)' : 'none',
   }}
 />
                     {q.limit > 0 && (
@@ -451,7 +501,7 @@ export default function Dashboard() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <FireOutlined style={{ color: 'var(--sl-accent-gold)' }} /> 打卡
+                    <FireOutlined style={{ color: '#f59e0b' }} /> 打卡
                   </div>
                   <div className="checkin-streak">
                     连续 <span className="checkin-streak-num">{streak}</span> 天
@@ -488,10 +538,10 @@ export default function Dashboard() {
           <div className="dashboard-card-wrap">
             <Card className="dashboard-card" style={{ animationDelay: '0.38s' }}>
               <Statistic
-                title={<span><ClockCircleOutlined style={{ marginRight: 4, color: 'var(--sl-accent-navy)' }} />今日学习时长</span>}
+                title={<span><ClockCircleOutlined style={{ marginRight: 4, color: 'var(--tech-secondary)' }} />今日学习时长</span>}
                 value={Math.round((stats.today_count || 0) * 2)}
                 suffix="分钟"
-                valueStyle={{ color: 'var(--sl-accent-navy)' }}
+                valueStyle={{ color: 'var(--tech-secondary)' }}
               />
             </Card>
           </div>
@@ -499,7 +549,7 @@ export default function Dashboard() {
         <Col xs={12} lg={5}>
           <div className="dashboard-card-wrap">
             <Card className="dashboard-card" style={{ animationDelay: '0.44s' }}>
-              <div style={{ fontSize: 13, color: 'var(--sl-text-muted)', marginBottom: 4 }}>
+              <div style={{ fontSize: 13, color: 'var(--tech-text-muted)', marginBottom: 4 }}>
                 <FlagOutlined style={{ marginRight: 4 }} />今日目标
                 <a style={{ marginLeft: 6, fontSize: 12 }} onClick={() => setEditingGoal(!editingGoal)}>
                   {editingGoal ? '取消' : '修改'}
@@ -530,7 +580,7 @@ export default function Dashboard() {
 
       {/* AI 问答 */}
       <div className="dashboard-card-wrap">
-        <Card title={<span style={{ color: 'var(--sl-text-primary)' }}>AI 问答 {quotas?.qa_ask && quotas.qa_ask.limit > 0 ? <span style={{ fontSize: 12, color: 'var(--sl-text-muted)', fontWeight: 400 }}>（剩余 {Math.max(0, quotas.qa_ask.limit - quotas.qa_ask.used)} 次）</span> : <span style={{ fontSize: 12, color: 'var(--sl-accent-gold)', fontWeight: 400 }}>（无限制）</span>}</span>} className="ai-card dashboard-card" style={{ marginBottom: 16, animationDelay: '0.50s' }}>
+        <Card title={<span style={{ color: 'var(--tech-text-primary)' }}>AI 问答 {quotas?.qa_ask && quotas.qa_ask.limit > 0 ? <span style={{ fontSize: 12, color: 'var(--tech-text-muted)', fontWeight: 400 }}>（剩余 {Math.max(0, quotas.qa_ask.limit - quotas.qa_ask.used)} 次）</span> : <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 400 }}>（无限制）</span>}</span>} className="ai-card dashboard-card" style={{ marginBottom: 16, animationDelay: '0.50s' }}>
           {answer && (
             <div ref={answerRef} className="ai-answer-box">
               {renderLatex(answer)}
@@ -588,55 +638,11 @@ export default function Dashboard() {
       </div>
 
       {/* 学习趋势图 */}
-      {trendData && trendData.some(d => d.total > 0) && (
+      {trendData && trendData.some(d => d.total > 0) && trendOption && (
         <div className="dashboard-card-wrap">
           <Card title="近 14 天正确率趋势" className="dashboard-card" style={{ marginBottom: 16, animationDelay: '0.62s' }}>
             <ReactEChartsCore
-              option={{
-                backgroundColor: 'transparent',
-                tooltip: {
-                  trigger: 'axis',
-                  backgroundColor: 'rgba(17, 24, 39, 0.9)',
-                  borderColor: 'rgba(0, 212, 255, 0.3)',
-                  textStyle: { color: '#e2e8f0' },
-                },
-                xAxis: {
-                  type: 'category',
-                  data: trendData.map(d => d.date),
-                  axisLabel: { fontSize: 11, color: '#94a3b8' },
-                  axisLine: { lineStyle: { color: 'rgba(0, 212, 255, 0.2)' } },
-                },
-                yAxis: {
-                  type: 'value',
-                  min: 0,
-                  max: 100,
-                  axisLabel: { fontSize: 11, formatter: '{value}%', color: '#94a3b8' },
-                  axisLine: { lineStyle: { color: 'rgba(0, 212, 255, 0.2)' } },
-                  splitLine: { lineStyle: { color: 'rgba(0, 212, 255, 0.1)' } },
-                },
-                grid: { left: 45, right: 16, top: 8, bottom: 24 },
-                series: [
-                  {
-                    type: 'line',
-                    data: trendData.map(d => d.accuracy),
-                    smooth: true,
-                    symbol: 'circle',
-                    symbolSize: 6,
-                    lineStyle: { color: '#00d4ff', width: 2 },
-                    itemStyle: { color: '#00d4ff' },
-                    areaStyle: {
-                      color: {
-                        type: 'linear',
-                        x: 0, y: 0, x2: 0, y2: 1,
-                        colorStops: [
-                          { offset: 0, color: 'rgba(0, 212, 255, 0.2)' },
-                          { offset: 1, color: 'rgba(0, 212, 255, 0.02)' },
-                        ],
-                      },
-                    },
-                  },
-                ],
-              }}
+              option={trendOption}
               style={{ height: 200 }}
             />
           </Card>
@@ -676,7 +682,7 @@ export default function Dashboard() {
                           <span style={{ fontSize: 13 }}>{renderLatex(item.content)}</span>
                         }
                       />
-                      <div style={{ fontSize: 12, color: 'var(--sl-text-muted)' }}>{item.created_at}</div>
+                      <div style={{ fontSize: 12, color: 'var(--tech-text-muted)' }}>{item.created_at}</div>
                     </List.Item>
                   )}
                 />

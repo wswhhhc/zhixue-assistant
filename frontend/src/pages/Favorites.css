@@ -49,3 +49,17 @@
   white-space: nowrap;
   margin-left: 12px;
 }
+
+/* ---------- Light Theme Overrides ---------- */
+[data-theme="light"] .favorites-meta-title {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .favorites-date {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .favorites-list-item:hover {
+  background: rgba(79, 70, 229, 0.04) !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.06);
+}

@@ -203,3 +203,40 @@
   margin: 0;
   padding: 0;
 }
+
+/* ---------- Light Theme Overrides ---------- */
+[data-theme="light"] .plan-card {
+  background: #ffffff;
+  border-color: rgba(2, 132, 199, 0.2);
+}
+
+[data-theme="light"] .plan-card:hover {
+  border-color: rgba(2, 132, 199, 0.4);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.1);
+}
+
+[data-theme="light"] .plan-card.selected {
+  border-color: rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.08);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.1);
+}
+
+[data-theme="light"] .membership-expires {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .quota-item {
+  background: var(--tech-bg-secondary);
+}
+
+[data-theme="light"] .quota-item .quota-label {
+  color: var(--tech-text-secondary);
+}
+
+[data-theme="light"] .benefit-table .benefit-row {
+  border-bottom-color: var(--tech-border);
+}
+
+[data-theme="light"] .benefit-label {
+  color: var(--tech-text-primary);
+}

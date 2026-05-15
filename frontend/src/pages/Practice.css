@@ -284,31 +284,6 @@
   transform: scale(0.6);
 }
 
-/* 选项字母标识 */
-.practice-option-item strong {
-  color: var(--tech-primary);
-  font-family: var(--tech-font-mono);
-  font-weight: 600;
-  font-size: 16px;
-  min-width: 24px;
-  text-align: center;
-  display: inline-block;
-  background: rgba(0, 212, 255, 0.1);
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 212, 255, 0.2);
-}
-
-.practice-option-item:hover strong {
-  background: rgba(0, 212, 255, 0.2);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
-}
-
-.practice-option-item.selected strong {
-  background: var(--tech-primary);
-  color: #030712;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
-}
 
 /* ---------- Submit button ---------- */
 .practice-submit-btn {
@@ -377,4 +352,110 @@
   color: var(--tech-primary) !important;
   background: rgba(0, 212, 255, 0.1) !important;
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.15) !important;
+}
+
+/* ---------- Light Theme Overrides ---------- */
+[data-theme="light"] .practice-submitting-text {
+  background: #ffffff;
+  border-left-color: var(--tech-primary);
+}
+
+[data-theme="light"] .practice-mode-selector .ant-segmented {
+  background: #ffffff;
+  border-color: rgba(2, 132, 199, 0.2);
+}
+
+[data-theme="light"] .practice-mode-selector .ant-segmented-item:not(.ant-segmented-item-selected):hover {
+  background: rgba(2, 132, 199, 0.08);
+}
+
+[data-theme="light"] .practice-kp-select,
+[data-theme="light"] .practice-kp-select .ant-select-selector {
+  background: #ffffff !important;
+  border-color: rgba(100, 116, 139, 0.2) !important;
+}
+
+[data-theme="light"] .practice-option-item {
+  background: #ffffff;
+  border-color: rgba(100, 116, 139, 0.2);
+  color: var(--tech-text-secondary);
+}
+
+[data-theme="light"] .practice-option-item:hover {
+  border-color: rgba(2, 132, 199, 0.4);
+  background: rgba(2, 132, 199, 0.06);
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.1);
+}
+
+[data-theme="light"] .practice-option-item.selected {
+  background: rgba(2, 132, 199, 0.1);
+  border-color: var(--tech-primary);
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.15), inset 0 0 10px rgba(2, 132, 199, 0.03);
+}
+
+[data-theme="light"] .practice-option-item .ant-radio-inner {
+  background: #ffffff !important;
+  border-color: rgba(100, 116, 139, 0.3) !important;
+  box-shadow: none;
+}
+
+[data-theme="light"] .practice-option-item:hover .ant-radio-inner {
+  border-color: var(--tech-primary) !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.15);
+}
+
+[data-theme="light"] .practice-option-item.selected .ant-radio-inner {
+  background: var(--tech-primary) !important;
+  border-color: var(--tech-primary) !important;
+  box-shadow: 0 0 15px rgba(2, 132, 199, 0.3);
+}
+
+/* 选项字母标识 */
+.practice-option-item strong {
+  color: var(--tech-primary);
+  font-family: var(--tech-font-mono);
+  font-weight: 600;
+  font-size: 16px;
+  min-width: 24px;
+  text-align: center;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.practice-option-item:hover strong {
+  color: var(--tech-primary);
+}
+
+.practice-option-item.selected strong {
+  color: var(--tech-primary);
+}
+
+[data-theme="light"] .practice-option-item strong {
+  color: var(--tech-primary);
+}
+
+[data-theme="light"] .practice-option-item:hover strong {
+  color: var(--tech-primary);
+}
+
+[data-theme="light"] .practice-option-item.selected strong {
+  color: var(--tech-primary);
+}
+
+[data-theme="light"] .practice-nav-btn {
+  background: #ffffff !important;
+  border-color: rgba(100, 116, 139, 0.2) !important;
+  color: var(--tech-text-secondary) !important;
+}
+
+[data-theme="light"] .practice-nav-btn:hover {
+  border-color: var(--tech-primary) !important;
+  color: var(--tech-primary) !important;
+  background: rgba(2, 132, 199, 0.06) !important;
+  box-shadow: 0 0 15px rgba(2, 132, 199, 0.1) !important;
+}
+
+[data-theme="light"] .practice-submit-btn:disabled {
+  background: rgba(100, 116, 139, 0.15) !important;
+  color: var(--tech-text-muted) !important;
 }

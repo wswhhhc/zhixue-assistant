@@ -417,3 +417,65 @@ body {
 .tech-delay-3 { animation-delay: 0.3s; }
 .tech-delay-4 { animation-delay: 0.4s; }
 .tech-delay-5 { animation-delay: 0.5s; }
+
+/* ============================================
+   主题切换平滑过渡
+   ============================================ */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   亮色主题覆写
+   ============================================ */
+[data-theme="light"] {
+  /* ========== 主色/辅色 ========== */
+  --tech-primary: #0284c7;
+  --tech-primary-dark: #0369a1;
+  --tech-primary-light: #38bdf8;
+  --tech-secondary: #4f46e5;
+  --tech-secondary-dark: #4338ca;
+
+  /* ========== 强调色 ========== */
+  --tech-accent-cyan: #0891b2;
+  --tech-accent-purple: #7c3aed;
+  --tech-accent-pink: #db2777;
+  --tech-accent-green: #059669;
+  --tech-accent-orange: #d97706;
+  --tech-accent-gold: #b8860b;
+
+  /* ========== 背景色 ========== */
+  --tech-bg-primary: #f8fafc;
+  --tech-bg-secondary: #f1f5f9;
+  --tech-bg-tertiary: #e2e8f0;
+  --tech-bg-card: rgba(255, 255, 255, 0.9);
+  --tech-bg-card-hover: rgba(255, 255, 255, 0.95);
+  --tech-bg-glass: rgba(255, 255, 255, 0.7);
+  --tech-bg-overlay: rgba(15, 23, 42, 0.4);
+
+  /* ========== 边框 ========== */
+  --tech-border: rgba(100, 116, 139, 0.15);
+  --tech-border-light: rgba(100, 116, 139, 0.08);
+  --tech-border-glow: rgba(2, 132, 199, 0.3);
+
+  /* ========== 文本色 ========== */
+  --tech-text-primary: #0f172a;
+  --tech-text-secondary: #475569;
+  --tech-text-muted: #94a3b8;
+  --tech-text-inverse: #f8fafc;
+
+  /* ========== 渐变色 ========== */
+  --tech-gradient-primary: linear-gradient(135deg, #0284c7 0%, #4f46e5 50%, #7c3aed 100%);
+  --tech-gradient-cyan: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+  --tech-gradient-dark: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  --tech-gradient-glow: radial-gradient(ellipse at center, rgba(2, 132, 199, 0.08) 0%, transparent 70%);
+  --tech-gradient-purple: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+
+  /* ========== 阴影 ========== */
+  --tech-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --tech-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --tech-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --tech-shadow-glow: 0 0 40px rgba(2, 132, 199, 0.15);
+  --tech-shadow-glow-sm: 0 0 20px rgba(2, 132, 199, 0.1);
+  --tech-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+}

@@ -450,3 +450,105 @@
   background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.02) 0%, transparent 70%);
   pointer-events: none;
 }
+
+/* ============================================
+   亮色主题覆写
+   ============================================ */
+
+/* ─── stat 卡片 ─── */
+[data-theme="light"] .stat-card {
+  background: var(--tech-bg-card) !important;
+  border-color: var(--tech-border) !important;
+}
+
+[data-theme="light"] .stat-card .ant-statistic-title {
+  color: var(--tech-text-muted) !important;
+}
+
+[data-theme="light"] .stat-card-icon {
+  background: var(--tech-bg-secondary);
+  border-color: rgba(2, 132, 199, 0.15);
+}
+
+/* ─── AI 答题面板 ─── */
+[data-theme="light"] .ai-card,
+[data-theme="light"] .ai-answer-box {
+  background: var(--tech-bg-card);
+  border-color: var(--tech-border);
+}
+
+[data-theme="light"] .ai-card .ant-card-head-title {
+  color: #0284c7 !important;
+}
+
+[data-theme="light"] .ai-answer-box {
+  background: #ffffff;
+  border-left-color: #0284c7;
+  color: #475569;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02);
+}
+
+/* ─── 打卡卡片 ─── */
+[data-theme="light"] .checkin-card {
+  background: var(--tech-bg-card) !important;
+  border-color: var(--tech-border);
+}
+
+[data-theme="light"] .checkin-dot-unchecked {
+  background: #ffffff;
+  border-color: rgba(100, 116, 139, 0.2);
+  color: #94a3b8;
+}
+
+[data-theme="light"] .checkin-streak {
+  color: var(--tech-text-muted);
+}
+
+[data-theme="light"] .checkin-week-label {
+  color: var(--tech-text-muted);
+}
+
+/* ─── 时间线 ─── */
+[data-theme="light"] .timeline-dot {
+  background: var(--tech-bg-secondary);
+}
+
+[data-theme="light"] .timeline-item:hover {
+  background: rgba(2, 132, 199, 0.04);
+  border-color: rgba(2, 132, 199, 0.1);
+}
+
+[data-theme="light"] .timeline-detail {
+  color: #0f172a;
+}
+
+[data-theme="light"] .timeline-time {
+  color: var(--tech-text-muted);
+}
+
+/* ─── 进度条 ─── */
+[data-theme="light"] .dashboard-card .ant-progress-inner {
+  background: rgba(100, 116, 139, 0.15) !important;
+}
+
+/* ─── 列表标题 ─── */
+[data-theme="light"] .dashboard-card .ant-list-item-meta-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .dashboard-card .ant-list-item-meta-description {
+  color: var(--tech-text-muted) !important;
+}
+
+[data-theme="light"] .dashboard-card .ant-list-item:hover {
+  background: rgba(2, 132, 199, 0.04);
+}
+
+[data-theme="light"] .dashboard-card .ant-list-item {
+  border-bottom-color: rgba(100, 116, 139, 0.08) !important;
+}
+
+/* ─── 响应式 ─── */
+[data-theme="light"] .chart-container::before {
+  background: radial-gradient(ellipse at center, rgba(2, 132, 199, 0.02) 0%, transparent 70%);
+}

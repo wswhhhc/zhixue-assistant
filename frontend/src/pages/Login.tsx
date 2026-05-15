@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button, Typography, message, Tabs, Checkbox, Image } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined, SafetyCertificateOutlined, RocketOutlined } from '@ant-design/icons'
+import { UserOutlined, LockOutlined, MailOutlined, SafetyCertificateOutlined, RocketOutlined, SunOutlined, MoonOutlined } from '@ant-design/icons'
 import { API_BASE } from '../config'
 import { useAuth } from '../auth'
+import { useTheme } from '../contexts/ThemeContext'
 import './Login.css'
 
 const { Title, Text } = Typography
@@ -26,6 +27,7 @@ const PARTICLE_CONFIG = {
 export default function Login() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { isDark, toggleTheme } = useTheme()
   const [loginLoading, setLoginLoading] = useState(false)
   const [registerLoading, setRegisterLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('login')
@@ -636,6 +638,22 @@ export default function Login() {
         className={`glass-card ${success ? 'glass-card-exit' : ''}`}
         style={parallaxStyle(15)}
       >
+        {/* 主题切换按钮 */}
+        <Button
+          type="text"
+          icon={isDark ? <SunOutlined /> : <MoonOutlined />}
+          onClick={toggleTheme}
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            color: isDark ? '#f59e0b' : '#4f46e5',
+            fontSize: 18,
+            transition: 'all 0.3s ease',
+            zIndex: 100,
+          }}
+          title={isDark ? '切换到亮色模式' : '切换到深色模式'}
+        />
         <div className="brand-section">
           <div className="brand-icon-wrapper">
             <div className="brand-icon-inner">

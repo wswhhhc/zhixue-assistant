@@ -581,3 +581,90 @@
 .content-area .ant-timeline-item-tail {
   border-left-color: rgba(0, 212, 255, 0.2) !important;
 }
+
+/* ============================================
+   深色 Modal 弹窗样式 - 超强制覆盖
+   ============================================ */
+.dark-modal .ant-modal-content,
+div[class*="dark-modal"] .ant-modal-content,
+.ant-modal.dark-modal .ant-modal-content,
+.ant-modal-confirm.dark-modal .ant-modal-content {
+  background: rgba(17, 24, 39, 0.98) !important;
+  background-color: rgba(17, 24, 39, 0.98) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark-modal .ant-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+}
+
+.dark-modal .ant-modal-title {
+  color: #e2e8f0 !important;
+  font-weight: 600 !important;
+}
+
+.dark-modal .ant-modal-body {
+  color: #e2e8f0 !important;
+}
+
+.dark-modal.ant-modal-confirm .ant-modal-body {
+  background: transparent !important;
+}
+
+.dark-modal .ant-modal-close {
+  color: #94a3b8 !important;
+}
+
+.dark-modal .ant-modal-close:hover {
+  color: #00d4ff !important;
+  background: rgba(0, 212, 255, 0.1) !important;
+}
+
+.dark-modal .ant-modal-confirm-body .ant-modal-confirm-title {
+  color: #e2e8f0 !important;
+}
+
+.dark-modal .ant-modal-confirm-body .ant-modal-confirm-content {
+  color: #cbd5e1 !important;
+}
+
+.dark-modal .anticon-exclamation-circle {
+  color: #f59e0b !important;
+}
+
+.dark-modal .anticon-check-circle {
+  color: #00d4ff !important;
+}
+
+.dark-modal .anticon-info-circle {
+  color: #a855f7 !important;
+}
+
+/* 确认按钮样式 */
+.dark-modal .ant-modal-confirm-btns .ant-btn-default {
+  background: rgba(17, 24, 39, 0.6) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #94a3b8 !important;
+}
+
+.dark-modal .ant-modal-confirm-btns .ant-btn-default:hover {
+  border-color: #00d4ff !important;
+  color: #00d4ff !important;
+}
+
+.dark-modal .ant-modal-confirm-btns .ant-btn-primary,
+.ant-modal-confirm.dark-modal .ant-modal-confirm-btns .ant-btn-primary {
+  background: linear-gradient(135deg, #00d4ff 0%, #6366f1 100%) !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+/* 最强制覆盖 - 使用属性选择器 */
+[class*="dark-modal"][class*="ant-modal"] .ant-modal-content,
+[class*="dark-modal"][class*="ant-modal-confirm"] .ant-modal-content {
+  background: rgba(17, 24, 39, 0.98) !important;
+  background-color: #111827 !important;
+}

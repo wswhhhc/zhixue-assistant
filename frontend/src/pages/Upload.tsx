@@ -42,6 +42,7 @@ export default function UploadPage() {
   const [confirmResult, setConfirmResult] = useState<any>(null)
   const [fixing, setFixing] = useState(false)
   const [answerVerified, setAnswerVerified] = useState(false)
+  const [verifyFailed, setVerifyFailed] = useState(false)
   const [aiFinding, setAiFinding] = useState(false)
   const [aiVerifying, setAiVerifying] = useState(false)
 
@@ -57,6 +58,7 @@ export default function UploadPage() {
     setError('')
     setConfirmResult(null)
     setAnswerVerified(false)
+    setVerifyFailed(false)
   }
 
   const handleImageUpload = async (file: File) => {
@@ -204,7 +206,18 @@ export default function UploadPage() {
       let streamContent = ''
       const modal = Modal.info({
         title: 'AI 正在解答...',
-        content: <div style={{ maxHeight: 400, overflow: 'auto', whiteSpace: 'pre-wrap' }}>正在连接...</div>,
+        className: 'dark-modal',
+        styles: {
+          container: {
+            background: 'rgba(17, 24, 39, 0.98)',
+            border: '1px solid rgba(0, 212, 255, 0.2)',
+            borderRadius: 16,
+          },
+          body: {
+            background: 'rgba(17, 24, 39, 0.98)',
+          },
+        },
+        content: <div style={{ maxHeight: 400, overflow: 'auto', whiteSpace: 'pre-wrap', color: '#e2e8f0' }}>正在连接...</div>,
         width: 600,
         okText: '关闭',
       })
@@ -302,13 +315,24 @@ export default function UploadPage() {
       setAnswerVerified(true)
       Modal.info({
         title: 'AI 解答结果',
+        className: 'dark-modal',
+        styles: {
+          container: {
+            background: 'rgba(17, 24, 39, 0.98)',
+            border: '1px solid rgba(0, 212, 255, 0.2)',
+            borderRadius: 16,
+          },
+          body: {
+            background: 'rgba(17, 24, 39, 0.98)',
+          },
+        },
         content: (
-          <div>
-            <p><strong>答案：</strong>{data.answer}</p>
+          <div style={{ color: '#e2e8f0' }}>
+            <p><strong style={{ color: '#00d4ff' }}>答案：</strong>{data.answer}</p>
             {data.explanation && (
               <>
-                <Divider />
-                <p><strong>解题过程：</strong></p>
+                <Divider style={{ borderColor: 'rgba(0, 212, 255, 0.2)' }} />
+                <p><strong style={{ color: '#a855f7' }}>解题过程：</strong></p>
                 <Paragraph style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
                   {renderLatex(data.explanation)}
                 </Paragraph>
@@ -357,19 +381,34 @@ export default function UploadPage() {
       if (data.is_correct) {
         setAnswer(data.correct_answer || answer)
         setAnswerVerified(true)
+        setVerifyFailed(false)
         message.success('答案正确！')
       } else {
         setAnswerVerified(false)
+        setVerifyFailed(true)
         Modal.warning({
           title: '答案不正确',
+          className: 'dark-modal',
+          styles: {
+            container: {
+              background: 'rgba(17, 24, 39, 0.98)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              borderRadius: 16,
+            },
+            body: {
+              background: 'rgba(17, 24, 39, 0.98)',
+            },
+          },
           content: (
-            <div>
-              <p><strong>正确答案：</strong>{data.correct_answer}</p>
+            <div style={{ color: '#e2e8f0' }}>
+              <p><strong style={{ color: '#00d4ff' }}>正确答案：</strong>{data.correct_answer}</p>
               {data.explanation && (
                 <>
-                  <Divider />
-                  <p><strong>说明：</strong></p>
-                  <p>{data.explanation}</p>
+                  <Divider style={{ borderColor: 'rgba(0, 212, 255, 0.2)' }} />
+                  <p><strong style={{ color: '#a855f7' }}>说明：</strong></p>
+                  <div style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.15)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
+                    {data.explanation}
+                  </div>
                 </>
               )}
             </div>
@@ -660,6 +699,7 @@ export default function UploadPage() {
                             setAnswer('')
                             setExplanation('')
                             setAnswerVerified(false)
+                            setVerifyFailed(false)
                           }}
                         >
                           <Radio value="choice">选择题</Radio>
@@ -693,10 +733,10 @@ export default function UploadPage() {
                               />
                             </Form.Item>
                           ))}
-                          <Form.Item label="正确答案" required>
+                          <Form.Item label="正确答案" required className={verifyFailed ? 'verify-error' : ''}>
                             <Select
                               value={answer}
-                              onChange={(val) => { setAnswer(val); setAnswerVerified(false) }}
+                              onChange={(val) => { setAnswer(val); setAnswerVerified(false); setVerifyFailed(false) }}
                               options={[
                                 { value: 'A', label: 'A' },
                                 { value: 'B', label: 'B' },
@@ -709,18 +749,18 @@ export default function UploadPage() {
                           </Form.Item>
                         </>
                       ) : questionType === 'judge' ? (
-                        <Form.Item label="正确答案" required>
-                          <Radio.Group value={answer} onChange={(e) => { setAnswer(e.target.value); setAnswerVerified(false) }}>
+                        <Form.Item label="正确答案" required className={verifyFailed ? 'verify-error' : ''}>
+                          <Radio.Group value={answer} onChange={(e) => { setAnswer(e.target.value); setAnswerVerified(false); setVerifyFailed(false) }}>
                             <Radio value="对">对</Radio>
                             <Radio value="错">错</Radio>
                           </Radio.Group>
                         </Form.Item>
                       ) : questionType === 'subjective' ? (
                         <>
-                          <Form.Item label="最终答案" required>
+                          <Form.Item label="最终答案" required className={verifyFailed ? 'verify-error' : ''}>
                             <Input
                               value={answer}
-                              onChange={(e) => { setAnswer(e.target.value); setAnswerVerified(false) }}
+                              onChange={(e) => { setAnswer(e.target.value); setAnswerVerified(false); setVerifyFailed(false) }}
                               placeholder="输入最终答案（如：$\\frac{1}{2}$）"
                             />
                           </Form.Item>
@@ -734,10 +774,10 @@ export default function UploadPage() {
                           </Form.Item>
                         </>
                       ) : (
-                        <Form.Item label="正确答案" required>
+                        <Form.Item label="正确答案" required className={verifyFailed ? 'verify-error' : ''}>
                           <Input
                             value={answer}
-                            onChange={(e) => { setAnswer(e.target.value); setAnswerVerified(false) }}
+                            onChange={(e) => { setAnswer(e.target.value); setAnswerVerified(false); setVerifyFailed(false) }}
                             placeholder="输入正确答案（如：$\\frac{1}{2}$）"
                           />
                         </Form.Item>

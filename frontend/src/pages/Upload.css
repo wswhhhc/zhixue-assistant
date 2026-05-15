@@ -80,3 +80,21 @@
   margin-top: 16px;
   margin-bottom: 16px;
 }
+
+/* ---------- AI 验证失败的表单错误样式 ---------- */
+.content-area .upload-page .verify-error .ant-input,
+.content-area .upload-page .verify-error .ant-input-affix-wrapper,
+.content-area .upload-page .verify-error .ant-select-selector {
+  background: rgba(17, 24, 39, 0.85) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
+}
+
+.content-area .upload-page .verify-error .ant-input-affix-wrapper .ant-input {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.content-area .upload-page .verify-error .ant-radio-wrapper {
+  color: #fca5a5;
+}

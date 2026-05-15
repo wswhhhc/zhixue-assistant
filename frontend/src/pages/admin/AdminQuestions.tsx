@@ -329,6 +329,7 @@ export default function AdminQuestions() {
           type="primary"
           icon={<UploadOutlined />}
           onClick={() => { resetUpload(); setUploadOpen(true) }}
+          style={{ marginLeft: 16 }}
         >
           上传题目
         </Button>

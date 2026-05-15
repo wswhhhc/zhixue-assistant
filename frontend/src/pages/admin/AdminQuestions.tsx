@@ -298,40 +298,41 @@ export default function AdminQuestions() {
         题库管理
       </h2>
 
-      <Space style={{ marginBottom: 16 }} wrap>
-        <Select
-          value={source}
-          onChange={(v) => { setSource(v); setPage(1) }}
-          options={SOURCES}
-          style={{ width: 130 }}
-        />
-        <Select
-          value={kp}
-          onChange={(v) => { setKp(v); setPage(1) }}
-          options={[{ label: '全部知识点', value: '' }, ...KNOWLEDGE_POINTS.map((p) => ({ label: p, value: p }))]}
-          style={{ width: 150 }}
-        />
-        <Input
-          placeholder="搜索题目内容"
-          prefix={<SearchOutlined />}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onPressEnter={() => { setPage(1); fetchData() }}
-          style={{ width: 280 }}
-        />
-        <Button type="primary" onClick={() => { setPage(1); fetchData() }}>
-          搜索
-        </Button>
-      </Space>
+      <div style={{ marginBottom: 24 }}>
+        <Space wrap style={{ marginBottom: 12 }}>
+          <Select
+            value={source}
+            onChange={(v) => { setSource(v); setPage(1) }}
+            options={SOURCES}
+            style={{ width: 130 }}
+          />
+          <Select
+            value={kp}
+            onChange={(v) => { setKp(v); setPage(1) }}
+            options={[{ label: '全部知识点', value: '' }, ...KNOWLEDGE_POINTS.map((p) => ({ label: p, value: p }))]}
+            style={{ width: 150 }}
+          />
+          <Input
+            placeholder="搜索题目内容"
+            prefix={<SearchOutlined />}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onPressEnter={() => { setPage(1); fetchData() }}
+            style={{ width: 280 }}
+          />
+          <Button type="primary" onClick={() => { setPage(1); fetchData() }}>
+            搜索
+          </Button>
+        </Space>
 
-      <Button
-        type="primary"
-        icon={<UploadOutlined />}
-        onClick={() => { resetUpload(); setUploadOpen(true) }}
-        style={{ marginBottom: 16 }}
-      >
-        上传题目
-      </Button>
+        <Button
+          type="primary"
+          icon={<UploadOutlined />}
+          onClick={() => { resetUpload(); setUploadOpen(true) }}
+        >
+          上传题目
+        </Button>
+      </div>
 
       <Table
         dataSource={data?.items}

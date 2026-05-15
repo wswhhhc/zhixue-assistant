@@ -30,8 +30,8 @@
 .upload-stream-box {
   margin-top: 16px;
   padding: 12px 16px;
-  background: #f6f8fa;
-  border: 1px solid #e8e8e8;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 8px;
   max-height: 300px;
   overflow-y: auto;
@@ -40,6 +40,7 @@
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
+  color: #e2e8f0;
 }
 
 /* ---------- Edit form ---------- */
@@ -97,4 +98,21 @@
 
 .content-area .upload-page .verify-error .ant-radio-wrapper {
   color: #fca5a5;
+}
+
+/* ---------- 上传页面所有输入框深色背景 ---------- */
+.content-area .upload-page .ant-input,
+.content-area .upload-page .ant-input-affix-wrapper,
+.content-area .upload-page .ant-select-selector {
+  background: rgba(17, 24, 39, 0.7) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  color: #e2e8f0 !important;
+}
+
+.content-area .upload-page .ant-input::placeholder {
+  color: rgba(148, 163, 184, 0.5) !important;
+}
+
+.content-area .upload-page .ant-input-affix-wrapper .ant-input {
+  background: transparent !important;
 }

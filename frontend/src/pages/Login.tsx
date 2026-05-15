@@ -285,7 +285,11 @@ export default function Login() {
       })
       const data = await res.json()
       if (res.status !== 200) {
-        message.error(data.detail || '登录失败')
+        if (data.detail === "管理员请使用管理后台登录入口") {
+          message.error('管理员请前往 /admin/login 登录管理后台')
+        } else {
+          message.error(data.detail || '登录失败')
+        }
         fetchCaptcha()
         return
       }
@@ -451,6 +455,22 @@ export default function Login() {
       </Form.Item>
       <div className="test-account-hint">
         测试账号：<span>wsw / 123456</span>
+      </div>
+      <div style={{ textAlign: 'center', marginTop: 16 }}>
+        <a
+          href="/admin/login"
+          onClick={(e) => { e.preventDefault(); navigate('/admin/login') }}
+          style={{
+            color: 'rgba(0, 212, 255, 0.6)',
+            fontSize: 13,
+            transition: 'color 0.3s',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#00d4ff'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(0, 212, 255, 0.6)'}
+        >
+          管理员登录 →
+        </a>
       </div>
     </Form>
   )

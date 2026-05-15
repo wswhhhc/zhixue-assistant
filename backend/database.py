@@ -55,6 +55,12 @@ def run_migrations():
         with engine.connect() as conn:
             conn.execute(sa.text("ALTER TABLE users ADD COLUMN member_expires DATETIME"))
             conn.commit()
+    if "role" not in user_cols:
+        with engine.connect() as conn:
+            conn.execute(sa.text("ALTER TABLE users ADD COLUMN role VARCHAR(20) DEFAULT 'user'"))
+            # 将已有管理员账号的 role 设为 admin
+            conn.execute(sa.text("UPDATE users SET role = 'admin' WHERE username = 'admin'"))
+            conn.commit()
 
     # payment_records 表由 SQLAlchemy 自动创建，无需 ALTER
 

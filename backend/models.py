@@ -48,6 +48,7 @@ class User(Base):
     daily_goal = Column(Integer, default=10)
     membership = Column(String(20), default="free")          # "free" | "premium"
     member_expires = Column(DateTime, nullable=True)          # 会员到期时间，None=永久
+    role = Column(String(20), default="user")                 # "user" | "admin"
 
 
 class UsageRecord(Base):

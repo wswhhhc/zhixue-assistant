@@ -70,3 +70,33 @@ class SetMembershipInput(BaseModel):
     user_id: int
     membership: str
     duration_days: int = 30
+
+
+# ===== 管理员端 =====
+
+class AdminLoginInput(BaseModel):
+    username: str
+    password: str
+
+
+class AdminUserUpdate(BaseModel):
+    membership: str = "free"       # "free" | "premium"
+    duration_days: int = 30
+
+
+class AdminQuestionUpdate(BaseModel):
+    content: Optional[str] = None
+    options: Optional[List[str]] = None
+    answer: Optional[str] = None
+    knowledge_point: Optional[str] = None
+    explanation: Optional[str] = None
+
+
+class AdminCodeGenerate(BaseModel):
+    count: int = 10
+    duration_days: int = 30
+    max_uses: int = 1
+
+
+class AdminCodeToggle(BaseModel):
+    is_active: bool

@@ -116,13 +116,14 @@ async def upload_image_stream(
     user=Depends(require_user),
     db: Session = Depends(get_db),
 ):
-    allowed, used, limit = check_usage_limit(user, "upload_image", db)
-    if not allowed:
-        raise HTTPException(
-            status_code=403,
-            detail=f"今日图片上传次数已用完（{used}/{limit}），升级会员可无限制使用",
-        )
-    increment_usage(user, "upload_image", db)
+    if user.role != "admin":
+        allowed, used, limit = check_usage_limit(user, "upload_image", db)
+        if not allowed:
+            raise HTTPException(
+                status_code=403,
+                detail=f"今日图片上传次数已用完（{used}/{limit}），升级会员可无限制使用",
+            )
+        increment_usage(user, "upload_image", db)
 
     contents = await file.read()
     mime = file.content_type or "image/png"
@@ -302,10 +303,11 @@ async def upload_image(
     user=Depends(require_user),
     db: Session = Depends(get_db),
 ):
-    allowed, used, limit = check_usage_limit(user, "upload_image", db)
-    if not allowed:
-        return {"error": f"今日图片上传次数已用完（{used}/{limit}），升级会员可无限制使用"}
-    increment_usage(user, "upload_image", db)
+    if user.role != "admin":
+        allowed, used, limit = check_usage_limit(user, "upload_image", db)
+        if not allowed:
+            return {"error": f"今日图片上传次数已用完（{used}/{limit}），升级会员可无限制使用"}
+        increment_usage(user, "upload_image", db)
 
     contents = await file.read()
     if len(contents) > MAX_IMAGE_SIZE:
@@ -612,6 +614,7 @@ def upload_confirm(
 
     confirm_answer = normalize_judge_answer(data.answer) if qtype == "judge" else data.answer
 
+    is_admin = user.role == "admin"
     question = Question(
         question_type=qtype,
         content=data.content,
@@ -619,8 +622,8 @@ def upload_confirm(
         answer=confirm_answer,
         knowledge_point=data.knowledge_point,
         explanation=data.explanation,
-        source="user",
-        user_id=uid,
+        source="system" if is_admin else "user",
+        user_id=None if is_admin else uid,
         review_result=json.dumps(review, ensure_ascii=False),
     )
     db.add(question)

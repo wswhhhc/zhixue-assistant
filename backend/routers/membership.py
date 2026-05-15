@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import User, UsageRecord, MembershipCode
 from routers.auth import require_user
+from routers.admin import _require_admin
 from routers.deps import DAILY_LIMITS, _is_premium_active
 from schemas import RedeemInput, GenerateCodesInput, SetMembershipInput
 
@@ -93,12 +94,6 @@ def redeem_code(
 
 
 # ---------- 管理员端点 ----------
-
-def _require_admin(user: User = Depends(require_user)) -> User:
-    """简易管理员校验：用户名为 admin 或 wsw 视为管理员"""
-    if user.username not in ("admin", "wsw"):
-        raise HTTPException(status_code=403, detail="无权执行此操作")
-    return user
 
 
 @router.post("/codes")

@@ -1,0 +1,21 @@
+/* 管理员侧边栏选中发光特效 */
+
+.admin-sider .ant-menu-item-selected {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
+}
+
+.admin-sider .ant-menu-item-selected::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  background: #00d4ff;
+  border-radius: 3px 0 0 3px;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+}
+
+.admin-sider .ant-menu-item:hover {
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.1);
+}

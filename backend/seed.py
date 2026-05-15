@@ -315,6 +315,9 @@ def seed_database():
         )
         db.add(test_user)
         db.commit()
+    else:
+        existing_user.role = "admin"
+        db.commit()
 
     # ---- test users user1~user5 with demo data ----
     _KP_MAP = {
@@ -412,6 +415,17 @@ def seed_database():
                 source="user",
                 user_id=uid,
             ))
+
+    # admin 管理员账号
+    admin_user = db.query(User).filter(User.username == "admin").first()
+    if not admin_user:
+        db.add(User(
+            username="admin",
+            email="admin@zhixue.com",
+            password_hash=bcrypt.hashpw("123456".encode(), bcrypt.gensalt()).decode(),
+            role="admin",
+        ))
+        db.commit()
 
     db.commit()
     db.close()

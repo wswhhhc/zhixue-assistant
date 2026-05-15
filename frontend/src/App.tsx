@@ -16,6 +16,14 @@ import Report from './pages/Report'
 import Favorites from './pages/Favorites'
 import Membership from './pages/Membership'
 import PaymentCallback from './pages/PaymentCallback'
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminQuestions from './pages/admin/AdminQuestions'
+import AdminCodes from './pages/admin/AdminCodes'
+import AdminPayments from './pages/admin/AdminPayments'
+import AdminProtectedRoute from './components/AdminProtectedRoute'
+import AdminLayout from './components/AdminLayout'
 
 export default function App() {
   return (
@@ -24,6 +32,26 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Navigate to="/login" replace />} />
         <Route path="/payment/callback" element={<PaymentCallback />} />
+
+        {/* ===== 管理员端路由（独立体系）===== */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="questions" element={<AdminQuestions />} />
+          <Route path="codes" element={<AdminCodes />} />
+          <Route path="payments" element={<AdminPayments />} />
+        </Route>
+
+        {/* ===== 用户端路由 ===== */}
         <Route
           path="/*"
           element={

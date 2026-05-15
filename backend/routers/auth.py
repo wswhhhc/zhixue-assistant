@@ -287,6 +287,8 @@ def login(data: LoginInput, db: Session = Depends(get_db)):
     ).first()
     if not user or not bcrypt.checkpw(data.password.encode(), user.password_hash.encode()):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
+    if user.role == "admin":
+        raise HTTPException(status_code=403, detail="管理员请使用管理后台登录入口")
 
     return AuthOut(
         token=create_token(user.id),

@@ -281,13 +281,37 @@ export default function Dashboard() {
   }
 
   const radarOption = {
-    tooltip: {},
+    backgroundColor: 'transparent',
+    tooltip: {
+      backgroundColor: 'rgba(17, 24, 39, 0.9)',
+      borderColor: 'rgba(0, 212, 255, 0.3)',
+      textStyle: { color: '#e2e8f0' },
+    },
     radar: {
       indicator: stats.mastery.length > 0
         ? stats.mastery.map((m) => ({ name: m.knowledge_point, max: 100 }))
         : [{ name: '暂无数据', max: 100 }],
       shape: 'polygon',
       splitNumber: 5,
+      axisName: {
+        color: '#94a3b8',
+        fontSize: 12,
+      },
+      splitLine: {
+        lineStyle: {
+          color: 'rgba(0, 212, 255, 0.15)',
+        },
+      },
+      splitArea: {
+        areaStyle: {
+          color: ['rgba(0, 212, 255, 0.02)', 'rgba(0, 212, 255, 0.05)'],
+        },
+      },
+      axisLine: {
+        lineStyle: {
+          color: 'rgba(0, 212, 255, 0.2)',
+        },
+      },
     },
     series: [
       {
@@ -298,9 +322,27 @@ export default function Dashboard() {
               ? stats.mastery.map((m) => m.mastery_rate)
               : [0],
             name: '掌握度',
-            areaStyle: { color: 'rgba(139, 34, 82, 0.1)' },
-            lineStyle: { color: '#8b2252' },
-            itemStyle: { color: '#8b2252' },
+            areaStyle: {
+              color: {
+                type: 'radial',
+                x: 0.5,
+                y: 0.5,
+                r: 0.5,
+                colorStops: [
+                  { offset: 0, color: 'rgba(0, 212, 255, 0.3)' },
+                  { offset: 1, color: 'rgba(168, 85, 247, 0.15)' },
+              ],
+              },
+            },
+            lineStyle: {
+              color: '#00d4ff',
+              width: 2,
+            },
+            itemStyle: {
+              color: '#00d4ff',
+              borderColor: '#fff',
+              borderWidth: 1,
+            },
           },
         ],
       },
@@ -551,9 +593,27 @@ export default function Dashboard() {
           <Card title="近 14 天正确率趋势" className="dashboard-card" style={{ marginBottom: 16, animationDelay: '0.62s' }}>
             <ReactEChartsCore
               option={{
-                tooltip: { trigger: 'axis' },
-                xAxis: { type: 'category', data: trendData.map(d => d.date), axisLabel: { fontSize: 11 } },
-                yAxis: { type: 'value', min: 0, max: 100, axisLabel: { fontSize: 11, formatter: '{value}%' } },
+                backgroundColor: 'transparent',
+                tooltip: {
+                  trigger: 'axis',
+                  backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                  borderColor: 'rgba(0, 212, 255, 0.3)',
+                  textStyle: { color: '#e2e8f0' },
+                },
+                xAxis: {
+                  type: 'category',
+                  data: trendData.map(d => d.date),
+                  axisLabel: { fontSize: 11, color: '#94a3b8' },
+                  axisLine: { lineStyle: { color: 'rgba(0, 212, 255, 0.2)' } },
+                },
+                yAxis: {
+                  type: 'value',
+                  min: 0,
+                  max: 100,
+                  axisLabel: { fontSize: 11, formatter: '{value}%', color: '#94a3b8' },
+                  axisLine: { lineStyle: { color: 'rgba(0, 212, 255, 0.2)' } },
+                  splitLine: { lineStyle: { color: 'rgba(0, 212, 255, 0.1)' } },
+                },
                 grid: { left: 45, right: 16, top: 8, bottom: 24 },
                 series: [
                   {
@@ -562,9 +622,18 @@ export default function Dashboard() {
                     smooth: true,
                     symbol: 'circle',
                     symbolSize: 6,
-                    lineStyle: { color: '#8b2252', width: 2 },
-                    itemStyle: { color: '#8b2252' },
-                    areaStyle: { color: 'rgba(139, 34, 82, 0.06)' },
+                    lineStyle: { color: '#00d4ff', width: 2 },
+                    itemStyle: { color: '#00d4ff' },
+                    areaStyle: {
+                      color: {
+                        type: 'linear',
+                        x: 0, y: 0, x2: 0, y2: 1,
+                        colorStops: [
+                          { offset: 0, color: 'rgba(0, 212, 255, 0.2)' },
+                          { offset: 1, color: 'rgba(0, 212, 255, 0.02)' },
+                        ],
+                      },
+                    },
                   },
                 ],
               }}

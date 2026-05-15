@@ -30,6 +30,7 @@ const BENEFITS = [
 const PLANS = [
   { days: 30, label: '30天', price: 29.90, tag: '推荐' },
   { days: 365, label: '365天', price: 299.00, tag: '最值' },
+  { days: 0, label: '永久', price: 1000.00, tag: '永久' },
 ]
 
 export default function Membership() {
@@ -209,10 +210,14 @@ export default function Membership() {
         </div>
       </Card>
 
-      {/* 购买会员 */}
-      {!isPremium && (
-        <Card title="购买会员" className="membership-card">
-          <Text type="secondary">选择套餐后点击「模拟扫码支付」完成支付</Text>
+      {/* 购买/续费会员 */}
+      {(!isPremium || (isPremium && member_expires)) && (
+        <Card title={isPremium ? "续费会员" : "购买会员"} className="membership-card">
+          {isPremium ? (
+            <Text type="secondary">当前会员到期前续费，有效期将在原到期日上顺延</Text>
+          ) : (
+            <Text type="secondary">选择套餐后点击「模拟扫码支付」完成支付</Text>
+          )}
           <div className="plan-grid">
             {PLANS.map((plan) => (
               <div
@@ -223,7 +228,8 @@ export default function Membership() {
                 {plan.tag && <Tag color="gold" className="plan-tag">{plan.tag}</Tag>}
                 <div className="plan-name">{plan.label}</div>
                 <div className="plan-price">¥{plan.price}</div>
-                <div className="plan-unit">日均约 ¥{(plan.price / plan.days).toFixed(2)}</div>
+                {plan.days > 0 && <div className="plan-unit">日均约 ¥{(plan.price / plan.days).toFixed(2)}</div>}
+                {plan.days === 0 && <div className="plan-unit">一次性付费，永久使用</div>}
               </div>
             ))}
           </div>

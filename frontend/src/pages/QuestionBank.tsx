@@ -393,7 +393,7 @@ export default function QuestionBank() {
                   <>
                     <Divider />
                     <Paragraph><strong>解题步骤：</strong></Paragraph>
-                    <div style={{ background: '#f5f5f5', padding: 12, borderRadius: 6, maxHeight: 360, overflow: 'auto' }}>
+                    <div style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, maxHeight: 360, overflow: 'auto', color: '#e2e8f0' }}>
                       {renderLatex(answerDetail.explanation)}
                     </div>
                   </>
@@ -425,7 +425,7 @@ export default function QuestionBank() {
             {answerDetail.explanation ? (
               <>
                 <Paragraph><strong>题目解析：</strong></Paragraph>
-                <div style={{ background: '#f5f5f5', padding: 12, borderRadius: 6, maxHeight: 360, overflow: 'auto' }}>
+                <div style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(168, 85, 247, 0.2)', padding: 12, borderRadius: 8, maxHeight: 360, overflow: 'auto', color: '#e2e8f0' }}>
                   {renderLatex(answerDetail.explanation)}
                 </div>
               </>

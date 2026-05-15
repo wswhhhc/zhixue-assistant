@@ -258,7 +258,7 @@ export default function UploadPage() {
                         <>
                           <Divider />
                           <p><strong>解题过程：</strong></p>
-                          <Paragraph style={{ background: '#f5f5f5', padding: 12, borderRadius: 6 }}>
+                          <Paragraph style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
                             {renderLatex(data.explanation)}
                           </Paragraph>
                         </>
@@ -309,7 +309,7 @@ export default function UploadPage() {
               <>
                 <Divider />
                 <p><strong>解题过程：</strong></p>
-                <Paragraph style={{ background: '#f5f5f5', padding: 12, borderRadius: 6 }}>
+                <Paragraph style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, color: '#e2e8f0' }}>
                   {renderLatex(data.explanation)}
                 </Paragraph>
               </>

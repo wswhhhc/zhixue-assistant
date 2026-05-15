@@ -12,8 +12,9 @@ router = APIRouter(prefix="/payment", tags=["payment"])
 
 # 模拟定价（分）
 PRICES = {
-    30: 2990,    # 30天 ¥29.90
-    365: 29900,  # 365天 ¥299.00
+    30: 2990,      # 30天    ¥29.90
+    365: 29900,    # 365天   ¥299.00
+    0: 100000,     # 永久    ¥1000.00
 }
 
 
@@ -35,7 +36,7 @@ def create_order(
 ):
     """创建模拟支付订单，返回订单号和确认密钥"""
     if duration_days not in PRICES:
-        raise HTTPException(status_code=400, detail="支持的时长：30 或 365 天")
+        raise HTTPException(status_code=400, detail="支持的时长：30天、365天 或 永久")
 
     price = PRICES[duration_days]
     order_no = _gen_order_no()
@@ -86,6 +87,16 @@ def confirm_payment(
     # 激活/延长会员
     user = db.query(User).filter(User.id == record.user_id).first()
     if user:
+        if record.duration_days == 0:
+            # 永久会员
+            user.membership = "premium"
+            user.member_expires = None
+            db.commit()
+            return {
+                "message": "支付成功！已升级为永久会员",
+                "status": "paid",
+            }
+
         current_expires = user.member_expires
         if current_expires:
             # SQLite 存储的 datetime 可能不带时区
@@ -186,6 +197,29 @@ def payment_callback_page(
     record.paid_at = now
     user = db.query(User).filter(User.id == record.user_id).first()
     if user:
+        if record.duration_days == 0:
+            user.membership = "premium"
+            user.member_expires = None
+            db.commit()
+            return HTMLResponse(f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>支付成功</title>
+<style>
+  body {{ font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 90vh; margin: 0; background: #f5f5f5; }}
+  .box {{ text-align: center; padding: 40px; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); max-width: 340px; }}
+  .icon {{ font-size: 64px; color: #52c41a; }}
+  h2 {{ color: #52c41a; margin: 16px 0 8px; }}
+  p {{ color: #666; font-size: 14px; }}
+  .tag {{ margin-top: 16px; padding: 12px; background: #fff7e6; border-radius: 8px; font-size: 14px; color: #fa8c16; }}
+</style></head>
+<body><div class="box">
+  <div class="icon">✓</div>
+  <h2>支付成功！</h2>
+  <p>已升级为永久会员，尽情享受全部功能</p>
+  <div class="tag">🏆 永久会员</div>
+</div></body></html>""")
+
         current_expires = user.member_expires
         if current_expires:
             if current_expires.tzinfo is None:

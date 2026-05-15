@@ -128,23 +128,25 @@
 }
 
 .plan-card {
-  border: 2px solid #f0f0f0;
+  border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 12px;
   padding: 24px 16px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
+  background: rgba(17, 24, 39, 0.5);
 }
 
 .plan-card:hover {
-  border-color: #faad14;
-  box-shadow: 0 4px 16px rgba(250, 173, 20, 0.15);
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.15);
 }
 
 .plan-card.selected {
-  border-color: #faad14;
-  background: #fffbe6;
+  border-color: rgba(168, 85, 247, 0.6);
+  background: rgba(168, 85, 247, 0.1);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.2);
 }
 
 .plan-card .plan-name {
@@ -167,7 +169,7 @@
 
 .plan-card .plan-tag {
   position: absolute;
-  top: -10px;
+  top: 8px;
   right: 12px;
 }
 

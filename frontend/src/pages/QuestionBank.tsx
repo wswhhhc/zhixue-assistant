@@ -26,6 +26,11 @@ interface QuestionItem {
 }
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D']
+const SOURCE_LABELS: Record<string, string> = {
+  system: '系统题库',
+  user: '用户上传',
+  ai_generated: 'AI生成',
+}
 
 export default function QuestionBank() {
   const navigate = useNavigate()
@@ -221,6 +226,7 @@ export default function QuestionBank() {
       dataIndex: 'source',
       key: 'source',
       width: 80,
+      render: (val: string) => SOURCE_LABELS[val] || val,
     },
     {
       title: '创建时间',
@@ -393,7 +399,7 @@ export default function QuestionBank() {
                   <>
                     <Divider />
                     <Paragraph><strong>解题步骤：</strong></Paragraph>
-                    <div style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: 12, borderRadius: 8, maxHeight: 360, overflow: 'auto', color: '#e2e8f0' }}>
+                    <div className="qb-explanation-block qb-explanation-block--secondary">
                       {renderLatex(answerDetail.explanation)}
                     </div>
                   </>
@@ -425,7 +431,7 @@ export default function QuestionBank() {
             {answerDetail.explanation ? (
               <>
                 <Paragraph><strong>题目解析：</strong></Paragraph>
-                <div style={{ background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(168, 85, 247, 0.2)', padding: 12, borderRadius: 8, maxHeight: 360, overflow: 'auto', color: '#e2e8f0' }}>
+                <div className="qb-explanation-block qb-explanation-block--primary">
                   {renderLatex(answerDetail.explanation)}
                 </div>
               </>

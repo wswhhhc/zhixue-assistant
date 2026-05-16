@@ -157,12 +157,12 @@
 .ant-layout-header .ant-menu-overflow.ant-menu-dark .ant-menu-item.ant-menu-item-selected,
 .ant-menu-overflow.ant-menu-dark .ant-menu-item-selected {
   color: #a855f7 !important;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
-  box-shadow: 0 1px 3px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-  border-radius: 20px !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(99, 102, 241, 0.06) 100%) !important;
+  box-shadow: 0 1px 2px rgba(168, 85, 247, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  border-radius: 16px !important;
   font-weight: 600 !important;
-  text-shadow: 0 0 4px rgba(168, 85, 247, 0.3) !important;
-  padding: 4px 16px !important;
+  text-shadow: 0 0 2px rgba(168, 85, 247, 0.18) !important;
+  padding: 2px 14px !important;
 }
 
 .ant-layout-header .ant-menu-overflow.ant-menu-horizontal .ant-menu-item.ant-menu-item-selected::after,
@@ -267,6 +267,28 @@
 .content-area .ant-btn-text:hover {
   color: var(--tech-primary) !important;
   background: rgba(0, 212, 255, 0.1) !important;
+}
+
+.upgrade-membership-button,
+.upgrade-membership-button:hover,
+.upgrade-membership-button:active,
+.upgrade-membership-button:focus,
+.upgrade-membership-button:focus-visible {
+  color: #f59e0b !important;
+  background: rgba(245, 158, 11, 0.05) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  box-shadow: none !important;
+}
+
+.upgrade-membership-button:hover,
+.upgrade-membership-button:active {
+  background: rgba(245, 158, 11, 0.08) !important;
+}
+
+.upgrade-membership-button .anticon {
+  color: #f59e0b !important;
+  filter: none !important;
+  text-shadow: none !important;
 }
 
 /* ============================================

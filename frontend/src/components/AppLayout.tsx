@@ -128,22 +128,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 8,
               }}
             >
               <CrownOutlined style={{ color: '#fbbf24', fontSize: 18, filter: 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.5))' }} />
-              <span style={{ 
-                color: '#fbbf24', 
-                fontSize: 14,
-                fontWeight: 600,
-                fontFamily: "'Noto Sans SC', sans-serif",
-                letterSpacing: '0.5px',
-              }}>
-                {username}
-              </span>
             </div>
-            ) : (
+            ) : selectedKey !== '/membership' ? (
               <Button
+                className="upgrade-membership-button"
                 type="text"
                 icon={<CrownOutlined />}
                 onClick={() => navigate('/membership')}
@@ -159,7 +150,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 升级会员
               </Button>
-            )}
+            ) : null}
 
             {/* 用户头像 - 点击进入设置 */}
             <Avatar 

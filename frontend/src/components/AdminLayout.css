@@ -289,6 +289,16 @@
   z-index: 1;
 }
 
+.admin-page-title {
+  margin: 0 0 24px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tech-text-primary);
+  font-family: var(--tech-font-display);
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 18px rgba(168, 85, 247, 0.16);
+}
+
 /* ============================================
    管理端卡片样式
    ============================================ */
@@ -639,6 +649,11 @@
   background:
     radial-gradient(ellipse at 30% 20%, rgba(124, 58, 237, 0.03) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 80%, rgba(79, 70, 229, 0.02) 0%, transparent 50%);
+}
+
+[data-theme="light"] .admin-page-title {
+  color: #312e81;
+  text-shadow: 0 0 12px rgba(124, 58, 237, 0.08);
 }
 
 /* ---- 亮色卡片 ---- */

@@ -69,14 +69,7 @@ export default function AdminPayments() {
 
   return (
     <div>
-      <h2 style={{
-        marginBottom: 24,
-        fontSize: 24,
-        fontWeight: 700,
-        color: '#e2e8f0',
-        fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
-        letterSpacing: '0.5px',
-      }}>
+      <h2 className="admin-page-title">
         支付订单
       </h2>
 

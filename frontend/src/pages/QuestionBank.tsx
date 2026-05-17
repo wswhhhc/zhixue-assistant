@@ -395,15 +395,6 @@ export default function QuestionBank() {
                   <strong>正确答案：</strong>
                   <span style={{ color: '#52c41a', fontSize: 16 }}>{renderLatex(answerDetail.answer)}</span>
                 </Paragraph>
-                {answerDetail.question_type === 'subjective' && answerDetail.explanation && (
-                  <>
-                    <Divider />
-                    <Paragraph><strong>解题步骤：</strong></Paragraph>
-                    <div className="qb-explanation-block qb-explanation-block--secondary">
-                      {renderLatex(answerDetail.explanation)}
-                    </div>
-                  </>
-                )}
               </>
             ) : (
               <>

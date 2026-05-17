@@ -5,6 +5,7 @@ import {
 import AntUpload from 'antd/es/upload'
 import { SearchOutlined, EditOutlined, DeleteOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons'
 import { adminFetch } from '../../adminAuth'
+import { renderLatex } from '../../utils/renderLatex'
 
 const KNOWLEDGE_POINTS = [
   '极限与连续', '导数与微分', '不定积分与定积分',
@@ -23,6 +24,9 @@ interface QuestionItem {
   source: string
   user_id: number | null
   created_at: string
+  answer: string
+  options: string[]
+  explanation: string
 }
 
 interface PageRes {
@@ -31,26 +35,6 @@ interface PageRes {
   page: number
   page_size: number
 }
-
-const latexToText = (s: string) =>
-  s
-    .replace(/\$\$([^$]+)\$\$/g, '$1')
-    .replace(/\$([^$]+)\$/g, '$1')
-    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1/$2')
-    .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
-    .replace(/\\lim/g, 'lim')
-    .replace(/\\int/g, '∫')
-    .replace(/\\sum/g, '∑')
-    .replace(/\\to\b/g, '→')
-    .replace(/\\rightarrow\b/g, '→')
-    .replace(/\\infty\b/g, '∞')
-    .replace(/\\cdot\b/g, '·')
-    .replace(/\\times\b/g, '×')
-    .replace(/\\left\b/g, '')
-    .replace(/\\right\b/g, '')
-    .replace(/\\([a-zA-Z]+)/g, '')
-    .replace(/[{}]/g, '')
-    .trim()
 
 export default function AdminQuestions() {
   const [data, setData] = useState<PageRes | null>(null)
@@ -66,6 +50,7 @@ export default function AdminQuestions() {
   const [editAnswer, setEditAnswer] = useState('')
   const [editKp, setEditKp] = useState('')
   const [editExplanation, setEditExplanation] = useState('')
+  const [editOptions, setEditOptions] = useState<string[]>([])
 
   // 上传题目弹窗
   const [uploadOpen, setUploadOpen] = useState(false)
@@ -104,17 +89,21 @@ export default function AdminQuestions() {
   const openEdit = (item: QuestionItem) => {
     setEditItem(item)
     setEditContent(item.content)
-    setEditAnswer('')
+    setEditAnswer(item.answer || '')
     setEditKp(item.knowledge_point)
-    setEditExplanation('')
+    setEditExplanation(item.explanation || '')
+    setEditOptions(item.options?.length === 4 ? [...item.options] : ['', '', '', ''])
     setEditOpen(true)
   }
 
   const handleSave = async () => {
     if (!editItem) return
     const body: Record<string, unknown> = { content: editContent, knowledge_point: editKp }
-    if (editAnswer) body.answer = editAnswer
-    if (editExplanation) body.explanation = editExplanation
+    body.answer = editAnswer
+    body.explanation = editExplanation
+    if (editItem.question_type === 'choice') {
+      body.options = editOptions
+    }
 
     const res = await adminFetch(`/admin/questions/${editItem.id}`, {
       method: 'PUT',
@@ -242,8 +231,8 @@ export default function AdminQuestions() {
   const columns = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
     {
-      title: '内容', dataIndex: 'content', key: 'content', ellipsis: true,
-      render: (t: string) => latexToText(t),
+      title: '内容', dataIndex: 'content', key: 'content', width: 300,
+      render: (t: string) => <div style={{ maxHeight: 60, overflow: 'hidden' }}>{renderLatex(t)}</div>,
     },
     {
       title: '题型', dataIndex: 'question_type', key: 'question_type', width: 80,
@@ -287,14 +276,7 @@ export default function AdminQuestions() {
 
   return (
     <div>
-      <h2 style={{
-        marginBottom: 24,
-        fontSize: 24,
-        fontWeight: 700,
-        color: 'var(--tech-text-primary)',
-        fontFamily: "'Space Grotesk', 'Noto Sans SC', sans-serif",
-        letterSpacing: '0.5px',
-      }}>
+      <h2 className="admin-page-title">
         题库管理
       </h2>
 
@@ -366,11 +348,27 @@ export default function AdminQuestions() {
               rows={4}
             />
           </Form.Item>
+          {editItem?.question_type === 'choice' && (
+            <Form.Item label="选项">
+              {editOptions.map((o, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: 8, gap: 8 }}>
+                  <span style={{ color: 'var(--tech-primary, #00d4ff)', width: 20 }}>{['A','B','C','D'][i]}</span>
+                  <Input
+                    value={o}
+                    onChange={(e) => {
+                      const next = [...editOptions]
+                      next[i] = e.target.value
+                      setEditOptions(next)
+                    }}
+                  />
+                </div>
+              ))}
+            </Form.Item>
+          )}
           <Form.Item label="答案">
             <Input
               value={editAnswer}
               onChange={(e) => setEditAnswer(e.target.value)}
-              placeholder="留空则不修改"
             />
           </Form.Item>
           <Form.Item label="知识点">
@@ -385,8 +383,7 @@ export default function AdminQuestions() {
             <Input.TextArea
               value={editExplanation}
               onChange={(e) => setEditExplanation(e.target.value)}
-              rows={3}
-              placeholder="留空则不修改"
+              rows={4}
             />
           </Form.Item>
         </Form>

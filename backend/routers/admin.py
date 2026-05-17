@@ -155,12 +155,15 @@ def admin_questions(
         "items": [
             {
                 "id": q.id,
-                "content": q.content[:80] + "..." if len(q.content) > 80 else q.content,
+                "content": q.content,
                 "question_type": q.question_type,
                 "knowledge_point": q.knowledge_point,
                 "source": q.source,
                 "user_id": q.user_id,
                 "created_at": q.created_at,
+                "answer": q.answer or "",
+                "options": q.options or [],
+                "explanation": q.explanation or "",
             }
             for q in items
         ],

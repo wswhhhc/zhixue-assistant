@@ -567,6 +567,238 @@
   margin-top: 4px;
 }
 
+.admin-feature-card {
+  height: 100%;
+}
+
+.admin-dashboard-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-dashboard-section-head.compact {
+  margin-bottom: 18px;
+}
+
+.admin-dashboard-section-title {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.admin-dashboard-section-subtitle {
+  margin: 6px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-dashboard-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  background: rgba(168, 85, 247, 0.08);
+  color: #c4b5fd;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.admin-empty-block {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.admin-insight-card {
+  height: 100%;
+  min-height: 148px;
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(168, 85, 247, 0.12);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.06), transparent 34%),
+    rgba(17, 24, 39, 0.62);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 28px rgba(2, 6, 23, 0.22);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.admin-insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 34px rgba(2, 6, 23, 0.28);
+}
+
+.admin-insight-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-insight-card-title {
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-insight-card-arrow {
+  color: rgba(226, 232, 240, 0.5);
+  font-size: 14px;
+}
+
+.admin-insight-card-value {
+  margin-top: 18px;
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admin-insight-card-hint {
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.admin-insight-card.tone-purple {
+  border-color: rgba(168, 85, 247, 0.18);
+}
+
+.admin-insight-card.tone-purple:hover {
+  border-color: rgba(168, 85, 247, 0.32);
+}
+
+.admin-insight-card.tone-orange {
+  border-color: rgba(249, 115, 22, 0.18);
+}
+
+.admin-insight-card.tone-orange:hover {
+  border-color: rgba(249, 115, 22, 0.32);
+}
+
+.admin-insight-card.tone-blue {
+  border-color: rgba(59, 130, 246, 0.18);
+}
+
+.admin-insight-card.tone-blue:hover {
+  border-color: rgba(59, 130, 246, 0.32);
+}
+
+.admin-insight-card.tone-green {
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+.admin-insight-card.tone-green:hover {
+  border-color: rgba(34, 197, 94, 0.32);
+}
+
+.admin-quick-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.admin-quick-action {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.36);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.admin-quick-action:hover {
+  transform: translateY(-1px);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.admin-quick-action-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.admin-quick-action-copy {
+  min-width: 0;
+}
+
+.admin-quick-action-title {
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-quick-action-desc {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.admin-quick-action-arrow {
+  color: rgba(226, 232, 240, 0.45);
+}
+
+.admin-quick-action.tone-purple:hover,
+.admin-quick-action.tone-purple .admin-quick-action-icon {
+  border-color: rgba(168, 85, 247, 0.22);
+}
+
+.admin-quick-action.tone-purple .admin-quick-action-icon {
+  background: rgba(168, 85, 247, 0.12);
+  color: #c084fc;
+}
+
+.admin-quick-action.tone-orange .admin-quick-action-icon {
+  background: rgba(249, 115, 22, 0.12);
+  color: #fb923c;
+}
+
+.admin-quick-action.tone-blue .admin-quick-action-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+}
+
+.admin-quick-action.tone-green .admin-quick-action-icon {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+}
+
+.admin-quick-action.tone-violet .admin-quick-action-icon {
+  background: rgba(139, 92, 246, 0.12);
+  color: #a78bfa;
+}
+
+.admin-quick-action.tone-cyan .admin-quick-action-icon {
+  background: rgba(6, 182, 212, 0.12);
+  color: #22d3ee;
+}
+
 /* ============================================
    亮色主题覆写
    ============================================ */
@@ -788,6 +1020,67 @@
 }
 
 [data-theme="light"] .admin-stat-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .admin-dashboard-section-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-dashboard-section-subtitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .admin-dashboard-chip {
+  border-color: rgba(124, 58, 237, 0.14);
+  background: rgba(124, 58, 237, 0.06);
+  color: #6d28d9;
+}
+
+[data-theme="light"] .admin-empty-block {
+  color: #64748b;
+}
+
+[data-theme="light"] .admin-insight-card {
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.05), transparent 34%),
+    rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .admin-insight-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 16px 32px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .admin-insight-card-title,
+[data-theme="light"] .admin-insight-card-value {
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-insight-card-hint,
+[data-theme="light"] .admin-insight-card-arrow {
+  color: #64748b;
+}
+
+[data-theme="light"] .admin-quick-action {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(100, 116, 139, 0.12);
+}
+
+[data-theme="light"] .admin-quick-action:hover {
+  background: #ffffff;
+}
+
+[data-theme="light"] .admin-quick-action-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-quick-action-desc,
+[data-theme="light"] .admin-quick-action-arrow {
   color: #64748b;
 }
 

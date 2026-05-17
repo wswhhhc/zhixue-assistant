@@ -410,6 +410,155 @@ def stats_overview_charts(
     }
 
 
+@router.get("/stats/dashboard-insights")
+def stats_dashboard_insights(
+    days: int = Query(7, ge=3, le=30),
+    admin: User = Depends(_require_admin),
+    db: Session = Depends(get_db),
+):
+    """后台仪表盘增强数据：行为趋势 + 待处理事项"""
+    from datetime import date
+
+    now_utc = datetime.now(timezone.utc)
+    today = now_utc.date()
+    start_date = today - timedelta(days=days - 1)
+
+    answer_rows = (
+        db.query(
+            func.date(AnswerRecord.created_at).label("day"),
+            func.count(AnswerRecord.id).label("answer_count"),
+            func.count(func.distinct(AnswerRecord.user_id)).label("active_users"),
+        )
+        .filter(AnswerRecord.created_at >= datetime.combine(start_date, datetime.min.time(), tzinfo=timezone.utc))
+        .group_by(func.date(AnswerRecord.created_at))
+        .all()
+    )
+    answer_map = {
+        str(r.day): {
+            "answers": int(r.answer_count or 0),
+            "active_users": int(r.active_users or 0),
+        }
+        for r in answer_rows
+    }
+
+    new_user_rows = (
+        db.query(
+            func.date(Notification.created_at).label("day"),
+            func.count(Notification.id).label("count"),
+        )
+        .filter(sa.text("1=0"))
+        .all()
+    )
+    # 使用用户 ID 近似新增趋势：若数据库缺少用户创建时间，则退化为 0
+    user_days: dict[str, int] = {}
+    if hasattr(User, "created_at"):
+        created_rows = (
+            db.query(
+                func.date(User.created_at).label("day"),
+                func.count(User.id).label("count"),
+            )
+            .filter(
+                User.role != "admin",
+                User.created_at >= datetime.combine(start_date, datetime.min.time(), tzinfo=timezone.utc),
+            )
+            .group_by(func.date(User.created_at))
+            .all()
+        )
+        user_days = {str(r.day): int(r.count or 0) for r in created_rows}
+
+    upload_rows = (
+        db.query(
+            func.date(Question.created_at).label("day"),
+            func.count(Question.id).label("count"),
+        )
+        .filter(
+            Question.source == "user",
+            Question.created_at >= datetime.combine(start_date, datetime.min.time(), tzinfo=timezone.utc),
+        )
+        .group_by(func.date(Question.created_at))
+        .all()
+    )
+    upload_map = {str(r.day): int(r.count or 0) for r in upload_rows}
+
+    behavior = []
+    for i in range(days):
+        current = start_date + timedelta(days=i)
+        key = current.isoformat()
+        behavior.append({
+            "date": current.strftime("%m-%d"),
+            "answers": answer_map.get(key, {}).get("answers", 0),
+            "active_users": answer_map.get(key, {}).get("active_users", 0),
+            "new_users": user_days.get(key, 0),
+            "uploads": upload_map.get(key, 0),
+        })
+
+    pending_reviews = (
+        db.query(func.count(Question.id))
+        .filter(Question.review_status == "pending")
+        .scalar() or 0
+    )
+    pending_payments = (
+        db.query(func.count(PaymentRecord.id))
+        .filter(PaymentRecord.status == "pending")
+        .scalar() or 0
+    )
+    active_codes = (
+        db.query(func.count(MembershipCode.id))
+        .filter(MembershipCode.is_active == True)
+        .scalar() or 0
+    )
+    recent_users = 0
+    if hasattr(User, "created_at"):
+        recent_users = (
+            db.query(func.count(User.id))
+            .filter(
+                User.role != "admin",
+                User.created_at >= now_utc - timedelta(days=1),
+            )
+            .scalar() or 0
+        )
+
+    todo_cards = [
+        {
+            "key": "pending_reviews",
+            "title": "待审核题目",
+            "value": int(pending_reviews),
+            "hint": "需要人工审核后才会进入学生端题库",
+            "path": "/admin/review",
+            "tone": "purple",
+        },
+        {
+            "key": "pending_payments",
+            "title": "待支付订单",
+            "value": int(pending_payments),
+            "hint": "查看是否存在长时间未完成的支付订单",
+            "path": "/admin/payments?status=pending",
+            "tone": "orange",
+        },
+        {
+            "key": "active_codes",
+            "title": "生效兑换码",
+            "value": int(active_codes),
+            "hint": "当前仍可使用的会员兑换码数量",
+            "path": "/admin/codes",
+            "tone": "blue",
+        },
+        {
+            "key": "recent_users",
+            "title": "24小时新增",
+            "value": int(recent_users),
+            "hint": "最近 24 小时新增注册用户数",
+            "path": "/admin/users",
+            "tone": "green",
+        },
+    ]
+
+    return {
+        "behavior_trend": behavior,
+        "todo_cards": todo_cards,
+    }
+
+
 # ==================== 用户学习详情 ====================
 
 @router.get("/users/{user_id}/stats")

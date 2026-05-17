@@ -49,11 +49,11 @@ docker-stop.bat
 ### 后端结构（`backend/`）
 - **main.py** — FastAPI 入口，注册 CORS 中间件、安全头、lifespan（自动备份 DB + 迁移 + 种子数据）
 - **database.py** — SQLite 连接（`data/zhixue.db`），启动自动备份（保留 7 份），`run_migrations()` 处理 SQLite 不支持 `ALTER ADD IF NOT EXISTS` 的兼容
-- **models.py** — 8 个模型：Question, AnswerRecord, User, UsageRecord, Checkin, Favorite, MembershipCode, PaymentRecord
+- **models.py** — 9 个模型：Question, AnswerRecord, User, UsageRecord, Checkin, Favorite, MembershipCode, PaymentRecord, Notification
 - **schemas.py** — Pydantic 请求/响应模型，包含管理员相关 schema
 - **config.py** — 环境变量加载（LLM API、JWT、SMTP、CORS），北京时间工具函数
 - **routers/** — 15 个路由模块，每个独立的 `APIRouter`：
-  - `auth`（登录注册 + 验证码）、`practice`（刷题 + AI 批改 SSE 流式）、`questions`（题目查询）、`dashboard`（统计）、`wrongbook`（错题本）、`upload`（拍照上传 + 手动录入）、`qa`（AI 问答 SSE）、`report`（学习报告 SSE）、`checkin`（签到）、`favorites`（收藏）、`user_settings`、`membership`（会员系统）、`payment`（支付）、`admin`（管理员）
+  - `auth`（登录注册 + 验证码）、`practice`（刷题 + AI 批改 SSE 流式）、`questions`（题目查询）、`dashboard`（统计）、`wrongbook`（错题本）、`upload`（拍照上传 + 手动录入）、`qa`（AI 问答 SSE）、`report`（学习报告 SSE）、`checkin`（签到）、`favorites`（收藏）、`user_settings`、`membership`（会员系统）、`payment`（支付）、`admin`（管理员）、`notifications`（通知）
 - **seed.py / seed_data.py / seed_test_users.py** — 题库初始化脚本
 
 ### 前端结构（`frontend/src/`）

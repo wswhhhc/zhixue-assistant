@@ -1,4 +1,4 @@
-import { Layout, Menu, Typography, Button, Space } from 'antd'
+import { Layout, Menu, Typography, Button, Space, Tooltip } from 'antd'
 import {
   DashboardOutlined,
   UserOutlined,
@@ -11,6 +11,8 @@ import {
   MenuUnfoldOutlined,
   SunOutlined,
   MoonOutlined,
+  BarChartOutlined,
+  AuditOutlined,
 } from '@ant-design/icons'
 import { useNavigate, useLocation, Outlet } from 'react-router-dom'
 import { useState } from 'react'
@@ -23,8 +25,10 @@ const { Header, Sider, Content } = Layout
 
 const menuItems = [
   { key: '/admin/dashboard', label: '仪表盘', icon: <DashboardOutlined /> },
+  { key: '/admin/analytics', label: '错题分析', icon: <BarChartOutlined /> },
   { key: '/admin/users', label: '用户管理', icon: <UserOutlined /> },
   { key: '/admin/questions', label: '题库管理', icon: <DatabaseOutlined /> },
+  { key: '/admin/review', label: '内容审核', icon: <AuditOutlined /> },
   { key: '/admin/codes', label: '兑换码', icon: <GiftOutlined /> },
   { key: '/admin/payments', label: '支付订单', icon: <WalletOutlined /> },
 ]
@@ -59,50 +63,6 @@ export default function AdminLayout() {
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        {/* 折叠切换按钮 - 和谐设计 */}
-        <div
-          className="sider-toggle-btn"
-          onClick={toggleCollapsed}
-          style={{
-            position: 'absolute',
-            bottom: 24,
-            left: collapsed ? '50%' : 20,
-            right: collapsed ? undefined : 20,
-            width: collapsed ? 36 : 'auto',
-            height: 36,
-            background: 'var(--tech-bg-tertiary)',
-            border: '1px solid var(--tech-border)',
-            borderRadius: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            zIndex: 100,
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            backdropFilter: 'blur(8px)',
-            padding: collapsed ? 0 : '0 16px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: collapsed ? 0 : 8 }}>
-            {collapsed ? (
-              <MenuUnfoldOutlined style={{ fontSize: 14, color: 'var(--tech-accent-purple)' }} />
-            ) : (
-              <>
-                <MenuFoldOutlined style={{ fontSize: 14, color: 'var(--tech-accent-purple)' }} />
-                <span style={{ 
-                  fontSize: 12, 
-                  color: 'var(--tech-accent-purple)',
-                  fontFamily: "'Noto Sans SC', sans-serif",
-                  whiteSpace: 'nowrap',
-                  opacity: 0.7,
-                }}>
-                  收起菜单
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-
         <div
           className="admin-logo"
           style={{
@@ -180,13 +140,27 @@ export default function AdminLayout() {
             justifyContent: 'space-between',
           }}
         >
-          <Typography.Text style={{ 
-            color: 'var(--tech-text-secondary)', 
-            fontSize: 14,
-            fontFamily: "'Noto Sans SC', sans-serif",
-          }}>
-            智学助手 · 管理后台
-          </Typography.Text>
+          <div className="admin-header-start">
+            <Tooltip
+              title={collapsed ? '展开菜单' : '收起菜单'}
+              placement="bottom"
+              overlayClassName="admin-tooltip"
+            >
+              <Button
+                type="text"
+                className="admin-header-toggle"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={toggleCollapsed}
+              />
+            </Tooltip>
+            <Typography.Text style={{ 
+              color: 'var(--tech-text-secondary)', 
+              fontSize: 14,
+              fontFamily: "'Noto Sans SC', sans-serif",
+            }}>
+              智学助手 · 管理后台
+            </Typography.Text>
+          </div>
           <Space size={16}>
             <Typography.Text style={{ 
               color: 'var(--tech-accent-purple)', 

@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from database import Base, engine, run_migrations, backup_database
 from config import CORS_ALLOW_ORIGINS
 from seed import seed_database
-from routers import questions, practice, dashboard, wrongbook, upload, qa, auth, report, checkin, favorites, user_settings, membership, payment, admin
+from routers import questions, practice, dashboard, wrongbook, upload, qa, auth, report, checkin, favorites, user_settings, membership, payment, admin, notifications
 
 # 注册字体 MIME 类型（生产环境静态文件服务必需）
 mimetypes.add_type("font/woff2", ".woff2")
@@ -62,6 +62,7 @@ app.include_router(user_settings.router)
 app.include_router(membership.router)
 app.include_router(payment.router)
 app.include_router(admin.router)
+app.include_router(notifications.router)
 
 
 @app.get("/")

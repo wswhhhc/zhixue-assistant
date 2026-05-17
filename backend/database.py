@@ -62,6 +62,25 @@ def run_migrations():
             conn.execute(sa.text("UPDATE users SET role = 'admin' WHERE username = 'admin'"))
             conn.commit()
 
+    # questions 表新增字段
+    q_cols = {c["name"] for c in inspector.get_columns("questions")}
+    if "review_status" not in q_cols:
+        with engine.connect() as conn:
+            conn.execute(sa.text("ALTER TABLE questions ADD COLUMN review_status VARCHAR(20) DEFAULT 'approved'"))
+            conn.commit()
+
+    # 修复：用户上传的题不应自动设为 approved，需管理员审核后才可见
+    with engine.connect() as conn:
+        conn.execute(
+            sa.text(
+                "UPDATE questions SET review_status = 'pending' "
+                "WHERE source = 'user' AND user_id IS NOT NULL AND review_status = 'approved'"
+            )
+        )
+        conn.commit()
+
+    # notifications 表由 SQLAlchemy 自动创建，无需 ALTER（首次自动建表）
+
     # payment_records 表由 SQLAlchemy 自动创建，无需 ALTER
 
 

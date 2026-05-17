@@ -6,6 +6,7 @@ import AntUpload from 'antd/es/upload'
 import { SearchOutlined, EditOutlined, DeleteOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons'
 import { adminFetch } from '../../adminAuth'
 import { renderLatex } from '../../utils/renderLatex'
+import './AdminQuestions.css'
 
 const KNOWLEDGE_POINTS = [
   '极限与连续', '导数与微分', '不定积分与定积分',
@@ -352,7 +353,7 @@ export default function AdminQuestions() {
             <Form.Item label="选项">
               {editOptions.map((o, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: 8, gap: 8 }}>
-                  <span style={{ color: 'var(--tech-primary, #00d4ff)', width: 20 }}>{['A','B','C','D'][i]}</span>
+                  <span className="admin-question-option-label">{['A', 'B', 'C', 'D'][i]}</span>
                   <Input
                     value={o}
                     onChange={(e) => {
@@ -414,14 +415,10 @@ export default function AdminQuestions() {
             )}
           </div>
         ) : uploadLoading ? (
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <p style={{ marginBottom: 16 }}>AI 识别中...</p>
+          <div className="admin-questions-stream-state">
+            <p className="admin-questions-stream-title">AI 识别中...</p>
             {uploadStreamText && (
-              <div style={{
-                background: 'rgba(3,7,18,0.8)', border: '1px solid rgba(0,212,255,0.15)',
-                borderRadius: 8, padding: 16, maxHeight: 300, overflow: 'auto',
-                textAlign: 'left', color: '#00d4ff', fontSize: 13, whiteSpace: 'pre-wrap',
-              }}>
+              <div className="admin-questions-stream-output">
                 {uploadStreamText}
               </div>
             )}
@@ -450,7 +447,7 @@ export default function AdminQuestions() {
                 <span style={{ display: 'block', marginBottom: 8 }}>选项</span>
                 {uOptions.map((o, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: 8, gap: 8 }}>
-                    <span style={{ color: '#00d4ff', width: 20 }}>{['A','B','C','D'][i]}</span>
+                    <span className="admin-question-option-label">{['A', 'B', 'C', 'D'][i]}</span>
                     <Input
                       value={o}
                       onChange={(e) => {

@@ -1,4 +1,5 @@
-import { Layout, Menu, Typography, Button, Space, Avatar } from 'antd'
+import { useState, useEffect } from 'react'
+import { Layout, Menu, Typography, Button, Space, Avatar, Badge, Popover, List, Empty } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   DashboardOutlined,
@@ -13,9 +14,13 @@ import {
   RocketOutlined,
   SunOutlined,
   MoonOutlined,
+  BellOutlined,
+  BellFilled,
+  CheckOutlined,
 } from '@ant-design/icons'
-import { useAuth } from '../auth'
+import { useAuth, authFetch } from '../auth'
 import { useTheme } from '../contexts/ThemeContext'
+import { API_BASE } from '../config'
 import './AppLayout.css'
 
 const { Header, Content } = Layout
@@ -38,6 +43,114 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { isDark, toggleTheme } = useTheme()
 
   const selectedKey = '/' + location.pathname.split('/')[1]
+
+  // 通知系统
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [notifOpen, setNotifOpen] = useState(false)
+
+  const fetchUnreadCount = () => {
+    if (!isAuthenticated) return
+    authFetch(`${API_BASE}/notifications/unread-count`)
+      .then((r) => r.json())
+      .then((d) => setUnreadCount(d.count || 0))
+      .catch(() => {})
+  }
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await authFetch(`${API_BASE}/notifications?page_size=10`)
+      const d = await res.json()
+      setNotifications(d.items || [])
+    } catch { /* ignore */ }
+  }
+
+  useEffect(() => {
+    fetchUnreadCount()
+    const timer = setInterval(fetchUnreadCount, 30000)
+    return () => clearInterval(timer)
+  }, [isAuthenticated])
+
+  const handleNotifOpen = (open: boolean) => {
+    setNotifOpen(open)
+    if (open) fetchNotifications()
+  }
+
+  const handleNotifClick = async (notif: any) => {
+    if (!notif.is_read) {
+      await authFetch(`${API_BASE}/notifications/${notif.id}/read`, { method: 'PUT' })
+      setUnreadCount((prev) => Math.max(0, prev - 1))
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, is_read: true } : n))
+      )
+    }
+  }
+
+  const handleMarkAllRead = async () => {
+    await authFetch(`${API_BASE}/notifications/read-all`, { method: 'PUT' })
+    setUnreadCount(0)
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
+  }
+
+  const notifContent = (
+    <div style={{ width: 340, maxHeight: 400 }}>
+      {notifications.length === 0 ? (
+        <Empty description="暂无通知" image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ margin: '24px 0' }} />
+      ) : (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderBottom: '1px solid var(--tech-border)' }}>
+            <Typography.Text strong style={{ fontSize: 13 }}>通知</Typography.Text>
+            {unreadCount > 0 && (
+              <Button type="link" size="small" onClick={handleMarkAllRead} style={{ fontSize: 12 }}>
+                全部标为已读
+              </Button>
+            )}
+          </div>
+          <List
+            dataSource={notifications}
+            renderItem={(item: any) => (
+              <List.Item
+                onClick={() => handleNotifClick(item)}
+                style={{
+                  padding: '10px 12px',
+                  cursor: 'pointer',
+                  background: item.is_read ? 'transparent' : 'rgba(0, 212, 255, 0.04)',
+                  borderLeft: item.is_read ? 'none' : '3px solid #00d4ff',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0, 212, 255, 0.06)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = item.is_read ? 'transparent' : 'rgba(0, 212, 255, 0.04)' }}
+              >
+                <List.Item.Meta
+                  title={
+                    <Space>
+                      <Typography.Text strong style={{ fontSize: 13, color: item.is_read ? 'var(--tech-text-secondary)' : 'var(--tech-text-primary)' }}>
+                        {item.title}
+                      </Typography.Text>
+                      {!item.is_read && <Badge status="processing" color="#00d4ff" />}
+                    </Space>
+                  }
+                  description={
+                    <>
+                      <Typography.Paragraph
+                        ellipsis={{ rows: 2 }}
+                        style={{ fontSize: 12, color: 'var(--tech-text-secondary)', margin: 0 }}
+                      >
+                        {item.content}
+                      </Typography.Paragraph>
+                      <Typography.Text style={{ fontSize: 11, color: 'var(--tech-text-tertiary)' }}>
+                        {item.created_at}
+                      </Typography.Text>
+                    </>
+                  }
+                />
+              </List.Item>
+            )}
+          />
+        </>
+      )}
+    </div>
+  )
 
   return (
     <Layout style={{ minHeight: '100vh', background: 'var(--tech-bg-primary)' }}>
@@ -121,47 +234,47 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* 右侧用户区 */}
         {isAuthenticated && (
-          <Space size={16}>
-            {/* 会员状态 */}
-            {isPremium ? (
-              <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
+          <Space size={16} className="header-actions">
+            {/* 通知铃铛 */}
+            <Popover
+              content={notifContent}
+              trigger="click"
+              open={notifOpen}
+              onOpenChange={handleNotifOpen}
+              placement="bottomRight"
+              overlayStyle={{ paddingTop: 8 }}
             >
-              <CrownOutlined style={{ color: '#fbbf24', fontSize: 18, filter: 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.5))' }} />
-            </div>
-            ) : selectedKey !== '/membership' ? (
-              <Button
-                className="upgrade-membership-button"
-                type="text"
-                icon={<CrownOutlined />}
-                onClick={() => navigate('/membership')}
-                style={{ 
-                  color: '#f59e0b',
-                  fontSize: 14,
-                  fontWeight: 500,
-                  padding: '4px 12px',
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
-                  borderRadius: 20,
-                  background: 'rgba(245, 158, 11, 0.05)',
-                }}
-              >
-                升级会员
-              </Button>
-            ) : null}
+              <Badge count={unreadCount} size="small" offset={[-4, 4]} className="notif-badge">
+                <Button
+                  type="text"
+                  className={`header-icon-action header-icon-action--notification${notifOpen ? ' is-active' : ''}`}
+                  icon={unreadCount > 0 ? <BellFilled /> : <BellOutlined />}
+                  title="查看通知"
+                />
+              </Badge>
+            </Popover>
 
             {/* 用户头像 - 点击进入设置 */}
-            <Avatar 
-              style={{ 
-                background: 'var(--tech-gradient-primary)',
-                cursor: 'pointer',
-              }}
+            <div
+              className={`header-avatar-wrap${isPremium ? ' is-premium' : ''}`}
               onClick={() => navigate('/settings')}
+              title={isPremium ? '会员用户' : '个人设置'}
             >
-              {username?.[0]?.toUpperCase() || 'U'}
-            </Avatar>
+              <Avatar
+                className="header-avatar"
+                style={{
+                  background: 'var(--tech-gradient-primary)',
+                  cursor: 'pointer',
+                }}
+              >
+                {username?.[0]?.toUpperCase() || 'U'}
+              </Avatar>
+              {isPremium ? (
+                <span className="header-avatar-premium-badge" aria-hidden="true">
+                  <CrownOutlined />
+                </span>
+              ) : null}
+            </div>
 
             {/* 主题切换按钮 */}
             <Button

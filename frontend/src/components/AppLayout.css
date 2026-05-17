@@ -115,6 +115,10 @@
   border-bottom: none !important;
 }
 
+.header-menu {
+  margin-right: 24px !important;
+}
+
 /* 头部导航菜单 - 强制覆盖 - 超小光晕 */
 .header-menu.ant-menu-dark .ant-menu-item-selected,
 .header-menu.ant-menu-dark.ant-menu-horizontal .ant-menu-item-selected,
@@ -269,26 +273,152 @@
   background: rgba(0, 212, 255, 0.1) !important;
 }
 
-.upgrade-membership-button,
-.upgrade-membership-button:hover,
-.upgrade-membership-button:active,
-.upgrade-membership-button:focus,
-.upgrade-membership-button:focus-visible {
-  color: #f59e0b !important;
-  background: rgba(245, 158, 11, 0.05) !important;
-  border: 1px solid rgba(245, 158, 11, 0.3) !important;
-  box-shadow: none !important;
+.header-actions {
+  gap: 14px !important;
+  position: relative;
+  margin-left: 8px;
+  padding-left: 18px;
 }
 
-.upgrade-membership-button:hover,
-.upgrade-membership-button:active {
-  background: rgba(245, 158, 11, 0.08) !important;
+.header-actions::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1px;
+  height: 28px;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, rgba(148, 163, 184, 0) 0%, rgba(148, 163, 184, 0.35) 50%, rgba(148, 163, 184, 0) 100%);
 }
 
-.upgrade-membership-button .anticon {
+.header-icon-action.ant-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0 !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(148, 163, 184, 0.14) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(148, 163, 184, 0.04) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 20px rgba(15, 23, 42, 0.08) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease !important;
+}
+
+.header-icon-action.ant-btn .anticon {
+  font-size: 18px;
+  transition: transform 0.25s ease, color 0.25s ease, filter 0.25s ease;
+}
+
+.header-icon-action.ant-btn:hover,
+.header-icon-action.ant-btn:focus,
+.header-icon-action.ant-btn:active,
+.header-icon-action.ant-btn.is-active {
+  transform: translateY(-1px);
+}
+
+.header-icon-action--notification.ant-btn,
+.header-icon-action--notification.ant-btn:hover,
+.header-icon-action--notification.ant-btn:focus,
+.header-icon-action--notification.ant-btn:active,
+.header-icon-action--notification.ant-btn.is-active {
+  color: #4b5563 !important;
+}
+
+.header-icon-action--notification.ant-btn:hover,
+.header-icon-action--notification.ant-btn:focus,
+.header-icon-action--notification.ant-btn:active,
+.header-icon-action--notification.ant-btn.is-active {
+  border-color: rgba(59, 130, 246, 0.24) !important;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 22px rgba(59, 130, 246, 0.14) !important;
+}
+
+.header-icon-action--notification.ant-btn .anticon {
+  transform: translateY(0.5px);
+}
+
+.header-icon-action--notification.ant-btn:hover .anticon,
+.header-icon-action--notification.ant-btn.is-active .anticon {
+  color: #2563eb !important;
+  filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.22));
+}
+
+.header-icon-action--premium.ant-btn,
+.header-icon-action--premium.ant-btn:hover,
+.header-icon-action--premium.ant-btn:focus,
+.header-icon-action--premium.ant-btn:active {
   color: #f59e0b !important;
-  filter: none !important;
-  text-shadow: none !important;
+  border-color: rgba(245, 158, 11, 0.24) !important;
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.14) 0%, rgba(245, 158, 11, 0.08) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 22px rgba(245, 158, 11, 0.14) !important;
+}
+
+.header-icon-action--premium.ant-btn .anticon {
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.28));
+}
+
+.header-avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.header-avatar {
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.22);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.header-avatar-wrap:hover .header-avatar {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.28);
+}
+
+.header-avatar-wrap.is-premium .header-avatar {
+  box-shadow:
+    0 10px 24px rgba(79, 70, 229, 0.2),
+    0 0 0 2px rgba(245, 158, 11, 0.22);
+}
+
+.header-avatar-premium-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.12) 0%, rgba(245, 158, 11, 0.06) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 6px 14px rgba(245, 158, 11, 0.18);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.header-avatar-premium-badge .anticon {
+  color: #f59e0b;
+  font-size: 10px;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.24));
+}
+
+.notif-badge .ant-badge-count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  line-height: 18px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--tech-bg-primary);
 }
 
 /* ============================================

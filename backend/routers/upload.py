@@ -624,6 +624,7 @@ def upload_confirm(
         explanation=data.explanation,
         source="system" if is_admin else "user",
         user_id=None if is_admin else uid,
+        review_status="approved" if is_admin else "pending",
         review_result=json.dumps(review, ensure_ascii=False),
     )
     db.add(question)

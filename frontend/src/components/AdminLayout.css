@@ -19,25 +19,39 @@
 }
 
 /* 折叠按钮和谐样式 */
-.sider-toggle-btn:hover {
-  background: rgba(168, 85, 247, 0.15) !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
-  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15) !important;
+.admin-header-start {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.sider-toggle-btn:active {
-  transform: scale(0.98) !important;
-}
-
-/* 折叠状态下按钮居中 */
-.admin-sider-collapsed .sider-toggle-btn {
-  left: 50% !important;
-  right: auto !important;
+.admin-header-toggle.ant-btn {
+  width: 40px;
+  height: 40px;
   padding: 0 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(168, 85, 247, 0.16) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(168, 85, 247, 0.04) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 24px rgba(15, 23, 42, 0.08) !important;
+  color: var(--tech-accent-purple) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease !important;
 }
 
-.admin-sider-collapsed .sider-toggle-btn:hover {
-  background: rgba(168, 85, 247, 0.2) !important;
+.admin-header-toggle.ant-btn .anticon {
+  font-size: 17px;
+}
+
+.admin-header-toggle.ant-btn:hover,
+.admin-header-toggle.ant-btn:focus,
+.admin-header-toggle.ant-btn:active {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, rgba(168, 85, 247, 0.14) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
+  border-color: rgba(168, 85, 247, 0.32) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 28px rgba(168, 85, 247, 0.16) !important;
 }
 
 /* ============================================
@@ -630,10 +644,23 @@
 }
 
 /* ---- 折叠按钮 ---- */
-[data-theme="light"] .sider-toggle-btn:hover {
-  background: rgba(124, 58, 237, 0.08) !important;
-  border-color: rgba(124, 58, 237, 0.2) !important;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1) !important;
+[data-theme="light"] .admin-header-toggle.ant-btn {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 252, 0.92) 100%) !important;
+  border-color: rgba(124, 58, 237, 0.14) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 10px 24px rgba(124, 58, 237, 0.08) !important;
+  color: #7c3aed !important;
+}
+
+[data-theme="light"] .admin-header-toggle.ant-btn:hover,
+[data-theme="light"] .admin-header-toggle.ant-btn:focus,
+[data-theme="light"] .admin-header-toggle.ant-btn:active {
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.1) 0%, rgba(79, 70, 229, 0.06) 100%) !important;
+  border-color: rgba(124, 58, 237, 0.24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 12px 26px rgba(124, 58, 237, 0.12) !important;
 }
 
 /* ---- 内容区 ---- */

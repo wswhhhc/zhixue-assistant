@@ -20,9 +20,10 @@ router = APIRouter(prefix="/questions", tags=["questions"])
 
 
 def visible_filter(query, user_id):
-    """Filter questions to system questions + user's own uploads."""
+    """Show approved questions + user's own pending uploads (hide rejected)."""
     return query.filter(
-        (Question.source == "system") | (Question.user_id == user_id)
+        (Question.review_status == "approved") | (Question.user_id == user_id),
+        Question.review_status != "rejected",
     )
 
 

@@ -22,6 +22,8 @@ import AdminUsers from './pages/admin/AdminUsers'
 import AdminQuestions from './pages/admin/AdminQuestions'
 import AdminCodes from './pages/admin/AdminCodes'
 import AdminPayments from './pages/admin/AdminPayments'
+import AdminAnalytics from './pages/admin/AdminAnalytics'
+import AdminReview from './pages/admin/AdminReview'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
 import AdminLayout from './components/AdminLayout'
 
@@ -49,6 +51,8 @@ export default function App() {
           <Route path="questions" element={<AdminQuestions />} />
           <Route path="codes" element={<AdminCodes />} />
           <Route path="payments" element={<AdminPayments />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="review" element={<AdminReview />} />
         </Route>
 
         {/* ===== 用户端路由 ===== */}

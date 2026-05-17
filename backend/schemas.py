@@ -100,3 +100,12 @@ class AdminCodeGenerate(BaseModel):
 
 class AdminCodeToggle(BaseModel):
     is_active: bool
+
+
+class AdminReviewInput(BaseModel):
+    action: str  # "approve" | "reject"
+
+
+class AdminBatchReviewInput(BaseModel):
+    question_ids: list[int]
+    action: str  # "approve" | "reject"

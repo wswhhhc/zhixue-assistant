@@ -43,7 +43,10 @@ def recommend_question(
     # also include knowledge points with no records (considered 0% mastery)
     all_kps = (
         db.query(Question.knowledge_point)
-        .filter((Question.source == "system") | (Question.user_id == uid))
+        .filter(
+            (Question.review_status == "approved") | (Question.user_id == uid),
+            Question.review_status != "rejected",
+        )
         .distinct()
         .all()
     )
@@ -60,7 +63,8 @@ def recommend_question(
             db.query(Question)
             .filter(
                 Question.knowledge_point == kp,
-                (Question.source == "system") | (Question.user_id == uid),
+                (Question.review_status == "approved") | (Question.user_id == uid),
+                Question.review_status != "rejected",
             )
             .first()
         )
@@ -72,7 +76,10 @@ def recommend_question(
         # fallback: random question from visible ones
         q = (
             db.query(Question)
-            .filter((Question.source == "system") | (Question.user_id == uid))
+            .filter(
+                (Question.review_status == "approved") | (Question.user_id == uid),
+                Question.review_status != "rejected",
+            )
             .order_by(func.random())
             .first()
         )
@@ -84,7 +91,8 @@ def recommend_question(
         db.query(Question)
         .filter(
             Question.knowledge_point == weakest_kp,
-            (Question.source == "system") | (Question.user_id == uid),
+            (Question.review_status == "approved") | (Question.user_id == uid),
+            Question.review_status != "rejected",
         )
         .order_by(func.random())
         .first()
@@ -224,9 +232,12 @@ def submit_answer(
     question = db.query(Question).filter(Question.id == data.question_id).first()
     if not question:
         return {"error": "题目不存在"}
-    # 确保用户只能作答可见的题目
     uid = user.id
-    if question.source != "system" and question.user_id != uid:
+    # 已驳回的题目不可作答
+    if question.review_status == "rejected":
+        return {"error": "该题目已被驳回，无法作答"}
+    # 待审核的题目仅上传者自己可见
+    if question.review_status != "approved" and question.user_id != uid:
         return {"error": "无权访问该题目"}
 
     qtype = getattr(question, "question_type", "choice")
@@ -350,11 +361,13 @@ def generate_similar(
     user=Depends(require_user),
 ):
     uid = user.id
-    question = db.query(Question).filter(Question.id == question_id).first()
+    question = db.query(Question).filter(
+        Question.id == question_id,
+        Question.review_status != "rejected",
+        (Question.review_status == "approved") | (Question.user_id == uid),
+    ).first()
     if not question:
-        raise HTTPException(status_code=404, detail="题目不存在")
-    if question.source != "system" and question.user_id != uid:
-        raise HTTPException(status_code=403, detail="无权访问该题目")
+        raise HTTPException(status_code=404, detail="题目不存在或无权限")
 
     # 用量检查
     allowed, used, limit = check_usage_limit(user, "gen_similar", db)

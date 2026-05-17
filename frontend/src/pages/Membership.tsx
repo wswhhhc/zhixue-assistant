@@ -176,7 +176,8 @@ export default function Membership() {
             const limit = q?.limit ?? -1
             const isUnlimited = limit === -1
             return (
-<div key={key} className="quota-item" style={{background: 'rgba(17, 24, 39, 0.8)', border: '1px solid rgba(0, 212, 255, 0.2)', borderRadius: 12, padding: 16}}>                <div className="quota-label">{label}</div>
+              <div key={key} className="quota-item">
+                <div className="quota-label">{label}</div>
                 <div className={`quota-value ${isUnlimited ? 'unlimited' : used >= limit ? 'low' : 'ok'}`}>
                   {isUnlimited ? '∞ 无限制' : `${used} / ${limit}`}
                 </div>

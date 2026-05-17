@@ -19,6 +19,7 @@ class Question(Base):
     source = Column(String(50), default="system")
     user_id = Column(Integer, nullable=True)
     review_result = Column(Text, default="")
+    review_status = Column(String(20), default="approved")  # "pending" | "approved" | "rejected"
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
@@ -106,3 +107,15 @@ class PaymentRecord(Base):
     confirm_key = Column(String(64), unique=True)     # 扫码确认密钥
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     paid_at = Column(DateTime, nullable=True)
+
+
+class Notification(Base):
+    """站内通知"""
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
+    title = Column(String(200))
+    content = Column(Text, default="")
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

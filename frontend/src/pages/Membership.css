@@ -47,15 +47,16 @@
 }
 
 .quota-item {
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 12px;
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
 }
 
 .quota-item .quota-label {
   font-size: 13px;
-  color: #666;
+  color: rgba(226, 232, 240, 0.72);
   margin-bottom: 4px;
 }
 
@@ -226,7 +227,9 @@
 }
 
 [data-theme="light"] .quota-item {
-  background: var(--tech-bg-secondary);
+  background: #f7fbff;
+  border-color: rgba(2, 132, 199, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 [data-theme="light"] .quota-item .quota-label {
